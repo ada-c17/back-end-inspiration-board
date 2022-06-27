@@ -19,6 +19,8 @@ def create_app():
 
     # Import models here for Alembic setup
     # from app.models.ExampleModel import ExampleModel
+    from .models.board import Board
+    from .models.card import Card
 
     db.init_app(app)
     migrate.init_app(app, db)
