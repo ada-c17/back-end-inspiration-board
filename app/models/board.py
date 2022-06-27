@@ -1,4 +1,3 @@
-from turtle import title
 from app import db
 
 class Board(db.Model):
