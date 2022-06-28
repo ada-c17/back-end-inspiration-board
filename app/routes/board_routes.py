@@ -1,8 +1,8 @@
-from curses import BUTTON4_RELEASED
 from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.board import Board
 from .helpers import validate_model_instance
+from app.models.card import Card
 
 # example_bp = Blueprint('example_bp', __name__)
 
@@ -35,7 +35,7 @@ def get_one_board(board_id):
     board = validate_model_instance(Board, board_id, "board")
     return jsonify({"board": board.to_json()}), 200
 
-#DELETE A BOARD
+#DELETE A BOARD-> optional
 @boards_bp.route("/<board_id>", methods=["DELETE"])
 def delete_board(board_id):
     board = validate_model_instance(Board, board_id, "board")
@@ -43,3 +43,31 @@ def delete_board(board_id):
     db.session.commit()
 
     return jsonify({"details":f'Board {board_id} "{board.title}" successfully deleted'} ), 200
+
+#POST /boards/<board_id>/cards
+#we expect-> HTTP request body ({message, likesCount, boardId})
+@boards_bp.route("/<board_id>/cards", methods=["POST"])
+def add_card_to_board(board_id):
+    board = validate_model_instance(Board, board_id, "board")
+    
+    request_body = request.get_json()
+
+    new_card = board.link_card_to_board(request_body)
+
+    db.session.add(new_card)
+    db.session.commit()
+    #change return?
+    return jsonify({"boardId": board.board_id, "cardId": new_card.card_id}), 200
+
+#GET /boards/<board_id>/cards
+@boards_bp.route("/<board_id>/cards", methods=["GET"])
+def read_cards_of_board(board_id):
+
+    board = validate_model_instance(Board, board_id, "board")
+    board_cards = [card.to_json() for card in board.cards]
+
+    return jsonify({"boardId": board.board_id,
+        "title": board.title,
+        "owner": board.owner,
+        "cards": board_cards}), 200
+
