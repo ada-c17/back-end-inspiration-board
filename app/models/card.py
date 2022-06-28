@@ -9,8 +9,8 @@ class Card(db.Model):
     board = db.relationship('Board',back_populates='cards')
 
     def to_dict(self):
-            return {
-                "card_id": self.card_id,
-                "message": self.message,
-                "likes_count": self.likes_count
-            }
+        return {
+            "card_id": self.card_id,
+            "message": self.message,
+            "likes_count": self.likes_count
+        }
