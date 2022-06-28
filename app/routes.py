@@ -34,3 +34,15 @@ def create_board():
     return {
         "board": new_board.to_dict()
     }, 201
+
+@boards_bp.route("/<board_id>", methods=["GET"])
+def get_board_by_id(board_id):
+    board = Board.query.get(board_id)
+
+    if board:
+        return {"board": board.to_dict()}
+    
+    else:
+        return jsonify({
+            "details": f"ID {board_id} does not exist"
+        }), 404
