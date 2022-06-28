@@ -13,3 +13,24 @@ def get_boards():
     boards_response = [board.to_dict() for board in boards]
 
     return jsonify(boards_response)
+
+@boards_bp.route('/', methods=['POST'])
+def create_board():
+    request_body = request.get_json()
+
+    if not "title" in request_body or not "owner" in request_body:  # or \
+        # not "completed_at" in request_body:
+        return jsonify({
+            "details": "Invalid data"
+        }), 400
+
+    new_board = Board(title=request_body["title"],
+                    owner=request_body["owner"]
+                    )
+
+    db.session.add(new_board)
+    db.session.commit()
+
+    return {
+        "board": new_board.to_dict()
+    }, 201
