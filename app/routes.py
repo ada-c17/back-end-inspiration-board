@@ -75,3 +75,13 @@ def add_card_to_board(id):
 
     response_body = {"id": new_card.card_id, "board_id": new_card.board_id, "message": new_card.message}
     return make_response(jsonify(response_body), 200)
+
+@boards_bp.route("/<board_id>/cards/<card_id>", methods=["DELETE"])
+def delete_card_by_id(board_id, card_id):
+    card = Card.query.get(card_id)
+
+    if card:
+        db.session.delete(card)
+        db.session.commit()
+
+    return make_response(dict(details=f'Card {card.card_id} "{card.message}" successfully deleted'), 200)
