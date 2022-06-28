@@ -8,8 +8,9 @@ from app.models.card import Card
 
 #   [0] IMPORTS
 #   [1] BLUEPRINT DEFINITIONS
-#   [2] BOARD ENDPOINTS
-#   [3] CARD ENDPOINTS
+#   [2] HELPER FUNCTIONS
+#   [3] BOARD ENDPOINTS
+#   [4] CARD ENDPOINTS
 
 
 ##### [1] BLUEPRINT DEFINITIONS #####################################
@@ -18,7 +19,31 @@ board_bp = Blueprint('board_bp', __name__, url_prefix='/boards')
 card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
 
 
-##### [2] BOARD ENDPOINTS ###########################################
+##### [2] HELPER FUNCTIONS ##########################################
+
+def validate_id(object_id, object_type):
+    '''
+    Validates the board or card based on ID and fetches the object from the database.
+        *object_id:  id of a board or card
+        *object_type: "board" or "card" depending on endpoint
+        OUTPUT: board or card object fetched from database.
+    '''
+    try:
+        object_id = int(object_id)
+    except:
+        abort(make_response({"message":f"{object_type} {object_id} invalid"}, 400))
+
+    if object_type == "board":
+        response = Board.query.get(object_id)
+    elif object_type == "card":
+        response = Card.query.get(object_id)
+    if not response:
+        abort(make_response({"message":f"{object_type} {object_id} not found"}, 404))
+
+    return response
+
+
+##### [3] BOARD ENDPOINTS ###########################################
 
 @board_bp.route("", methods=["GET"])
 def get_all_boards():
@@ -28,8 +53,8 @@ def get_all_boards():
 
 @board_bp.route("/<board_id>", methods=["GET"])
 def get_one_board(board_id):
-    chosen_board = Board.query.get(board_id)
-    return jsonify(chosen_board.to_dict()), 200
+    board = validate_id(board_id, "board")
+    return jsonify(board.to_dict()), 200
 
 
 @board_bp.route("", methods=["POST"])
@@ -49,7 +74,7 @@ def post_board():
 
 
 
-##### [3] CARD ENDPOINTS ############################################
+##### [4] CARD ENDPOINTS ############################################
 
 @card_bp.route("", methods=["GET"])
 def get_all_cards():
@@ -59,8 +84,8 @@ def get_all_cards():
 
 @card_bp.route("/<card_id>", methods=["GET"])
 def get_one_card(card_id):
-    chosen_card = Card.query.get(card_id)
-    return jsonify(chosen_card.to_dict()), 200
+    card = validate_id(card_id, "card")
+    return jsonify(card.to_dict()), 200
 
 
 @card_bp.route("", methods=["POST"])
@@ -82,11 +107,9 @@ def post_card():
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_one_card(card_id):
-    chosen_card = Card.query.get(card_id)
-    db.session.delete(chosen_card)
+    card = validate_id(card_id, "card")
+    db.session.delete(card)
     db.session.commit()
-    return {
-        "message" : f'Card {card_id} successfully deleted'
-    }, 200
+    return {"message" : f'Card {card_id} successfully deleted'}, 200
 
 
