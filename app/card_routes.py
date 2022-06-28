@@ -3,9 +3,9 @@ from app import db
 from models import Card
 
 # example_bp = Blueprint('example_bp', __name__)
-card_bp = Blueprint('card_bp', __name__, url_prefix="/board/")
+card_bp = Blueprint('card_bp', __name__, url_prefix="/boards/")
 
-@card_bp.route("<board_id>/card", methods=["CREATE"])
+@card_bp.route("<board_id>/cards", methods=["CREATE"], strict_slashes=False)
 def create_card(board_id):
     #validate
     request_body = request.get_json()
@@ -16,7 +16,7 @@ def create_card(board_id):
 
     return make_response("Success", 201)
 
-@card_bp.route("<board_id>/card/<card_id>", methods=["PATCH"])
+@card_bp.route("<board_id>/cards/<card_id>", methods=["PATCH"], strict_slashes=False)
 def update_card(board_id, card_id):
     #validate board_id
     #validate card_id
