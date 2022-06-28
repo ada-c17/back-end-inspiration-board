@@ -37,13 +37,11 @@ def get_cards_for_specific_board(my_board_id):
         cards.append({
         "card_id":card.card_id,
         "message": card.message,
-    "likes_count":card.likes_count,
-    "board_id": my_board_id
+        "likes_count":card.likes_count,
+        "board_id": my_board_id
 })
     return jsonify({
         "board_id": board.board_id,
-        "title": board.title,
-        "owner": board.owner,
         "cards": cards
         }), 200
 
