@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request, make_response, abort
 from app import db
 from app.models.board import Board
 from app.models.card import Card
+from .routes import validate_record
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 @boards_bp.route("", methods=["GET"])
@@ -13,20 +14,10 @@ def get_all_boards():
     return jsonify(board_response), 200
 
 
-def validate_board(cls, id):
-    try:
-        board_id = int(id)
-    except:
-        abort(make_response({"details": "Invalid data"}, 400))
-    obj = cls.query.get(id)
-    if not obj:
-        abort(make_response({"message": f"{cls.__name__} not found"}, 404))
-        
-    return obj
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
 def get_cards_by_board(board_id):
     board_id = int(board_id)
-    board = validate_board(board_id)
+    board = validate_record(Board, board_id)
     card_list = []
     cards = Card.query.filter_by(board_id=board_id)
     for card in cards:
@@ -49,3 +40,13 @@ def create_board():
     db.session.commit()
 
     return {"board": new_board.to_json()}, 201
+
+
+@boards_bp.route("/<board_id>/cards", methods=["POST"])
+def post_card_id_to_board(board_id):
+    board = validate_record(Board, board_id)
+    request_body = request.get_json()
+    card=Card.create(Card, request_body, board_id)
+    db.session.add(card)
+    db.session.commit()
+    return jsonify({"board_id": board.board_id, "card_id": card.id, 'message': card.message, 'likes_count': card.likes_count}), 200

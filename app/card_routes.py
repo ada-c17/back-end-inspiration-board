@@ -3,22 +3,10 @@ from app.models.card import Card
 from flask import Blueprint, jsonify, abort, make_response, request
 # from .helper import validate_record, send_message_to_slack
 from dotenv import load_dotenv
-
+from .routes import validate_record
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 load_dotenv()
 
-def validate_record(cls, id):
-    try:
-        id = int(id)
-    except ValueError:
-        abort(make_response({"message": f"{cls} {id} is invalid"}, 400))
-
-    obj = cls.query.get(id)
-
-    if not obj:
-        return abort(make_response({"message": f"{cls.__name__} {id} not found"}, 404))
-
-    return obj
 
 
 # UPDATE one card

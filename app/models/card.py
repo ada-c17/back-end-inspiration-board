@@ -17,4 +17,9 @@ class Card(db.Model):
                 "likes_count": self.likes_count,
                 "board_id": self.board_id}
     
-            
+	@classmethod
+	def create(cls, req_body, b_id):
+        
+		new_card = cls(message=req_body['message'], 
+		board_id=b_id)
+		return new_card
