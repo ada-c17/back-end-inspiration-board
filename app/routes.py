@@ -5,18 +5,17 @@ from app.models.card import Card
 
 
 ##### TABLE OF CONTENTS #############################################
+
 #   [0] IMPORTS
 #   [1] BLUEPRINT DEFINITIONS
 #   [2] BOARD ENDPOINTS
 #   [3] CARD ENDPOINTS
 
 
-
 ##### [1] BLUEPRINT DEFINITIONS #####################################
 
 board_bp = Blueprint('board_bp', __name__, url_prefix='/boards')
 card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
-
 
 
 ##### [2] BOARD ENDPOINTS ###########################################
@@ -76,6 +75,8 @@ def post_card():
     request_body = request.get_json()
 
     if "message" in request_body:
+        if len(request_body["message"]) > 40:
+            abort(make_response({"details": "Messages cannot be longer than 40 characters"}, 400))
         new_card = Card(message=request_body["message"],
                     likes_count=0)
     else:
