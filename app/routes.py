@@ -64,3 +64,12 @@ def update_card_likecount(card_id):
 
     response = {"msg": f"update like count to {card.likes_count}"}
     return jsonify(response), 200
+
+@card_bp.route("/<card_id>", methods=["DELETE"])
+def delete_one_card(card_id):
+    card = Card.query.get(card_id)
+    db.session.delete(card)
+    db.session.commit()
+
+    response = {"msg": f"delete card with id: {card.card_id}"}
+    return jsonify(response), 200
