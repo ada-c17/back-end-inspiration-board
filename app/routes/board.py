@@ -36,8 +36,31 @@ def get_all_boards():
         )
     return jsonify(response)
 
-# @boards_bp.route("/<board_id>/", methods=["PUT"])
-# def update_board(board_id):
-#     board = validate(Board, board_id)
-#     request_body = request
+@boards_bp.route("/<board_id>", methods=["PUT"])
+def update_board(board_id):
+    board = validate(Board, board_id)
+    request_body = request.get_json()
+
+    if "title" not in request_body:
+        return jsonify({'msg': f"Request must include title"}), 400
+
+    board.title = request_body["title"]
+
+    db.session.commit()
+
+    return make_response(
+        jsonify({'msg': f"Successfully updated board {board_id}"}), 200
+    )
+
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board(board_id):
+    board = validate(Board, board_id)
+    db.session.delete(board)
+    db.session.commit()
+
+    response = {'details': f'Board {board_id} "{board.title}" successfully deleted'}
+
+    return make_response(jsonify(response), 200)
+
+    
 
