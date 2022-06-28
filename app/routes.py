@@ -92,11 +92,14 @@ def get_one_card(card_id):
 def post_card():
     request_body = request.get_json()
 
-    if "message" in request_body:
+    if "message" in request_body and "board_id" in request_body:
         if len(request_body["message"]) > 40:
             abort(make_response({"details": "Messages cannot be longer than 40 characters"}, 400))
-        new_card = Card(message=request_body["message"],
-                    likes_count=0)
+        new_card = Card(
+            message=request_body["message"],
+            likes_count=0,
+            board_id=request_body["board_id"],
+            )
     else:
         abort(make_response({"details": "Invalid data"}, 400))
 
