@@ -5,10 +5,13 @@ from dotenv import load_dotenv
 import os
 from flask_cors import CORS
 
+
 db = SQLAlchemy()
 migrate = Migrate()
 load_dotenv()
 
+from .models.board import Board
+from .models.card import Card
 
 def create_app():
     app = Flask(__name__)
