@@ -1,8 +1,6 @@
 from app.models.board import Card
 import pytest
 
-
-
 # @pytest.mark.skip(reason="No way to test this feature yet")
 def test_update_card(client, one_card):
     # Act

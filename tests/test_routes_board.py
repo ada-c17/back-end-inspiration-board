@@ -74,6 +74,29 @@ def test_create_board(client):
     assert new_board.owner == "Marlyn"
 
 
+# @pytest.mark.skip(reason="No way to test this feature yet")
+def test_update_boardD(client, one_board):
+    # Act
+    response = client.put("/boards/1", json={
+        "title": "Updated board Title",
+        "owner": "Updated board owner"
+    })
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 200
+    assert "board" in response_body
+    assert response_body == {
+        "board": {
+            "id": 1,
+            "title": "Updated board Title",
+            "owner": "Updated board owner"
+        }
+    }
+    board = Board.query.get(1)
+    assert board.title == "Updated board Title"
+    assert board.owner == "Updated board owner"
+
 
 @pytest.mark.skip(reason="No way to test this feature yet")
 def test_post_card_ids_to_board(client, one_board, three_cards):
