@@ -17,13 +17,13 @@ def get_board_or_abort(board_id):
     try:
         board_id = int(board_id)
     except ValueError:
-        abort(make_response({"message": f"The task id {board_id} is invalid. The id must be integer."}, 400))
+        abort(make_response({"message": f"The board id {board_id} is invalid. The id must be integer."}, 400))
     
     boards = Board.query.all()
     for board in boards:
         if board.board_id == board_id:
             return board
-    abort(make_response({"message": f"The task id {board_id} is not found"}, 404))
+    abort(make_response({"message": f"The board id {board_id} is not found"}, 404))
 
 @boards_bp.route("", methods=["POST"])
 def create_board():
@@ -64,13 +64,13 @@ def validate_board(board_id):
     try:
         board_id = int(board_id)
     except ValueError:
-        abort(make_response({"message": f"The task id {board_id} is invalid. The id must be integer."}, 400))
+        abort(make_response({"message": f"The board id {board_id} is invalid. The id must be integer."}, 400))
     
     boards = Board.query.all()
     for board in boards:
         if board.board_id == board_id:
             return board
-    abort(make_response({"message": f"The task id {board_id} is not found"}, 404))
+    abort(make_response({"message": f"The board id {board_id} is not found"}, 404))
 
 @boards_bp.route("/<board_id>", methods=["DELETE"])
 def delete_a_board(board_id):
@@ -79,4 +79,4 @@ def delete_a_board(board_id):
     db.session.delete(board)
     db.session.commit()
 
-    return make_response({'details':f'Task {board.board_id} "{board.title}" successfully deleted'},200)
+    return make_response({'details':f'Board {board.board_id} "{board.title}" successfully deleted'},200)
