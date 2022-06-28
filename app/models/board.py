@@ -12,3 +12,9 @@ class Board(db.Model):
             "message": self.message,
             "likes_count": self.likes_count
             }
+
+@classmethod
+def create(cls, request_body):
+    return cls(
+        title=request_body["title"]
+        )
