@@ -6,14 +6,6 @@ from app.models.board import Board
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards") 
 
-# Get board
-@boards_bp.route("", methods=["GET"])
-def get_all_boards():
-    boards = Board.query.all()
-    boards_response = [board.to_dict() for board in boards]
-
-    return jsonify(boards_response), 200
-
 # Create board
 @boards_bp.route("", methods=["POST"])
 def create_board():
@@ -29,6 +21,13 @@ def create_board():
 
     return jsonify({"board":new_board.to_dict()}), 201
 
+# Get board
+@boards_bp.route("", methods=["GET"])
+def get_all_boards():
+    boards = Board.query.all()
+    boards_response = [board.to_dict() for board in boards]
+
+    return jsonify(boards_response), 200
 
 # Delete board
 @boards_bp.route("/<id>", methods=["DELETE"])
@@ -46,3 +45,6 @@ def delete_board(id):
     db.session.commit()
 
     return jsonify({"details": f'board id:{id}, title:{board.title}, owner:{board.owner} successfully deleted'}), 200
+
+# GET boards/board_id/cards
+# POST boards/board_id/cards
