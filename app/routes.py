@@ -8,21 +8,20 @@ import requests
 board_bp = Blueprint("board_bp", __name__, url_prefix="/boards")
 card_bp = Blueprint("card_bp", __name__, url_prefix="/cards")
 
+
 def validate_board(board_id):
     try:
         board = int(board_id)
     except ValueError:
-        response = {"msg":f"Invalid id: {board_id}"}
+        response = {"msg": f"Invalid id: {board_id}"}
         abort(make_response(jsonify(response), 400))
     chosen_board = Board.query.get(board_id)
 
     if chosen_board is None:
-        response = {"msg":f"Could not find board with id #{board_id}"}
+        response = {"msg": f"Could not find board with id #{board_id}"}
         abort(make_response(jsonify(response), 400))
     return chosen_board
 
-
-@board_bp.route("", methods = ["GET"])
 
 @board_bp.route("", methods=["GET"])
 def get_all_boards():
@@ -51,31 +50,34 @@ def create_one_board():
     response = {"board": {"title": new_board.title, "owner": new_board.owner}}
     return jsonify(response), 201
 
-@board_bp.route("/<board_id>", methods = ["GET"])
+
+@board_bp.route("/<board_id>", methods=["GET"])
 def get_one_board(board_id):
     chosen_board = validate_board(board_id)
-    response = {"board":{
+    response = {"board": {
         "id": chosen_board.board_id,
         "title": chosen_board.title,
         "owner": chosen_board.owner,
     }}
     return jsonify(response), 200
 
-@board_bp.route("/<board_id>/cards", methods = ["GET"])
+
+@board_bp.route("/<board_id>/cards", methods=["GET"])
 def get_cards_from_one_board(board_id):
     chosen_board = validate_board(board_id)
     response = {
         "board_id": chosen_board.board_id,
         "board_title": chosen_board.title,
-        "cards":[]
+        "cards": []
     }
     for card in chosen_board.cards:
         response["cards"].append({
-            "card_id":card.card_id,
-            "board_id":chosen_board.board_id,
-            "message":card.message
+            "card_id": card.card_id,
+            "board_id": chosen_board.board_id,
+            "message": card.message
         })
     return jsonify(response), 200
+
 
 @board_bp.route("/<board_id>/cards", methods=["POST"])
 def create_one_card(board_id):
@@ -90,8 +92,6 @@ def create_one_card(board_id):
         return {"msg": "Invalid input"}, 400
     db.session.add(new_card)
     db.session.commit()
-    response = {"card":{"message":new_card.message, "id": new_card.card_id}}
-    return jsonify(response), 201
     response = {"card": {"message": new_card.message, "id": new_card.card_id}}
     return jsonify(response), 201
 
@@ -104,6 +104,7 @@ def update_card_likecount(card_id):
 
     response = {"msg": f"update like count to {card.likes_count}"}
     return jsonify(response), 200
+
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_one_card(card_id):
