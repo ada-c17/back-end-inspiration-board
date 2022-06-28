@@ -1,6 +1,9 @@
-from flask import Blueprint, request, jsonify, make_response
-from app import db
+from flask import Blueprint, request, jsonify, make_response, abort
 from app.models.board import Board
+from app import db
+from sqlalchemy import asc, desc
+
+
 
 # example_bp = Blueprint('example_bp', __name__)
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
@@ -20,9 +23,9 @@ def get_all_boards():
 
 
 #get one board using Get in routes and accessing by id
-@boards_bp.routes("/<board_id>", methods= ["GET"])
+@boards_bp.route("/<board_id>", methods= ["GET"])
 def get_one_board(board_id):
-    board = validate_board(board_id)
+    board = get_board_or_abort(board_id)
     if board.card_id:
         response = {"board":{
             "id": board.board_id,
@@ -34,3 +37,17 @@ def get_one_board(board_id):
     else:
         response = {"board":board.to_dict_board()}
     return jsonify(response), 200
+
+
+def get_board_or_abort(board_id):
+    try:
+        board_id = int(board_id)
+    except ValueError:
+        abort(make_response({"message": f"The task id {board_id} is invalid. The id must be integer."}, 400))
+    
+    boards = Board.query.all()
+    for board in boards:
+        if board.id == board_id:
+            return board
+    abort(make_response({"message": f"The task id {board_id} is not found"}, 404))
+
