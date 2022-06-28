@@ -1,11 +1,10 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 
 from app.models.board import Board
-# from .routes import validate_card
+from .card_routes import validate_card
 
 from datetime import datetime
-# example_bp = Blueprint('example_bp', __name__)
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
@@ -79,23 +78,33 @@ def read_all_boards():
 @boards_bp.route("/<id>", methods=["GET"])
 def get_board_by_id(id):
     board = validate_board(id)
-
-    # NOTE: Flask will automatically convert a dictionary into an HTTP response body. 
-    # If we don't want to remember this exception, we can call jsonify() with the dictionary as an argument to return the result
+   
     return jsonify({"board": board.to_dict()}), 200
-    # return make_response(jsonify({"board": board.to_dict()}), 201)
 
-# *************Could alternatively use a hash to look things up by id.  ...need to practice this later. 
 
-@boards_bp.route("/<id>", methods=['PUT'])
-def update_board(id):
-    board = validate_board(id)
 
-    request_body = request.get_json()
+# @boards_bp.route("/<id>", methods=['PUT'])
+# def update_board(id):
+#     board = validate_board(id)
 
-    board.update(request_body)
-    db.session.commit()
-    return jsonify({"board": board.to_dict()}), 200
+#     request_body = request.get_json()
+
+#     board.update(request_body)
+#     db.session.commit()
+#     return jsonify({"board": board.to_dict()}), 200
+# #########   
+# # PATCH a board at endpoint: boards/id  #Remember PATCH is just altering one or some attributes whereas PUT replaces a record. 
+# @boards_bp.route("/<id>", methods=["PATCH"])
+# def update_one_board(id):
+#     board = validate_board(id)
+#     request_body = request.get_json()
+#     board_keys = request_body.keys()
+
+#     if "title" in board_keys:
+#         board.title = request_body["title"]
+
+#     db.session.commit()
+#     return make_response(f"Board# {board.board_id} successfully updated"), 200
     
 # DELETE /boards/id
 @boards_bp.route("<id>", methods=['DELETE'])
@@ -123,42 +132,6 @@ def validate_board(id):
         abort(make_response(jsonify("board not found"), 404))
 
     
-#########   
-# PATCH a board at endpoint: boards/id  #Remember PATCH is just altering one or some attributes whereas PUT replaces a record. 
-@boards_bp.route("/<id>", methods=["PATCH"])
-def update_one_board(id):
-    board = validate_board(id)
-    request_body = request.get_json()
-    board_keys = request_body.keys()
-
-    if "title" in board_keys:
-        board.title = request_body["title"]
-
-    db.session.commit()
-    return make_response(f"Board# {board.board_id} successfully updated"), 200
-
-# PATCH a board at endpoint: boards/id/mark_complete 
-@boards_bp.route("/<id>/mark_complete", methods=["PATCH"])
-def mark_complete(id):
-    board = validate_board(id)
-    
-    # if board.completed_at:
-    board.completed_at = datetime.utcnow()
-
-    db.session.commit()
-
-    return make_response(jsonify({"board": board.to_dict()}), 200)
-
-# PATCH a board at endpoint: boards/id/mark_incomplete
-@boards_bp.route("/<id>/mark_incomplete", methods=["PATCH"])
-def mark_incomplete(id):
-    board = validate_board(id)
-
-    board.completed_at = None
-
-    db.session.commit()
-    return make_response(jsonify({"board": board.to_dict()}), 200)
-
 
 
 
