@@ -7,3 +7,10 @@ class Card(db.Model):
 
     board_id = db.Column(db.Integer, db.ForeignKey("boards.board_id"))
     board = db.relationship("Board", back_populates="cards")
+
+    def to_dict(self):
+        return {
+            "card_id": self.card_id,
+            "message": self.message,
+            "likes_count": self.likes_count
+        }
