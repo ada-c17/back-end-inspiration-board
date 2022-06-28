@@ -5,3 +5,5 @@ class Card(db.Model):
     #nullable means title and description has to be there
     message = db.Column(db.String)
     likes_count = db.Column(db.Integer)
+    board_id = db.Column(db.Integer, db.ForeignKey('board.board_id'), nullable=True)
+    board = db.relationship("Board", back_populates="cards")
