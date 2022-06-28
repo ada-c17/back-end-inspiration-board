@@ -59,3 +59,19 @@ def get_all_cards_on_board(board_id):
 
     response_body = {"board_id": board.board_id, "title": board.title, "cards": list_of_cards}
     return make_response(jsonify(response_body), 200)
+
+@boards_bp.route("/<id>/cards", methods=["POST"])
+def add_card_to_board(id):
+    board = Board.query.get(id)
+
+    if board:
+        request_body = request.get_json()
+
+        new_card = Card(board_id=id,
+                    message=request_body["message"]
+                    )
+        db.session.add(new_card)
+        db.session.commit()
+
+    response_body = {"id": new_card.card_id, "board_id": new_card.board_id, "message": new_card.message}
+    return make_response(jsonify(response_body), 200)
