@@ -46,3 +46,16 @@ def get_board_by_id(board_id):
         return jsonify({
             "details": f"ID {board_id} does not exist"
         }), 404
+
+@boards_bp.route("/<board_id>/cards", methods=["GET"])
+def get_all_cards_on_board(board_id):
+    board = Board.query.get(board_id)
+
+    if board:
+        cards = board.cards
+        list_of_cards = []
+        for card in cards:
+            list_of_cards.append(card.to_dict())
+
+    response_body = {"board_id": board.board_id, "title": board.title, "cards": list_of_cards}
+    return make_response(jsonify(response_body), 200)
