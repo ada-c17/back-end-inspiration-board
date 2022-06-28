@@ -49,6 +49,16 @@ def get_all_boards():
         boards = Board.query.all()
     return jsonify([board.to_dict_board() for board in boards]), 200
 
+@boards_bp.route("<board_id>", methods=["PUT"])
+def update_board(board_id):
+    chosen_board = get_board_or_abort(board_id)
+    request_board = validate_key()
+    chosen_board.title = request_board["title"]
+    chosen_board.owner = request_board["owner"]
+    db.session.add(chosen_board)
+    db.session.commit()
+    return jsonify({"board": chosen_board.to_dict_board()}), 200
+
 
 #get one board using Get in routes and accessing by id
 @boards_bp.route("/<board_id>", methods= ["GET"])
@@ -75,7 +85,7 @@ def get_board_or_abort(board_id):
     
     boards = Board.query.all()
     for board in boards:
-        if board.id == board_id:
+        if board.board_id == board_id:
             return board
     abort(make_response({"message": f"The task id {board_id} is not found"}, 404))
 
