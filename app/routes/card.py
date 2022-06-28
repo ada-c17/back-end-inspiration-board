@@ -12,11 +12,13 @@ def create_new_card():
         message = request_body["message"],
         likes_count = 0
     )
+    db.session.add(new_card)
+    db.session.commit()
 
-    response = make_response(f"New card #{id} successfully created",
+    response = make_response(f"New card #{new_card.card_id} successfully created",
     201)
+    return response
 
-    pass
 
 @cards_bp.route("/<board_id>", methods=["GET"])
 def get_cards_by_board(board_id):
