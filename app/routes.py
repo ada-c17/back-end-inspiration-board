@@ -1,5 +1,6 @@
+from distutils.archive_util import make_archive
 import re
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.card import Card
 from app.models.board import Board
@@ -31,4 +32,19 @@ def create_one_board():
     db.session.add(new_board)
     db.session.commit()
     response = {"board":{"title":new_board.title, "owner": new_board.owner}}
+    return jsonify(response), 201
+
+@board_bp.route("/<board_id>/cards", methods=["POST"])
+def create_one_card(board_id):
+    request_body = request.get_json()
+    try:
+        new_message = request_body["message"]
+        if len(new_message) > 40 or not new_message:
+            abort(make_response(jsonify({"msg": "invalid card message"}), 400))
+        new_card = Card(message=request_body["message"], likes_count=0, board_id=board_id)
+    except KeyError:
+        return {"msg":"Invalid input"}, 400
+    db.session.add(new_card)
+    db.session.commit()
+    response = {"card":{"message":new_card.message, "id": new_card.card_id}}
     return jsonify(response), 201
