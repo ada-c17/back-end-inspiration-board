@@ -59,9 +59,9 @@ def update_one_card(id):
     return make_response(f"Card# {card.card_id} successfully updated"), 200
 
 #QUALITY CONTROL HELPER FUNCTION
-def validate_card(id):
+def validate_card(card_id):
     try:
-        id = int(id)
+        id = int(card_id)
     except ValueError: 
         abort(make_response(jsonify(dict(details=f"invalid id: {id}")), 400))
 
