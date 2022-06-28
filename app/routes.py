@@ -25,3 +25,17 @@ def get_all_boards():
 # @board_bp.route("/<id>", methods=["GET"])
 # def get_one_board(board_id):
 #     chosen_board = Board.query.get(board_id)
+
+@board_bp.route("", methods=["POST"])
+def post_board():
+    request_body = request.get_json()
+    if "title" in request_body and "owner" in request_body:
+        new_board = Board(title=request_body["title"],
+                    owner=request_body["owner"])
+    else:
+        abort(make_response({"details": "Invalid data"}, 400))
+
+    db.session.add(new_board)
+    db.session.commit()
+
+    return make_response({"board": new_board.to_dict()}, 201)
