@@ -22,6 +22,6 @@ def get_all_boards():
     
     return jsonify(response), 200
 
-@board_bp.route("/<id>", methods=["GET"])
-def get_one_board(board_id):
-    chosen_board = Board.query.get(board_id)
+# @board_bp.route("/<id>", methods=["GET"])
+# def get_one_board(board_id):
+#     chosen_board = Board.query.get(board_id)
