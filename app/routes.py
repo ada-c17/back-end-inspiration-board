@@ -1,6 +1,3 @@
-import re
-from socket import J1939_PGN_ADDRESS_COMMANDED
-from attr import validate
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.card import Card
@@ -63,15 +60,29 @@ def get_one_board(board_id):
 def get_cards_from_one_board(board_id):
     chosen_board = validate_board(board_id)
     response = {
-        "id": chosen_board.board_id,
-        "title": chosen_board.title,
+        "board_id": chosen_board.board_id,
+        "board_title": chosen_board.title,
         "cards":[]
     }
     for card in chosen_board.cards:
         response["cards"].append({
             "id":card.card_id,
             "board_id":chosen_board.board_id,
-            "title": card.title,
-            "owner": card.owner,
+            "message":card.message
         })
     return jsonify(response), 200
+
+@board_bp.route("/<board_id>/cards", methods=["POST"])
+def create_one_card(board_id):
+    request_body = request.get_json()
+    try:
+        new_message = request_body["message"]
+        if len(new_message) > 40 or not new_message:
+            abort(make_response(jsonify({"msg": "invalid card message"}), 400))
+        new_card = Card(message=request_body["message"], likes_count=0, board_id=board_id)
+    except KeyError:
+        return {"msg":"Invalid input"}, 400
+    db.session.add(new_card)
+    db.session.commit()
+    response = {"card":{"message":new_card.message, "id": new_card.card_id}}
+    return jsonify(response), 201
