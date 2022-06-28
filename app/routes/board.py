@@ -46,8 +46,21 @@ def create_new_task():
     return jsonify(response), 201
 
 
+@board_bp.route("", methods=["GET"])
+def get_all_boards():
+    response = []
+    boards = Board.query.all()
+    for board in boards:
+        response.append(
+            board.to_dict()
+        )
+    return jsonify(response)
 
 
-
+@board_bp.route("/<board_id>", methods=["GET"])
+def get_one_board(board_id):
+    
+    board = validate_id(board_id)
+    return jsonify(board.to_dict()), 200
 
 
