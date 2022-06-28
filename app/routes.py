@@ -65,7 +65,7 @@ def get_all_cards():
 
 
 @card_bp.route("/<card_id>", methods=["GET"])
-def get_one_board(card_id):
+def get_one_card(card_id):
     chosen_card = Card.query.get(card_id)
     return jsonify(chosen_card.to_dict()), 200
 
@@ -75,6 +75,8 @@ def post_card():
     request_body = request.get_json()
 
     if "message" in request_body:
+        if len(request_body["message"]) > 40:
+            abort(make_response({"details": "Messages cannot be longer than 40 characters"}, 400))
         new_card = Card(message=request_body["message"],
                     likes_count=0)
     else:
