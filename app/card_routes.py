@@ -36,3 +36,7 @@ def like_card(card_id):
 
     card.message = request.body["message"]
     card.likes_count = request.body["likes_count"]
+
+    db.session.commit()
+
+    return jsonify(f"Card #{card_id} liked")
