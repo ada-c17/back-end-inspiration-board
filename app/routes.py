@@ -1,5 +1,5 @@
 from crypt import methods
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
 # example_bp = Blueprint('example_bp', __name__)
@@ -28,4 +28,21 @@ def create_board():
     db.session.commit()
 
     return jsonify({"board":new_board.to_dict()}), 201
-    
+
+
+# Delete board
+@boards_bp.route("/<id>", methods=["DELETE"])
+def delete_board(id):
+    def validate_board(id):
+        board = Board.query.get(id)
+
+        if not board:
+            abort(make_response({"message": f"board {id} not found"}, 404))
+
+        return board
+    board = validate_board(id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return jsonify({"details": f'board id:{id}, title:{board.title}, owner:{board.owner} successfully deleted'}), 200
