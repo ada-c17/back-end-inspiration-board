@@ -33,7 +33,7 @@ def create_card_for_board(board_id):
     
     cards_list = []
 
-    for card_id in request_body["card_ids"]:
+    for card_id in request_body["card_id"]:
         card = validate_card(card_id)
         card.board = board 
         cards_list.append(card.card_id)

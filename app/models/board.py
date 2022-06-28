@@ -8,9 +8,9 @@ class Board(db.Model):
 
     def to_dict(self):
         return {
-            "card_id": self.card_id,
-            "message": self.message,
-            "likes_count": self.likes_count
+            "board_id": self.board_id,
+            "title": self.title,
+            "owner": self.owner
             }
 
     @classmethod
