@@ -24,9 +24,12 @@ def list_all_boards():
 def create_board():
     request_body = request.get_json()
     try:
-        new_board = Board(title=request_body['title'], owner=request_body['owner'])
+        new_board = Board(
+            title=request_body['title'], 
+            owner=request_body['owner']
+            )
     except:
-        abort(make_response({'details':f'Invalid data'}, 400))
+        abort(make_response({'details': f'Invalid data'}, 400))
         
     db.session.add(new_board)
     db.session.commit()
