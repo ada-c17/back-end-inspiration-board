@@ -3,7 +3,7 @@ from app import db
 
 from app.models.board import Board
 from app.models.card import Card
-from .card_routes import validate_card
+from .card_routes import create_card, validate_card
 
 from datetime import datetime
 
@@ -28,19 +28,22 @@ def create_board():
 #app/board_routes.py
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
 def create_card_for_board(board_id):
-    board = validate_board(board_id)
-    request_body = request.get_json()
+    board = validate_board(board_id)   
     
-    cards_list = []
+    request_body = request.get_json()
+    new_card = create_card(request_body)
+    card_id = new_card.card_id
 
-    for card_id in request_body["card_id"]:
-        card = validate_card(card_id)
-        card.board = board 
-        cards_list.append(card.card_id)
+    cards_list = []
+    card = validate_card(card_id)
+    
+    
+    card.board = board 
+    cards_list.append(card.card_id)
 
     db.session.commit()
 
-    return make_response(jsonify(dict(id=board.board_id, card_ids=cards_list))), 200
+    return make_response(jsonify(dict(id=board.board_id, cards=cards_list))), 200
     # return make_response(jsonify(f"id: {card.title} for Board: {card.board.title} successfully created"), 200)
 
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
