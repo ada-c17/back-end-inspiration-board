@@ -5,15 +5,6 @@ from app.models.card import Card
 
 card_bp = Blueprint("card_bp", __name__, url_prefix="/cards")
 
-#Validation of cards helper function
-def validate_card(card_id):
-    card_id-int(card_id)
-    cards = Card.query.all()
-    for card in cards:
-        if card_id==cards.card_id:
-            return card
-    abort(make_response({'details': 'This card does not exist'}, 404))
-
 
 def validate_card(card_id):
     try:
