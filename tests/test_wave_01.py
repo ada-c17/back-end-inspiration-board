@@ -75,7 +75,7 @@ def test_create_card(client):
         "message": "I believe in you!",
         "likes_count": 0,
         }
-    }
+    
     new_card = Card.query.get(1)
     assert new_card
     assert new_card.title == "I believe in you!"
