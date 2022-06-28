@@ -10,4 +10,11 @@ class Card(db.Model):
 	def update(self, request_body):
 		self.message = request_body["message"]
 		self.likes_count = request_body["likes_count"]
+
+	def to_json(self):
+		return {"id": self.card_id,
+                "message": self.message,
+                "likes_count": self.likes_count,
+                "board_id": self.board_id}
+    
             
