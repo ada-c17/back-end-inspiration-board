@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
 from app.models.card import Card
@@ -22,13 +22,15 @@ def get_all_boards():
     
     return jsonify(response), 200
 
-# @board_bp.route("/<id>", methods=["GET"])
-# def get_one_board(board_id):
-#     chosen_board = Board.query.get(board_id)
+@board_bp.route("/<board_id>", methods=["GET"])
+def get_one_board(board_id):
+    chosen_board = Board.query.get(board_id)
+    return jsonify(chosen_board.to_dict()), 200
 
 @board_bp.route("", methods=["POST"])
 def post_board():
     request_body = request.get_json()
+
     if "title" in request_body and "owner" in request_body:
         new_board = Board(title=request_body["title"],
                     owner=request_body["owner"])
