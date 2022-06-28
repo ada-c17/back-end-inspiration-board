@@ -18,7 +18,7 @@ def get_cards():
     cards_response = []
     for card in cards:
         cards_response.append(
-            {"id":card.cards_id,
+            {"id":card.card_id,
              "message": card.message,
              "likes_count": card.likes_count
              })
