@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify, make_response, abort
 from app.models.board import Board
 from app import db
+from sqlalchemy import asc, desc
 
 
-# example_bp = Blueprint('example_bp', __name__)
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
 def validate_key():
@@ -58,18 +58,6 @@ def get_all_boards():
 def get_one_board(board_id):
     board = validate_board(board_id)
     return jsonify({"board":board.to_dict_board()}), 200
-    # if board.card_id:
-    #     response = {"board":{
-    #         "id": board.board_id,
-    #         # "card_id": board.card_id,
-    #         "title": board.title,
-    #         "owner": board.owner
-    #     }
-    # }
-    # else:
-    #     response = {"board":board.to_dict_board()}
-    # return jsonify(response), 200
-
 
 # validating board and using as a helper function 
 def validate_board(board_id):
