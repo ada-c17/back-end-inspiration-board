@@ -105,6 +105,7 @@ def post_card():
 
     return make_response(new_card.to_dict(), 201)
 
+
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_one_card(card_id):
     card = validate_id(card_id, "card")
@@ -113,11 +114,10 @@ def delete_one_card(card_id):
     return {"message" : f'Card {card_id} successfully deleted'}, 200
 
 
-
 @card_bp.route("/<card_id>/like", methods=["PATCH"])
 def update_card_likes(card_id):
-    chosen_card = Card.query.get(card_id)
-    chosen_card.likes_count += 1
+    card = validate_id(card_id, "card")
+    card.likes_count += 1
     db.session.commit()
-    return jsonify({'msg': f'updated like count for card with id {card_id}. Likes now at {chosen_card.likes_count}'}), 200
+    return jsonify({'msg': f'updated like count for card with id {card_id}. Likes now at {card.likes_count}'}), 200
 
