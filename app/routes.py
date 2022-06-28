@@ -54,10 +54,7 @@ def post_board():
 @card_bp.route("", methods=["GET"])
 def get_all_cards():
     cards = Card.query.all()
-    response = []
-    for card in cards:
-        response.append(card.to_dict())
-    return jsonify(response), 200
+    return jsonify([card.to_dict for card in cards]), 200
 
 
 @card_bp.route("/<card_id>", methods=["GET"])
