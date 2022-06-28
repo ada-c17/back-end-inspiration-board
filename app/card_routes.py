@@ -13,6 +13,11 @@ def create_one_card_for_a_board(my_board_id):
             {
                 "details": "Please enter a card message!"
             }), 400
+    elif len(request_body["message"]) > 40:
+        return jsonify(
+            {
+                "details": "Please enter a message that is less than 40 characters!"
+            }), 400
     elif "likes_count" not in request_body:
         new_card = Card(message=request_body["message"], likes_count = 0, board_id = my_board_id)
     else:
