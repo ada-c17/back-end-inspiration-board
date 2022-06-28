@@ -75,9 +75,9 @@ def get_one_board(card_id):
 def post_card():
     request_body = request.get_json()
 
-    if "message" in request_body and "likes_count" in request_body:
+    if "message" in request_body:
         new_card = Card(message=request_body["message"],
-                    likes_count=request_body["likes_count"])
+                    likes_count=0)
     else:
         abort(make_response({"details": "Invalid data"}, 400))
 
