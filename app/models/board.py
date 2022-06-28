@@ -5,3 +5,4 @@ class Board(db.Model):
     #nullable means title and description has to be there
     title = db.Column(db.String)
     owner = db.Column(db.String)
+    cards = db.relationship("Card", back_populates="card", lazy = True)
