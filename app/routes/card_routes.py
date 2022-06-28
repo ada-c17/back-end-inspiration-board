@@ -12,7 +12,7 @@ cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 @cards_bp.route("", methods=["POST"])
 def create_card():
     request_body = request.get_json()
-    if "title" not in request_body or "description" not in request_body:
+    if "message" not in request_body:
         return make_response(jsonify(dict(details="Invalid data")), 400)
     
     new_card = Card.create(request_body)

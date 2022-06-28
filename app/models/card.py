@@ -14,3 +14,9 @@ class Card(db.Model):
             "message": self.message,
             "likes_count": self.likes_count
         }
+
+@classmethod
+def create(cls, request_body):
+    return cls(
+        message=request_body["message"]
+        )
