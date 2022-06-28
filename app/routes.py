@@ -50,12 +50,13 @@ def post_board():
     db.session.add(new_board)
     db.session.commit()
 
-    return make_response({"board": new_board.to_dict()}, 201)
+    return make_response(new_board.to_dict(), 201)
 
 
 
 ##### [3] CARD ENDPOINTS ############################################
 
+@card_bp.route("", methods=["GET"])
 def get_all_cards():
     cards = Card.query.all()
     response = []
@@ -85,7 +86,7 @@ def post_card():
     db.session.add(new_card)
     db.session.commit()
 
-    return make_response({"card": new_card.to_dict()}, 201)
+    return make_response(new_card.to_dict(), 201)
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_one_card(card_id):
@@ -94,6 +95,6 @@ def delete_one_card(card_id):
     db.session.commit()
     return {
         "message" : f'Card {card_id} successfully deleted'
-    }
+    }, 200
 
 
