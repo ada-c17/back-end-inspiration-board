@@ -86,3 +86,13 @@ def post_card():
 
     return make_response({"card": new_card.to_dict()}, 201)
 
+@card_bp.route("/<card_id>", methods=["DELETE"])
+def delete_one_card(card_id):
+    chosen_card = Card.query.get(card_id)
+    db.session.delete(chosen_card)
+    db.session.commit()
+    return {
+        "message" : f'Card {card_id} successfully deleted'
+    }
+
+
