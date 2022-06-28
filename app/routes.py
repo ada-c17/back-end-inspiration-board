@@ -49,7 +49,7 @@ def get_all_cards():
     return jsonify(response), 200
 
 @card_bp.route("/<card_id>", methods=["GET"])
-def get_one_board(card_id):
+def get_one_card(card_id):
     chosen_card = Card.query.get(card_id)
     return jsonify(chosen_card.to_dict()), 200
 
