@@ -36,7 +36,6 @@ def validate_card(id):
 
     return card
 
-
 # DELETE
 @cards_bp.route("/<id>", methods=["DELETE"])
 def delete_card(id):
