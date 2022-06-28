@@ -3,11 +3,24 @@ from app import db
 from app.models.board import Board
 from app.models.card import Card
 
-# example_bp = Blueprint('example_bp', __name__)
+
+##### TABLE OF CONTENTS #############################################
+#   [0] IMPORTS
+#   [1] BLUEPRINT DEFINITIONS
+#   [2] BOARD ENDPOINTS
+#   [3] CARD ENDPOINTS
+
+
+
+##### [1] BLUEPRINT DEFINITIONS #####################################
+
 board_bp = Blueprint('board_bp', __name__, url_prefix='/boards')
 card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
 
-#read: view list of all boards; select a board
+
+
+##### [2] BOARD ENDPOINTS ###########################################
+
 @board_bp.route("", methods=["GET"])
 def get_all_boards():
     boards = Board.query.all()
@@ -18,10 +31,12 @@ def get_all_boards():
     
     return jsonify(response), 200
 
+
 @board_bp.route("/<board_id>", methods=["GET"])
 def get_one_board(board_id):
     chosen_board = Board.query.get(board_id)
     return jsonify(chosen_board.to_dict()), 200
+
 
 @board_bp.route("", methods=["POST"])
 def post_board():
@@ -39,8 +54,9 @@ def post_board():
     return make_response({"board": new_board.to_dict()}, 201)
 
 
-#read: view list of all cards; select a card
-@card_bp.route("", methods=["GET"])
+
+##### [3] CARD ENDPOINTS ############################################
+
 def get_all_cards():
     cards = Card.query.all()
     response = []
@@ -48,10 +64,12 @@ def get_all_cards():
         response.append(card.to_dict())
     return jsonify(response), 200
 
+
 @card_bp.route("/<card_id>", methods=["GET"])
 def get_one_board(card_id):
     chosen_card = Card.query.get(card_id)
     return jsonify(chosen_card.to_dict()), 200
+
 
 @card_bp.route("", methods=["POST"])
 def post_card():
@@ -67,3 +85,4 @@ def post_card():
     db.session.commit()
 
     return make_response({"card": new_card.to_dict()}, 201)
+
