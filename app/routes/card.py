@@ -40,12 +40,12 @@ def create_new_card():
         board_id = request_body["board_id"],
         likes_count = 0
     )
+    
     db.session.add(new_card)
     db.session.commit()
 
-    response = make_response(f"New card #{new_card.card_id} successfully created",
-    201)
-    return response
+    confirmation_msg = jsonify(f"New card #{new_card.card_id} successfully created")
+    return make_response(confirmation_msg, 201)
 
 
 @cards_bp.route("/board/<board_id>", methods=["GET"])
@@ -57,7 +57,8 @@ def get_cards_by_board(board_id):
     for card in cards:
         response_msg.append(card.to_dict())
 
-    return make_response(jsonify(response_msg), 200)
+    response_msg = jsonify(response_msg)
+    return make_response(response_msg, 200)
 
 @cards_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card_by_id(card_id):
@@ -66,12 +67,17 @@ def delete_card_by_id(card_id):
     db.session.delete(active_card)
     db.session.commit()
 
-    confirmation_msg = {"details": f"Card {card_id} successfully deleted."}
-    return make_response(jsonify(confirmation_msg), 200)
+    confirmation_msg = jsonify({"details": f"Card {card_id} successfully deleted."})
+    return make_response(confirmation_msg, 200)
 
 @cards_bp.route("/<card_id>/like", methods=["PATCH"])
 def like_card_by_id(card_id):
-    pass
+    active_card = handle_id_request(card_id, Card)
+    active_card.likes_count = active_card.likes_count + 1
+    db.session.commit()
+
+    confirmation_msg = jsonify({"card": active_card.to_dict()})
+    return(make_response(confirmation_msg, 200))
 
 #### OPTIONAL: Separate like/unlike patch routes?
 @cards_bp.route("/<card_id>/unlike", methods=["PATCH"])
