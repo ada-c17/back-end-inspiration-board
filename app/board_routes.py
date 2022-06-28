@@ -27,24 +27,27 @@ def get_board_or_abort(board_id):
 
 @boards_bp.route("", methods=["POST"])
 def create_board():
-    request_board = validate_key()
+    request_body = request.get_json()
+    if "title" not in request_body or "owner" not in request_body:
+        return jsonify({"details": "Invalid data"}), 400
+
     new_board = Board(
-        title = request_board["title"],
-        owner = request_board["owner"]
+        title = request_body["title"],
+        owner = request_body["owner"]
     )
 
     db.session.add(new_board)
     db.session.commit()
     return jsonify({"board": new_board.to_dict_board()}), 201
 
-#get all elements 
+# get all elements 
 @boards_bp.route("", methods = ["GET"])
 def get_all_boards():
     sort_query = request.args.get("sort")
     if sort_query == "asc":
-        boards = Board.query.order_by(asc(Task.title))
+        boards = Board.query.order_by(asc(Board.title))
     elif sort_query == "desc":
-        boards = Board.query.order_by(desc(Task.title))
+        boards = Board.query.order_by(desc(Board.title))
     else:
         boards = Board.query.all()
     return jsonify([board.to_dict_board() for board in boards]), 200
@@ -63,21 +66,23 @@ def update_board(board_id):
 #get one board using Get in routes and accessing by id
 @boards_bp.route("/<board_id>", methods= ["GET"])
 def get_one_board(board_id):
-    board = get_board_or_abort(board_id)
-    if board.card_id:
-        response = {"board":{
-            "id": board.board_id,
-            "card_id": board.card_id,
-            "title": board.title,
-            "owner": board.owner
-        }
-    }
-    else:
-        response = {"board":board.to_dict_board()}
-    return jsonify(response), 200
+    board = validate_board(board_id)
+    return jsonify({"board":board.to_dict_board()}), 200
+    # if board.card_id:
+    #     response = {"board":{
+    #         "id": board.board_id,
+    #         # "card_id": board.card_id,
+    #         "title": board.title,
+    #         "owner": board.owner
+    #     }
+    # }
+    # else:
+    #     response = {"board":board.to_dict_board()}
+    # return jsonify(response), 200
 
 
-def get_board_or_abort(board_id):
+# validating board and using as a helper function 
+def validate_board(board_id):
     try:
         board_id = int(board_id)
     except ValueError:
