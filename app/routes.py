@@ -12,12 +12,16 @@ card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
     #see error message if title or owner is blank/empty/invalid/missing
 
 #read: view list of all boards; select a board
-# @board_bp.route("", methods=["GET"])
-# def get_all_boards():
-#     boards = Board.query.all()
+@board_bp.route("", methods=["GET"])
+def get_all_boards():
+    boards = Board.query.all()
 
-#     boards_response = []
-#     for board in boards:
-#         boards_response.append(board.to_dict())
+    response = []
+    for board in boards:
+        response.append(board.to_dict())
     
-#     return jsonify(boards_response)
+    return jsonify(response), 200
+
+@board_bp.route("/<id>", methods=["GET"])
+def get_one_board(board_id):
+    chosen_board = Board.query.get(board_id)
