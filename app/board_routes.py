@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
@@ -7,7 +8,20 @@ board_bp = Blueprint('boards', __name__, url_prefix="/boards")
 @board_bp.route("", methods=["POST"])
 def create_board():
     request_body = request.get_json()
-    new_board = Board(title=request_body["title"], owner=request_body["owner"])
+
+    if "owner" not in request_body:
+        return jsonify(
+            {
+                "details": "Please provide owner information!"
+            }), 400
+    if "title" not in request_body:
+        return jsonify(
+            {
+                "details": "Please provide title!"
+            }), 400
+
+    else:
+        new_board = Board(title=request_body["title"], owner=request_body["owner"])
 
     db.session.add(new_board)
     db.session.commit()
@@ -53,18 +67,18 @@ def read_one_board(board_id):
         "owner": board.owner
     }
 
-@board_bp.route("/<board_id>", methods=["PATCH"])
-def update_board(board_id):
-    board = validate_board(board_id)
+# @board_bp.route("/<board_id>", methods=["PATCH"])
+# def update_board(board_id):
+#     board = validate_board(board_id)
 
-    request_body = request.get_json()
+#     request_body = request.get_json()
 
-    board.title = request_body["title"]
-    board.owner = request_body["owner"]
+#     board.title = request_body["title"]
+#     board.owner = request_body["owner"]
 
-    db.session.commit()
+#     db.session.commit()
 
-    return make_response(jsonify(f"Board #{board.board_id} successfully updated"))
+#     return make_response(jsonify(f"Board #{board.board_id} successfully updated"))
 
 
 @board_bp.route("/<board_id>", methods=["DELETE"])
@@ -73,7 +87,5 @@ def delete_board(board_id):
 
     db.session.delete(board)
     db.session.commit()
-
-    # board_deleted = f"Board {board.title} with id {board.board_id} successfully deleted"
 
     return make_response(jsonify(f"Board {board.title} with id #{board.board_id} successfully deleted"))
