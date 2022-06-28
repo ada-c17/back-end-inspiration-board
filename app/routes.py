@@ -15,12 +15,7 @@ card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
 @board_bp.route("", methods=["GET"])
 def get_all_boards():
     boards = Board.query.all()
-
-    response = []
-    for board in boards:
-        response.append(board.to_dict())
-    
-    return jsonify(response), 200
+    return jsonify([board.to_dict() for board in boards]), 200
 
 @board_bp.route("/<board_id>", methods=["GET"])
 def get_one_board(board_id):
