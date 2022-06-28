@@ -5,9 +5,24 @@ from sqlalchemy import asc, desc
 
 
 
+
 # example_bp = Blueprint('example_bp', __name__)
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
+@boards_bp.route("", methods=["POST"])
+def create_board():
+    request_body = request.get_json()
+    if "title" not in request_board or "owner" not in request_board:
+        return jsonify({"details": "Invalid data"}), 400
+
+    new_board = Board(
+        title = request_board["title"],
+        owner = request_board["owner"]
+    )
+
+    db.session.add(new_board)
+    db.session.commit()
+    return jsonify({"board": new_board.to_dict_board()}), 201
 
 #get all elements 
 @boards_bp.route("", methods = ["GET"])
@@ -50,4 +65,8 @@ def get_board_or_abort(board_id):
         if board.id == board_id:
             return board
     abort(make_response({"message": f"The task id {board_id} is not found"}, 404))
+
+
+
+
 
