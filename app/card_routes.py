@@ -8,6 +8,7 @@ card_bp = Blueprint('cards', __name__, url_prefix="/boards/<my_board_id>/cards")
 @card_bp.route("", methods=["POST"])
 def create_one_card_for_a_board(my_board_id):
     request_body = request.get_json()
+    board = validate_and_return_item(Board, my_board_id)
     if "message" not in request_body:
         return jsonify(
             {
@@ -58,6 +59,7 @@ def validate_and_return_item(cls, item_id):
 @card_bp.route("/<card_id>/likes", methods=["PATCH"])
 def increase_number_of_likes_with_id(my_board_id, card_id):
     card = validate_and_return_item(Card, card_id)
+    board = validate_and_return_item(Board, my_board_id)
 
     card.likes_count = card.likes_count + 1
 
