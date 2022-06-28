@@ -36,6 +36,16 @@ def get_all_boards():
         )
     return jsonify(response)
 
+@boards_bp.route("/<board_id>", methods=["GET"])
+def get_one_board(board_id):
+    board = validate(Board, board_id)
+    response = {
+                "id": board.board_id,
+                "title": board.title,
+                "owner": board.owner
+            }
+    return jsonify(response)
+
 @boards_bp.route("/<board_id>", methods=["PUT"])
 def update_board(board_id):
     board = validate(Board, board_id)
