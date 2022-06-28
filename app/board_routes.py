@@ -12,7 +12,7 @@ def create_board():
     db.session.add(new_board)
     db.session.commit()
 
-    return make_response(jsonify(f"Board {new_board.title} with id {new_board.board_id} succesfully created", 201))
+    return make_response(jsonify(f"Board {new_board.title} with id {new_board.board_id} succesfully created"), 201)
 
 @board_bp.route("", methods=["GET"])
 def read_all_boards():
@@ -23,6 +23,7 @@ def read_all_boards():
     for board in boards:
         boards_response.append(
             {
+                "board_id": board.board_id,
                 "title": board.title,
                 "owner": board.owner
             }
@@ -47,12 +48,12 @@ def read_one_board(board_id):
 
     board = validate_board(board_id)
     return {
-        "id": board.board_id,
+        "board_id": board.board_id,
         "title": board.title,
         "owner": board.owner
     }
 
-@board_bp.route("/<board_id>", methods=["PUT"])
+@board_bp.route("/<board_id>", methods=["PATCH"])
 def update_board(board_id):
     board = validate_board(board_id)
 
@@ -73,6 +74,6 @@ def delete_board(board_id):
     db.session.delete(board)
     db.session.commit()
 
-    board_deleted = f"Board {board.title} with id {board.board_id} successfully deleted"
+    # board_deleted = f"Board {board.title} with id {board.board_id} successfully deleted"
 
     return make_response(jsonify(f"Board {board.title} with id #{board.board_id} successfully deleted"))
