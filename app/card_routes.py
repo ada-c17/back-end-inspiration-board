@@ -21,8 +21,40 @@ def validate_card(card_id):
 
 
 # GET /boards/<board_id>/cards
+@card_bp.route('/boards/<board_id>/cards', methods=['GET'])
+def get_all_cards_for_specific_board(board_id):
+    board = validate_board(board_id)
+
+    card_list = []
+
+    for card in board.cards:
+        card_list.append(card.to_dict())
+
+    return jsonify({
+        'id': board.board_id,
+        'message': board.message
+    }), 200
+
 
 # POST /boards/<board_id>/cards
+@card_bp.route('/boards/<board_id>/cards', methods=['POST'])
+def assign_cards_to_board(board_id):
+    board = validate_board(board_id)
+
+    request_body = request.get_json()
+
+    card_list = request_body["card_ids"]
+
+    for card in card_list:
+        valid_card = validate_card(card)
+        board.cards.append(valid_card)
+    db.session.commit()
+
+    return jsonify({
+        'id': board.board_id,
+        'card_ids': card_list
+    }), 200
+
 
 # DELETE /cards/<card_id>
 @card_bp.route('/<card_id>', methods=['DELETE'])
