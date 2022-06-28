@@ -23,7 +23,7 @@ def validate_id(card_id):
 
 
 @card_bp.route("", methods=["POST"])
-def create_new_task():
+def create_new_card():
     request_body = request.get_json()
 
     try:
@@ -34,8 +34,8 @@ def create_new_task():
 
     new_card = Card(
         board_id=request_body["board_id"],
-        message=request_body["message"],
-        #likes_count = request_body["likes_count"]
+        message=request_body["message"]
+        # likes_count = request_body["likes_count"]
     )
     
     db.session.add(new_card)
@@ -52,4 +52,32 @@ def get_all_cards():
         response.append(
             card.to_dict()
         )
-    return jsonify(response)
+    return jsonify(response),200
+
+@card_bp.route("/<card_id>", methods=["GET"])
+def get_one_card(card_id):
+    chosen_card = validate_id(card_id)
+    response = {"card": chosen_card.to_dict()}
+    return jsonify(response), 200
+
+@card_bp.route("/<card_id>", methods=["DELETE"])
+def delete_one_card(card_id):
+    try:
+        card_id = int(card_id)
+    except ValueError:
+        return (
+            jsonify({"msg": f"Invalid card id: '{card_id}'. ID must be an integer"}),
+            400,
+        )
+
+    card = Card.query.get(card_id)
+
+    if card is None:
+        return jsonify({"msg": f"Could not find card with id {card_id}"}), 404
+
+    db.session.delete(card)
+    db.session.commit()
+
+    rsp = {"details": f'Card {card_id} successfully deleted'}
+
+    return jsonify(rsp), 200
