@@ -1,13 +1,14 @@
+from curses import BUTTON4_RELEASED
 from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.board import Board
-# from .helpers import validate_model_instance
+from .helpers import validate_model_instance
 
 # example_bp = Blueprint('example_bp', __name__)
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
-#CREATE BOARDS
+#CREATE one board
 @boards_bp.route("", methods=["POST"])
 def create_board():
     request_body = request.get_json()
@@ -27,3 +28,18 @@ def read_board():
     boards_response = [board.to_json() for board in Boards]
         
     return jsonify(boards_response), 200
+
+#GET one board
+@boards_bp.route("/<board_id>", methods=["GET"])
+def get_one_board(board_id):
+    board = validate_model_instance(Board, board_id, "board")
+    return jsonify({"board": board.to_json()}), 200
+
+#DELETE A BOARD
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board(board_id):
+    board = validate_model_instance(Board, board_id, "board")
+    db.session.delete(board)
+    db.session.commit()
+
+    return jsonify({"details":f'Board {board_id} "{board.title}" successfully deleted'} ), 200

@@ -17,7 +17,7 @@ class Board(db.Model):
     @classmethod
     def from_json(cls, request_body):
 
-        if ("title" or "owner") not in request_body:
+        if "title" not in request_body or "owner" not in request_body:
             abort(make_response({"details": "Invalid data"}, 400))
 
         new_goal = cls(
