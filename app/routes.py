@@ -51,3 +51,23 @@ def get_all_cards():
     for card in cards:
         response.append(card.to_dict())
     return jsonify(response), 200
+
+@card_bp.route("/<card_id>", methods=["GET"])
+def get_one_board(card_id):
+    chosen_card = Card.query.get(card_id)
+    return jsonify(chosen_card.to_dict()), 200
+
+@board_bp.route("", methods=["POST"])
+def post_card():
+    request_body = request.get_json()
+
+    if "message" in request_body and "likes_count" in request_body:
+        new_card = Card(message=request_body["message"],
+                    likes_count=request_body["likes_count"])
+    else:
+        abort(make_response({"details": "Invalid data"}, 400))
+
+    db.session.add(new_card)
+    db.session.commit()
+
+    return make_response({"card": new_card.to_dict()}, 201)
