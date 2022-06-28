@@ -5,18 +5,17 @@ from app.models.card import Card
 
 
 ##### TABLE OF CONTENTS #############################################
+
 #   [0] IMPORTS
 #   [1] BLUEPRINT DEFINITIONS
 #   [2] BOARD ENDPOINTS
 #   [3] CARD ENDPOINTS
 
 
-
 ##### [1] BLUEPRINT DEFINITIONS #####################################
 
 board_bp = Blueprint('board_bp', __name__, url_prefix='/boards')
 card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
-
 
 
 ##### [2] BOARD ENDPOINTS ###########################################
