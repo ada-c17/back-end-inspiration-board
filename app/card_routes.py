@@ -4,6 +4,8 @@ from app.models.card import Card
 
 card_bp = Blueprint("card_bp", __name__, url_prefix="/cards")
 
+# Validate card_id
+
 
 def validate_card(card_id):
     try:
@@ -26,3 +28,11 @@ def validate_card(card_id):
 # DELETE /cards/<card_id>
 
 # PUT /cards/<card_id>/like
+@card_bp.route("/<card_id>", methods=["PUT"])
+def like_card(card_id):
+    card = validate_card(card_id)
+
+    request_body = request.get_json()
+
+    card.message = request.body["message"]
+    card.likes_count = request.body["likes_count"]
