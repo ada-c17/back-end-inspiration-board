@@ -2,9 +2,9 @@ from flask import Blueprint, request, jsonify, make_response, abort
 from app.models.board import Board
 from sqlalchemy import asc, desc
 from app import db
+from sqlalchemy import asc, desc
 
 
-# example_bp = Blueprint('example_bp', __name__)
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
 def validate_key():
@@ -53,6 +53,16 @@ def get_all_boards():
         boards = Board.query.all()
     return jsonify([board.to_dict_board() for board in boards]), 200
 
+@boards_bp.route("<board_id>", methods=["PUT"])
+def update_board(board_id):
+    chosen_board = get_board_or_abort(board_id)
+    request_board = validate_key()
+    chosen_board.title = request_board["title"]
+    chosen_board.owner = request_board["owner"]
+    db.session.add(chosen_board)
+    db.session.commit()
+    return jsonify({"board": chosen_board.to_dict_board()}), 200
+
 
 #get one board using Get in routes and accessing by id
 @boards_bp.route("/<board_id>", methods= ["GET"])
@@ -66,11 +76,13 @@ def validate_board(board_id):
     try:
         board_id = int(board_id)
     except ValueError:
-        abort(make_response(jsonify({"details": "Invalid data"}), 400))
-    chosen_board = Board.query.get(board_id)
-    if not chosen_board:
-        abort(make_response(jsonify({'details': f"Could not find board"}), 404))  
-    return chosen_board
+        abort(make_response({"message": f"The task id {board_id} is invalid. The id must be integer."}, 400))
+    
+    boards = Board.query.all()
+    for board in boards:
+        if board.board_id == board_id:
+            return board
+    abort(make_response({"message": f"The task id {board_id} is not found"}, 404))
 
 
 
