@@ -2,10 +2,10 @@ from app import db
 
 
 class Board(db.Model):
-    board_id = db.Column(db.Integer, primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True, autoincrement= True)
     title = db.Column(db.String)
     owner = db.Column(db.String)
-    card_id = db.Column(db.Integer, db.Foreignkey('board.board_id'))
+    card_id = db.Column(db.Integer, db.ForeignKey('board.board_id'))
 
 
     def to_dict_board(self):
