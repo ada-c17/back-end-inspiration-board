@@ -6,3 +6,8 @@ class Card(db.Model):
 	likes_count = db.Column("likes_count", db.Integer, default = 0)
 	board_id = db.Column(db.Integer, db.ForeignKey('board.board_id'))
 	board = db.relationship("Board", back_populates = "cards")
+
+	def update(self, request_body):
+		self.message = request_body["message"]
+		self.likes_count = request_body["likes_count"]
+            
