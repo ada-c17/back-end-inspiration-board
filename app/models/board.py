@@ -5,5 +5,11 @@ class Board(db.Model):
     title = db.Column(db.String, nullable=False)
     owner = db.Column(db.String, nullable=False)
     cards = db.relationship('Card', backref='board', lazy=True)
-
     
+    def to_dict(self):
+        return dict(
+            board_id = self.board_id,
+            title = self.title,
+            owner = self.owner,
+            cards = self.cards
+        )
