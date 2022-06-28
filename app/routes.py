@@ -7,10 +7,6 @@ from app.models.card import Card
 board_bp = Blueprint('board_bp', __name__, url_prefix='/boards')
 card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
 
-#create a new board using "title" and "owner" inputs
-
-    #see error message if title or owner is blank/empty/invalid/missing
-
 #read: view list of all boards; select a board
 @board_bp.route("", methods=["GET"])
 def get_all_boards():
