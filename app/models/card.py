@@ -7,12 +7,11 @@ class Card(db.Model):
 	board_id = db.Column(db.Integer, db.ForeignKey('board.board_id'))
 	board = db.relationship("Board", back_populates = "cards")
 
-	def update(self, request_body):
-		self.message = request_body["message"]
+	def update_likes(self, request_body):
 		self.likes_count = request_body["likes_count"]
 
 	def to_json(self):
-		return {"id": self.card_id,
+		return {"card_id": self.card_id,
                 "message": self.message,
                 "likes_count": self.likes_count,
                 "board_id": self.board_id}

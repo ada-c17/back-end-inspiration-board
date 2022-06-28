@@ -7,16 +7,18 @@ from .routes import validate_record
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 load_dotenv()
 
-
+cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
 # UPDATE one card
-@cards_bp.route("/cards/<card_id>/like", methods=["PUT"])
+@cards_bp.route("/<card_id>/like", methods=["PUT"])
 def update_card(card_id):
     card = validate_record(Card, card_id)
     request_body = request.get_json()
+    #{likes_count: 5}
+    #addition logic done in front end
 
     try:
-        card.update(request_body)
+        card.update_likes(request_body)
     except KeyError:
         return abort(make_response(jsonify({"details":"Invalid data"}), 400))
 
@@ -26,7 +28,7 @@ def update_card(card_id):
     
 
 # DELETE one card
-@cards_bp.route("/cards/<card_id>", methods=["DELETE"])
+@cards_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card(card_id):
     card = validate_record(Card, card_id)
     db.session.delete(card)

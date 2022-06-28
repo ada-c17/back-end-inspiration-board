@@ -1,8 +1,5 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import make_response, abort
 from app import db
-
-# example_bp = Blueprint('example_bp', __name__)
-
 
 def validate_record(cls, id):
     try:
