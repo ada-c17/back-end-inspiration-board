@@ -39,3 +39,12 @@ def create_board():
         "id": new_board.board_id,
         "title": new_board.title
     }, 201
+
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board(board_id):
+    board = Board.query.get(board_id)
+    
+    db.session.delete(board)
+    db.session.commit()
+
+    return jsonify({"details": f"Board {board_id} \"{board.title}\" successfully deleted"}), 200
