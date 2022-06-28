@@ -90,3 +90,11 @@ def delete_one_card(card_id):
     }, 200
 
 
+
+@card_bp.route("/<card_id>/like", methods=["PATCH"])
+def update_card_likes(card_id):
+    chosen_card = Card.query.get(card_id)
+    chosen_card.likes_count += 1
+    db.session.commit()
+    return jsonify({'msg': f'updated like count for card with id {card_id}. Likes now at {chosen_card.likes_count}'}), 200
+
