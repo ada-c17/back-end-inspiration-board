@@ -5,7 +5,7 @@ from app.models.card import Card
 
 # example_bp = Blueprint('example_bp', __name__)
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
-cards_bp = Blueprint("cards_bp", __name__, url_prefix="/tasks")
+cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 
 @boards_bp.route('', methods=['POST'])
 def create_one_board():

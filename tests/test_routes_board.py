@@ -3,7 +3,7 @@ import pytest
 
 
 
-# @pytest.mark.skip(reason="No way to test this feature yet")
+@pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_cards_one_saved_boards(client, one_board):
     # Act
     response = client.get("/boards")
@@ -20,7 +20,7 @@ def test_get_cards_one_saved_boards(client, one_board):
         }
     ]
 
-# @pytest.mark.skip(reason="No way to test this feature yet")
+@pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_board(client, one_board):
     # Act
     response = client.get("/boards/1")
@@ -37,7 +37,7 @@ def test_get_board(client, one_board):
         }
     }
 
-# @pytest.mark.skip(reason="No way to test this feature yet")
+@pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_board_not_found(client):
     # Act
     response = client.get("/boards/1")
@@ -74,7 +74,7 @@ def test_create_board(client):
     assert new_board.owner == "Marlyn"
 
 
-# @pytest.mark.skip(reason="No way to test this feature yet")
+@pytest.mark.skip(reason="No way to test this feature yet")
 def test_update_boardD(client, one_board):
     # Act
     response = client.put("/boards/1", json={
