@@ -7,7 +7,6 @@ from app.models.board import Board
 import sqlalchemy
 
 
-
 board_bp = Blueprint("board_bp", __name__, url_prefix="/boards")
 
 def validate_id(board_id):
