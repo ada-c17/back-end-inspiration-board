@@ -53,7 +53,7 @@ def get_one_board(card_id):
     chosen_card = Card.query.get(card_id)
     return jsonify(chosen_card.to_dict()), 200
 
-@board_bp.route("", methods=["POST"])
+@card_bp.route("", methods=["POST"])
 def post_card():
     request_body = request.get_json()
 
