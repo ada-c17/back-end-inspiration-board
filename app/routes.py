@@ -21,3 +21,19 @@ card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
 #         boards_response.append(board.to_dict())
     
 #     return jsonify(boards_response)
+
+
+
+@board_bp.route("", methods=["POST"])
+def post_board():
+    request_body = request.get_json()
+    if "title" in request_body and "owner" in request_body:
+        new_board = Board(title=request_body["title"],
+                    owner=request_body["owner"])
+    else:
+        abort(make_response({"details": "Invalid data"}, 400))
+
+    db.session.add(new_board)
+    db.session.commit()
+
+    return make_response({"board": new_board.to_dict()}, 201)
