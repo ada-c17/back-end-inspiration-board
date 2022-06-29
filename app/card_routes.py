@@ -13,6 +13,7 @@ def get_cards():
     return jsonify(cards_response)
 
 @card_bp.route("<board_id>/cards", methods=["CREATE"], strict_slashes=False)
+@card_bp.route("<board_id>/cards", methods=["POST"], strict_slashes=False)
 def create_card(board_id):
     #validate
     request_body = request.get_json()
@@ -26,11 +27,12 @@ def create_card(board_id):
 @card_bp.route("<board_id>/cards/<card_id>", methods=["PATCH"], strict_slashes=False)
 def update_card(board_id, card_id):
     #validate board_id
-    #validate card_id
+    #validate card_id -- validate that card id is a valid ID
+    # and that it is assigned to the board
     card = Card.query.get(card_id)
 
     request_body = request.get_json()
-    card["message"] = request_body["message"]
+    card.message = request_body["message"]
 
     db.session.commit()
     return make_response("Success", 200)

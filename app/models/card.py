@@ -10,7 +10,8 @@ class Card(db.Model):
     board = db.relationship("Board", back_populates="cards")
 
     def to_json(self):
-        jsonify(
+        return jsonify(
             cardId = self.card_id,
             message = self.message,
+            likes_count = self.likes_count
         )
