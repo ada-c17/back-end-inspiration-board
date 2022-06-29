@@ -9,12 +9,12 @@ card_bp = Blueprint('cards', __name__, url_prefix="/boards/<my_board_id>/cards")
 def create_one_card_for_a_board(my_board_id):
     request_body = request.get_json()
     board = validate_and_return_item(Board, my_board_id)
-    if "message" not in request_body:
+    if "message" not in request_body or str(request_body["message"]).split() == []:
         return jsonify(
             {
                 "details": "Please enter a card message!"
             }), 400
-    elif len(request_body["message"]) > 40:
+    elif len(str((request_body["message"]))) > 40:
         return jsonify(
             {
                 "details": "Please enter a message that is less than 40 characters!"
