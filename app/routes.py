@@ -85,11 +85,16 @@ def get_one_board(board_id):
 def create_one_card(board_id):
     request_body = request.get_json()
     
-    if not "message" in request_body:
+    if not "message" in request_body or len(request_body["message"]) == 0:
         return jsonify({
             "details": "Must include message"
         }), 400
-    
+
+    if len(request_body["message"]) > 40:
+        return jsonify({
+            "details": "Message must be under 40 characters"
+        }), 400
+
     new_card = Card(message=request_body["message"], board_id=board_id, likes_count=0)
 
     db.session.add(new_card)
