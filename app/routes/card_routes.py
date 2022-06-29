@@ -27,6 +27,7 @@ def create_card():
     try:
         new_card = Card(
             message = request_body["message"],
+            board_id = request_body["board_id"],
             likes_count = 0
         )
 
@@ -47,9 +48,9 @@ def delete_a_card(card_id):
 
     return make_response({'details':f'Card {card.card_id} "{card.message}" successfully deleted'}, 200)
 
-@card_bp.route("/add-like/<int:id>", methods=["PATCH"])
-def add_like(id):
-    card = get_card(id)
+@card_bp.route("/add-like/<card_id>", methods=["PATCH"])
+def add_like(card_id):
+    card = get_card(card_id)
 
     card.likes_count += 1
 

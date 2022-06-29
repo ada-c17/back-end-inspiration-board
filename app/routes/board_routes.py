@@ -3,7 +3,6 @@ from app.models.board import Board
 from app import db
 from sqlalchemy import asc, desc
 
-
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
 def validate_request(request_body):
@@ -16,10 +15,12 @@ def get_board_or_abort(board_id):
         board_id = int(board_id)
     except ValueError:
         abort(make_response({"message": f"The board id {board_id} is invalid. The id must be integer."}, 400))
-    
+
     board = Board.query.get(board_id)
     if not board:
         abort(make_response({"message": f"The board id {board_id} is not found"}, 404))
+
+    return board
 
 @boards_bp.route("", methods=["POST"])
 def create_board():
