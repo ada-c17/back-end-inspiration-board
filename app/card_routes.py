@@ -27,3 +27,15 @@ def update_card(board_id, card_id):
 
     db.session.commit()
     return make_response("Success", 200)
+
+# delete single card
+@card_bp.route("<board_id>/cards/<card_id>", methods=["DELETE"], strict_slashes=False)
+def delete_card(board_id, card_id):
+    # add helper function to validate board_id
+    # add helper function to validate card_id
+    
+    card = Card.query.get(card_id)
+
+    db.session.delete(card)
+    db.session.commit()
+    return make_response("Card successfully deleted", 200)
