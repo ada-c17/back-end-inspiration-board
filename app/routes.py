@@ -65,12 +65,9 @@ def creat_card_in_board(board_id):
         new_card = Card.create_card(request_body)
     except KeyError:
         return make_response({"details":"Invalid data"}, 400)
-    db.session.add(new_card)
-    db.session.commit()
 
     board.cards.append(new_card)
     db.session.commit()
-
 
     return jsonify(new_card.to_dict()), 201
 

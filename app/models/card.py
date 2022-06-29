@@ -11,6 +11,7 @@ class Card(db.Model):
         return {
             "id": self.card_id,
             "message": self.message,
+            "likes_count": self.likes_count,
         }
 
     @classmethod
