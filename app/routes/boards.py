@@ -1,5 +1,4 @@
-from crypt import methods
-from tempfile import TemporaryFile
+
 from flask import Blueprint, jsonify, request, abort, make_response
 from app.models.board import Board
 from app import db
