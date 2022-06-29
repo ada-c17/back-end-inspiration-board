@@ -13,7 +13,7 @@ def get_one_board(board_id):
     return {
             "title": board.title,
             "owner": board.owner,
-            "cards": [card.to_dict() for card in board.cards]
+            "cards": [card.to_json() for card in board.cards]
             }
 # board routes
 
