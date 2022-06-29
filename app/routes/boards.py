@@ -17,10 +17,13 @@ def get_all_boards():
 @boards_bp.route('', methods=['POST'])
 def post_new_board():
     new_board_request = request.get_json()
-    new_board = Board(title=new_board_request['title'], owner=new_board_request['owner'])
+    try:
+        new_board = Board(title=new_board_request['title'], owner=new_board_request['owner'])
+    except KeyError:
+        return {'error details': 'Title and Owner are required to create a board'}, 400
     db.session.add(new_board)
     db.session.commit()
 
-    rsp = {'message': 'New board created with id:{new_board.board_id}'}
+    rsp = {'message': f'New board created with id: {new_board.board_id}'}
     return rsp, 201
 
