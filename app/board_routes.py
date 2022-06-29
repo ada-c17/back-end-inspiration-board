@@ -113,10 +113,10 @@ def get_card_or_abort(card_id):
 
 # validating for input of card
 def validate_key_card():
-    request_board = request.get_json()
-    if "message" not in request_board:
+    request_card = request.get_json()
+    if "message" not in request_card:
         abort(make_response({"details": "Invalid data"}, 400))
-    elif len(request_board["message"]) > 40:
+    elif len(request_card["message"]) > 40:
         abort(make_response({"details": "Message must be less than 40 characters"}, 400))
 
-    return request_board
+    return request_card
