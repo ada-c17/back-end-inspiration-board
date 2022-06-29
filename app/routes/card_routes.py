@@ -68,6 +68,8 @@ def update_one_card(card_id):
 
     db.session.commit()
 
+    # updated the response msg to key-value pairs with all the info
+    # return like_count, etc.
     rsp = {"msg": f"Card #{card_id} successfully updated!"}
     return jsonify(rsp), 200
 
