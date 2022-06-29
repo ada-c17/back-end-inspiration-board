@@ -38,6 +38,7 @@ def test_get_board_not_found(client):
 
     # Assert
     assert response.status_code == 404
+    assert "message" in response_body
     assert response_body == {"message":f"item 1 not found"}
     
 
@@ -67,6 +68,7 @@ def test_update_board(client, one_board):
 
     # Assert
     assert response.status_code == 200
+    assert "msg" in response_body
     assert response_body == {
         'msg': 'Successfully updated board 1'
     }
@@ -83,6 +85,7 @@ def test_update_board_not_found(client):
 
     # Assert
     assert response.status_code == 404
+    assert "message" in response_body
     assert response_body == {
         'message': 'item 1 not found'
     }
@@ -110,41 +113,39 @@ def test_delete_board_not_found(client):
 
     # Assert
     assert response.status_code == 404
+    assert "message" in response_body
     assert response_body == {
         'message': 'item 1 not found'
     }
     assert Board.query.all() == []
 
+def test_create_board_must_contain_title(client):
+    # Act
+    response = client.post("/boards", json={
+        "owner": "Team Sunshine Member"
+    })
+    response_body = response.get_json()
 
-# #@pytest.mark.skip(reason="No way to test this feature yet")
-# def test_create_board_must_contain_title(client):
-#     # Act
-#     response = client.post("/boards", json={
-#         "owner": "Test Description"
-#     })
-#     response_body = response.get_json()
-
-#     # Assert
-#     assert response.status_code == 400
-#     assert "details" in response_body
-#     assert response_body == {
-#         "details": "Invalid data"
-#     }
-#     assert Board.query.all() == []
+    # Assert
+    assert response.status_code == 400
+    assert "msg" in response_body
+    assert response_body == {
+        'msg': 'Invalid data: Missing title'
+    }
+    assert Board.query.all() == []
 
 
-# #@pytest.mark.skip(reason="No way to test this feature yet")
-# def test_create_board_must_contain_owner(client):
-#     # Act
-#     response = client.post("/boards", json={
-#         "title": "A Brand New Board"
-#     })
-#     response_body = response.get_json()
+def test_create_board_must_contain_owner(client):
+    # Act
+    response = client.post("/boards", json={
+        "title": "A Brand New Board"
+    })
+    response_body = response.get_json()
 
-#     # Assert
-#     assert response.status_code == 400
-#     assert "details" in response_body
-#     assert response_body == {
-#         "details": "Invalid data"
-#     }
-#     assert Board.query.all() == []
+    # Assert
+    assert response.status_code == 400
+    assert "msg" in response_body
+    assert response_body == {
+        'msg': 'Invalid data: Missing owner'
+    }
+    assert Board.query.all() == []
