@@ -14,14 +14,14 @@ def validate_model_instance(cls, model_id, class_name_string):
         
     return model
 
-# def send_slack_completed_message(task):
+def send_slack_new_card_message(new_card):
 
-#     PATH = "https://slack.com/api/chat.postMessage"
+    PATH = "https://slack.com/api/chat.postMessage"
 
-#     BEARER_TOKEN = os.environ.get(
-#             "AUTH_TOKEN_SLACK")
+    BEARER_TOKEN = os.environ.get(
+            "AUTH_TOKEN_SLACK")
 
-#     query_params = {"channel" : "task-notifications", "text": f'Someone just completed the task {task.title}' }
-#     headers = {"authorization" : BEARER_TOKEN}
+    query_params = {"channel" : "inspir-adies", "text": f"Someone just created the card with the message '{new_card.message}'" }
+    headers = {"authorization" : BEARER_TOKEN}
     
-#     response_body = requests.get(PATH, params=query_params, headers=headers)
+    response_body = requests.get(PATH, params=query_params, headers=headers)

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.board import Board
-from .helpers import validate_model_instance
+from .helpers import validate_model_instance, send_slack_new_card_message
 from app.models.card import Card
 
 # example_bp = Blueprint('example_bp', __name__)
@@ -56,6 +56,7 @@ def add_card_to_board(board_id):
 
     db.session.add(new_card)
     db.session.commit()
+    send_slack_new_card_message(new_card)
     #change return?
     return jsonify({"boardId": board.board_id, "cardId": new_card.card_id}), 200
 
