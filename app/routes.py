@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board 
+from app.models.card import Card 
 
 
 def validate_or_abort(board_id):
@@ -20,8 +21,8 @@ def validate_or_abort(board_id):
 boards_bp = Blueprint('boards_bp', __name__, url_prefix='/boards')
 
 @boards_bp.route('', methods=['GET'])
-def list_all_boards():
-    board_query = request.args.get("sort")
+def read_all_boards():
+    board_query = request.args.get("sort") # do we need this? - NJ
     boards = Board.query.all()
     board_response = []
     for board in boards:
@@ -62,3 +63,36 @@ def delete_board(board_id):
     db.session.commit()
 
     return jsonify({"details": f"Board {board_id} \"{board.title}\" successfully deleted"}), 200
+
+@boards_bp.route("/<board_id>/cards", methods=["GET"]) 
+def read_cards_for_one_board(board_id): 
+    board = validate_or_abort(board_id)
+
+    cards_response = []
+    for card in board.cards: 
+        cards_response.append(
+            { 
+            "id": card.card_id, 
+            "message": card.message, 
+            "like_count": card.likes_count
+            }
+        )
+    return jsonify(cards_response)
+
+@boards_bp.route("/<board_id>/cards", methods=["POST"])
+def create_cards_for_one_board(board_id): 
+    board = validate_or_abort(board_id)
+
+    request_body = request.get_json()
+    new_card = Card(
+        message=request_body["message"], 
+        like_count=request_body["like_count"], 
+        board=board.title 
+    )
+
+    db.session.add(new_card)
+    db.session.commit()
+
+    return make_response(jsonify(f"Card {new_card.message} in {board.title} successfully created"), 201)
+
+
