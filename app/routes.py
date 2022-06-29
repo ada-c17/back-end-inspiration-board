@@ -73,6 +73,17 @@ def post_board():
     return make_response(new_board.to_dict(), 201)
 
 
+@board_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board(board_id):
+    #This should also delete all cards that are part of the board
+    board = validate_id(board_id, "board")
+    for card in board.cards:
+        delete_one_card(card.card_id)
+    db.session.delete(board)
+    db.session.commit()
+    return {"message":f'Board {board_id} successfully deleted'}, 200
+
+
 
 ##### [4] CARD ENDPOINTS ############################################
 
