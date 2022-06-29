@@ -10,11 +10,12 @@ board_bp = Blueprint('board_bp', __name__, url_prefix="/boards/")
 def get_one_board(board_id):
     #validate board_id
     board = Board.query.get(board_id)
-    return {
-            "title": board.title,
-            "owner": board.owner,
-            "cards": [card.to_json() for card in board.cards]
-            }
+    return board.to_json()
+    # return {
+    #         "title": board.title,
+    #         "owner": board.owner,
+    #         "cards": [card.to_json() for card in board.cards]
+    #         }
 # board routes
 
 # create board

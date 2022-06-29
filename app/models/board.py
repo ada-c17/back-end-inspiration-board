@@ -8,11 +8,11 @@ class Board(db.Model):
     cards = db.relationship("Card", back_populates="board")
 
     def to_json(self):
-        jsonify(
+        return dict(
             boardId = self.board_id,
             title = self.title,
             owner = self.owner,
-            cards = self.cards
+            cards = [card.to_json() for card in self.cards]
         )
 
     @classmethod
