@@ -8,9 +8,13 @@ class Board(db.Model):
     cards = db.relationship("Card", backref="board", lazy=True)
 
     def to_dict_board(self):
-        response = {
+        cards_list = []
+        for card in self.cards:
+            cards_list.append(card.to_dict())
+
+        return {
             "id":self.board_id,
             "title":self.title,
-            "owner":self.owner
+            "owner":self.owner, 
+            "cards": cards_list
         }
-        return response

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response, abort
 from app.models.board import Board
+from app.models.card import Card
 from app import db
 from sqlalchemy import asc, desc
 
@@ -74,15 +75,48 @@ def validate_board(board_id):
     try:
         board_id = int(board_id)
     except ValueError:
-        abort(make_response({"message": f"The task id {board_id} is invalid. The id must be integer."}, 400))
+        abort(make_response({"message": f"The board id {board_id} is invalid. The id must be integer."}, 400))
     
     boards = Board.query.all()
     for board in boards:
         if board.board_id == board_id:
             return board
-    abort(make_response({"message": f"The task id {board_id} is not found"}, 404))
+    abort(make_response({"message": f"The board id {board_id} is not found"}, 404))
 
+# Add card to board - MA
+def validate_card(card_id):
+    try: 
+        card_id = int(card_id)
+    except ValueError:
+        abort(make_response(jsonify({"msg": f"Invalid card id: '{card_id}'"}), 400))
 
+    chosen_card = Card.query.get(card_id)
 
+    if chosen_card is None: 
+        abort(make_response(jsonify({"msg": f"Could not find card with id {card_id}"}), 404))
 
+    return chosen_card
 
+@boards_bp.route("/<board_id>/cards", methods=["POST"])
+def add_cards_to_board(board_id):
+    board = validate_board(board_id)
+
+    request_body = request.get_json()
+    try: 
+        card_ids = request_body["card_ids"]
+    except KeyError: 
+        return jsonify({"msg": "Missing card_ids in request body"}), 400
+
+    if not isinstance(card_ids, list):
+        return jsonify({"msg": "Expected list of card ids"}), 400
+
+    cards = []
+    for id in card_ids:
+        cards.append(validate_card(id))
+
+    for card in cards: 
+        card.board_id = board.board_id
+
+    db.session.commit()
+
+    return jsonify({"msg": f"Added card(s) to board with id {board.board_id}"}), 200
