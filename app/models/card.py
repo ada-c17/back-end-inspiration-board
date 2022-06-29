@@ -9,9 +9,11 @@ class Card(db.Model):
     # I checked how to use laze in this website...
     #https://medium.com/@ns2586/sqlalchemys-relationship-and-lazy-parameter-4a553257d9ef
 
-    def to_dict(self):
-        return {
-            "id": self.card_id, 
-            "message": self.message, 
+    def card_response_dict(self):
+        response = {
+            "card_id": self.card_id,
+            "message": self.message,
             "likes_count": self.likes_count,
+            "board_id": self.board_id
         }
+        return response
