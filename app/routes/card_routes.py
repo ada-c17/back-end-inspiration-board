@@ -55,18 +55,18 @@ def update_one_card(id):
             "likes_count": 0,
             "message": {card.message}
     }
-    return make_response(response_body), 200
+    return card.to_dict(), 200
 
 #QUALITY CONTROL HELPER FUNCTION
 def validate_card(card_id):
     try:
-        id = int(card_id)
+        card_id = int(card_id)
     except ValueError: 
-        abort(make_response(jsonify(dict(details=f"invalid id: {id}")), 400))
+        abort(make_response(jsonify(dict(details=f"invalid id: {card_id}")), 400))
 
-    card = Card.query.get(id)
+    card = Card.query.get(card_id)
     if card:
         return card
 
     elif not card:
-        abort(make_response(jsonify(dict(message= f"card {id} not found")), 404))
+        abort(make_response(jsonify(dict(message= f"card {card_id} not found")), 404))
