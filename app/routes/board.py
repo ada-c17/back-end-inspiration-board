@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.board import Board
+from app.models.card import Card
 from app.routes.helper import validate
 
 # example_bp = Blueprint('example_bp', __name__)
@@ -39,11 +40,19 @@ def get_all_boards():
 @boards_bp.route("/<board_id>", methods=["GET"])
 def get_one_board(board_id):
     board = validate(Board, board_id)
+    cards = board.cards
+
+    cards_response = []
+    for card in cards:
+        cards_response.append(card.to_dict())
+
     response = {
-                "id": board.board_id,
-                "title": board.title,
-                "owner": board.owner
-            }
+        "id": board.board_id,
+        "title": board.title,
+        "owner": board.owner,
+        "cards": cards_response
+    }
+    
     return jsonify(response)
 
 @boards_bp.route("/<board_id>", methods=["PUT"])
