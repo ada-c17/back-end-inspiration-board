@@ -37,11 +37,14 @@ def get_all_boards():
     return jsonify(boards_response), 200
 
 # Get one board
-@boards_bp.route("/<id>", methods=["GET"])
-def get_one_board(id):
-    board= validate_board(id)
+@boards_bp.route("/<board_id>", methods=["GET"])
+def get_one_board(board_id):
+    board= validate_board(board_id)
 
-    return jsonify(board.to_dict()), 200
+    response = board.to_dict()
+    response["cards"] = [card.to_dict() for card in board.cards]
+
+    return jsonify(response), 200
 
 # Delete board
 @boards_bp.route("/<id>", methods=["DELETE"])
@@ -68,15 +71,3 @@ def creat_card_in_board(board_id):
     db.session.commit()
 
     return jsonify(new_card.to_dict()), 201
-
-# GET boards/board_id/cards
-@boards_bp.route("/<board_id>/cards", methods=["GET"])
-def get_cards_by_board_id(board_id):
-    board = validate_board(board_id)
-    
-    response = board.to_dict()
-    response["cards"] = []
-    for card in board.cards:
-        response["cards"].append(card.to_dict())
-        
-    return jsonify(response), 200
