@@ -7,6 +7,10 @@ from .models.card import Card
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 cards_bp = Blueprint("card_bp", __name__, url_prefix="/cards")
 
+# ****************************
+# BOARD ROUTES
+# ****************************
+
 # ***** POST /boards *****
 @boards_bp.route("", methods=["POST"])
 def create_board():
@@ -59,7 +63,22 @@ def get_all_boards():
 
     return jsonify(boards_response), 200    
 
-# @boards_bp.route("/<board_id>", methods=[GET])    
+@boards_bp.route("/<board_id>", methods=["GET"])
+def get_one_board(board_id):
+    selected_board = validate_board(board_id)
+
+    rsp = {
+        "board_id": selected_board.board_id,
+        "title": selected_board.title,
+        "owner": selected_board.owner
+    }
+
+    return jsonify(rsp), 200
+
+
+# ****************************
+# CARD ROUTES
+# ****************************
 
 # ***** POST /boards/<board_id>/cards *****
 @boards_bp.route('/<board_id>/cards', methods=["POST"])
@@ -129,6 +148,20 @@ def validate_card(card_id):
         abort(make_response(jsonify(rsp), 404))
 
     return selected_card  
+
+# ***** GET /cards/<card_id> *****
+@cards_bp.route("/<card_id>", methods=["GET"])
+def get_one_card(card_id):
+    selected_card = validate_card(card_id)
+
+    rsp = {
+        "card_id": selected_card.card_id,
+        "message": selected_card.message,
+        "likes_count": selected_card.likes_count,
+        "board_id": selected_card.board_id
+    }
+
+    return jsonify(rsp), 200
 
 # ***** DELETE /cards/<card_id> *****
 @cards_bp.route("/<card_id>", methods=["DELETE"])
