@@ -23,16 +23,16 @@ def create_one_card():
     request_body = request.get_json()
     try:
         message = request_body['message']
-        like_count = request_body['like_count']
+        # like_count = request_body['like_count']
     except KeyError:
-        return {'msg': 'failed to create new planet due to missing attributes'}, 400
+        return {'msg': 'failed to create new card due to missing attributes'}, 400
 
-    new_card = Card(message=message,
-                    like_count=like_count)
+    new_card = Card(message=message)
+                    # like_count=like_count)
     db.session.add(new_card)
     db.session.commit()
 
-    rsp = {'msg': f'Succesfully created planet with id {new_card.card_id}'}
+    rsp = {'msg': f'Succesfully created card with id {new_card.card_id}'}
     return jsonify(rsp), 201
 
 

@@ -29,7 +29,8 @@ def create_one_board():
     db.session.commit()
     return {
         'id': new_board.board_id,
-        'msg': f'New board {new_board.title} created'
+        'title': new_board.title,
+        'msg': f'{new_board.owner} created {new_board.title}'
     }, 201
 
 # helper function:
@@ -44,14 +45,32 @@ def validate_board_input(request_body):
             {"details": "Invalid data. Owner missing or invalid from board"}, 400))
     return request_body
 
-# 2.GET- Read; View a list of all boards
-# 3. GET - Read; Select a specific board
+# GET- Read; View a list of all boards
+@board_bp.route("", methods=["GET"])
+def get_all_boards():
+    boards= Board.query.all()
+    boards_response=[]
+    for board in boards:
+        boards_response.append({
+            "id": board.board_id,
+            "owner": board.owner,
+            "title" :board.title,
+            # not returning card list at this time. May want to add in later.
+        })
 
-# POST: Create a new card for the selected board,
-# by filling out a form and filling out a "message."
-# See an error message if I try to make the card's "message" more than 40 characters.
-# All error messages can look like a new section on the screen, a red outline around the input field, and/or disabling the input, as long as it's visible
-# See an error message if I try to make a new card with an empty/blank/invalid/missing "message."
+        return jsonify(boards_response), 200
+# GET - Read; Select a specific board
+@board_bp.route("/<board_id>", methods=["GET"])
+def get_one_board(board_id):
+    chosen_board=validate_board(board_id)
+
+    response= {
+            "id": chosen_board.board_id,
+            "owner": chosen_board.owner,
+            "title" :chosen_board.title,
+            # not returning card list at this time. May want to add in later.
+        }
+    return jsonify(response), 200
 
 # Helper function to validate board_id:
 
@@ -68,6 +87,11 @@ def validate_board(board_id):
             {"message": f"Board: #{board_id} not found"}, 404))
     return board
 
+# POST: Create a new card for the selected board,
+# by filling out a form and filling out a "message."
+# See an error message if I try to make the card's "message" more than 40 characters.
+# All error messages can look like a new section on the screen, a red outline around the input field, and/or disabling the input, as long as it's visible
+# See an error message if I try to make a new card with an empty/blank/invalid/missing "message."
 
 @board_bp.route("/<board_id>/cards", methods=["POST"])
 def create_card_for_board(board_id):
