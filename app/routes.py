@@ -117,40 +117,53 @@ def remove_board_by_id(id):
         "message":f"Board {id} \"{board.title}\" successfully deleted"
         }, 200)
 
-#------------------------------------------------
+#-----------------CARD--------------------------
 
 cards_bp = Blueprint("cards", __name__, url_prefix="/boards")
-#-----post_card------
 
+#-----post_card------
 @cards_bp.route("/<id>/cards", methods=["POST"])
 def post_card(id):
     post_dict = request.get_json()
+    message = post_dict.get('message', None)
     
-    if 'message' not in post_dict:
-        return make_response({"details":"invalid data"},400)
+    if not message:
+        abort(make_response({
+            "message": "Invalid data: New card needs a message"
+            }, 400))
     
-    message = post_dict['message']
     likes_count = 0
-    board_id = int(id)
+    try:
+        id = int(id)
+    except:
+        abort(make_response({"message": f"{id} is not a valid id"}, 400))
+    board = Board.query.get(id)
+    
+    if (board == None):
+        abort(make_response({"message":f"board {id} not found"}, 404))
 
-    # board = Board.query.get(board_id)
-
-    card = Card(message = message, likes_count = likes_count, board_id = board_id)
+    card = Card(message = message, likes_count = likes_count, board_id = board.id)
     db.session.add(card)
     db.session.commit()
 
     card_dict = {}
-    card_dict['card_id'] = card.card_id
+    card_dict['id'] = card.id
     card_dict['message'] = card.message
     card_dict['likes_count'] = card.likes_count
     card_dict['board_id'] = card.board_id
-    return_dict = {"card": card_dict}
-    return jsonify(return_dict),201
+    return_dict = {
+        "message": f"Card with id {card.id} successfully created in {board.title}",
+        "card": card_dict
+        }
+    return jsonify(return_dict), 201
 
 #------get card by id --------
-@cards_bp.route("/<id>",methods = ["GET"]) 
-def get_card_by_id(id):
-    # Remember that id from the request is a string and not an integer
+@cards_bp.route("/<board_id>/cards/<card_id>",methods = ["GET"]) 
+def get_card_by_id(card_id):
+    try:
+        id = int(card_id)
+    except:
+        abort(make_response({"message": f"{card_id} is not a valid id"}, 400))    
     card = Card.query.get(id)
     if (card == None):
         abort(make_response({"message":f"card {id} not found"}, 404))
@@ -162,9 +175,14 @@ def get_card_by_id(id):
     card_dict['board_id'] = card.board_id
     return_dict = {"card": card_dict}
     return jsonify(return_dict), 200
+
 #------------remove card by id------------
-@cards_bp.route("/<id>", methods=["DELETE"])
-def remove_card_by_id(id):
+@cards_bp.route("/<board_id>/cards/<card_id>", methods=["DELETE"])
+def remove_card_by_id(card_id):
+    try:
+        id = int(card_id)
+    except:
+        abort(make_response({"message": f"{card_id} is not a valid id"}, 400)) 
     card = Card.query.get(id)
 
     if (card == None):
@@ -172,25 +190,26 @@ def remove_card_by_id(id):
     
     db.session.delete(card)
     db.session.commit()
-    return make_response({"details":f"Card {id} \"{card.message}\" successfully deleted"},200)
+    return jsonify({
+        "message":f"Card {id} \"{card.message}\" successfully deleted"
+        }, 200)
     
-#------------PUT Method - update card by id---------
-@cards_bp.route("/<id>", methods=["PUT"])
-def update_card_by_id(id):
+#------------update card by id---------
+@cards_bp.route("/<board_id>/cards/<card_id>", methods=["PATCH"])
+def update_card_by_id(card_id):
+    try:
+        id = int(card_id)
+    except:
+        abort(make_response({"message": f"{card_id} is not a valid id"}, 400))
     card = Card.query.get(id)
 
     if (card == None):
         abort(make_response({"message":f"card {id} not found"}, 404))
     update_dict = request.get_json()
     
-    if 'message' not in update_dict or 'likes_count' not in update_dict:
-        return make_response({"details":"Invalid data"},400)
-    
-    message = update_dict['message']
-    likes_count = update_dict['likes_count']
-
-    card.message = message
-    card.likes_count = likes_count
+    for k, v in update_dict.items():
+        if k in {'message', 'likes_count'}:
+            setattr(card, k, v)
     
     db.session.commit()
 
@@ -199,6 +218,9 @@ def update_card_by_id(id):
     card_dict['message'] = card.message
     card_dict['likes_count'] = card.likes_count
     
-    return_dict = {"card": card_dict}
+    return_dict = {
+        "message": f"Card with id of {card.id} successfully updated",
+        "card": card_dict
+        }
     return jsonify(return_dict), 200
 
