@@ -25,12 +25,12 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('card',
-    sa.Column('card_id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('message', sa.String(), nullable=True),
     sa.Column('likes_count', sa.Integer(), nullable=True),
     sa.Column('board_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['board_id'], ['board.id'], ),
-    sa.PrimaryKeyConstraint('card_id')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 
