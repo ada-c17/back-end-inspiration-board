@@ -11,7 +11,7 @@ def validate_board_id(board_id):
     try:
         board_id =  int(board_id)
     except:
-        return abort(make_response(jsonify({'message': f"Invalid task: {board_id}"}), 400))
+        return abort(make_response(jsonify({'message': f"Invalid board {board_id}"}), 400))
     board = Board.query.get(board_id)
 
     if board is None:
