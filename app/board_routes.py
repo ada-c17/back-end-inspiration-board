@@ -98,11 +98,13 @@ def get_card_or_abort(card_id):
         card_id = int(card_id)
     except ValueError:
         abort(make_response({"message": f"The card id {card_id} is invalid. The id must be integer."}, 400))
-    chosen_card = Card.query.get(card_id)
     
-    if chosen_card.card_id is None:
-        abort(make_response({"message": f"The card id {card_id} is not found"}, 404))
-    return chosen_card
+    cards = Card.query.all()
+    for card in cards: 
+        if card.card_id == card_id:
+            return card
+        else:
+            abort(make_response({"message": f"The card id {card_id} is not found"}, 404))
 
 # validating for input of card
 def validate_key_card():
