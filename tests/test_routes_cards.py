@@ -1,7 +1,7 @@
 from app.models.card import Card
 import pytest
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_update_card(client, one_card):
     # Act
     response = client.put("/cards/1", json={
@@ -24,7 +24,7 @@ def test_update_card(client, one_card):
     assert card.likes_count == 0
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_update_card_not_found(client):
     # Act
     response = client.put("/cards/1", json={
@@ -37,7 +37,7 @@ def test_update_card_not_found(client):
     assert response_body=={"message": "card 1 not found"}
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_delete_card(client, one_card):
     # Act
     response = client.delete("/cards/1")
@@ -52,7 +52,7 @@ def test_delete_card(client, one_card):
     assert Card.query.get(1) == None
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_delete_card_not_found(client):
     # Act
     response = client.delete("/cards/1")

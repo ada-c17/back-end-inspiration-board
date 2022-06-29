@@ -138,7 +138,7 @@ def test_post_card_ids_to_board_already_with_boards(client, one_card_belongs_to_
     assert len(Board.query.get(1).cards) == 2
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_cards_for_specific_board_no_board(client):
     # Act
     response = client.get("/boards/1/cards")
@@ -149,7 +149,7 @@ def test_get_cards_for_specific_board_no_board(client):
     assert response_body == {"message":"board 1 not found"}
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_cards_for_specific_board_no_cards(client, one_board):
     # Act
     response = client.get("/boards/1/cards")
@@ -167,7 +167,7 @@ def test_get_cards_for_specific_board_no_cards(client, one_board):
     }
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_cards_for_specific_board(client, one_card_belongs_to_one_board):
     # Act
     response = client.get("/boards/1/cards")
