@@ -8,14 +8,12 @@ class Card(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey("board.board_id"))
 
 
-    def to_dict(self):
-        card_dict = {
-                "id": self.card_id,
-                "message": self.message,
-                "likes_count": self.likes_count
-                }
-                
-        if self.board_id:
-            card_dict["board_id"] = self.board_id
 
-        return card_dict
+    def card_response_dict(self):
+        response = {
+        "card_id": self.card_id,
+        "message": self.message,
+        "likes_count": self.likes_count,
+        "board_id": self.board_id
+    }
+        return response

@@ -50,38 +50,32 @@ def update_board(board_id):
     db.session.commit()
     return jsonify({"board": chosen_board.to_dict_board()}), 200
 
-# Create cards for a particular board
+
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
-def create_cards_from_board(board_id):
-    board = get_board_or_abort(board_id)
-    request_body = request.get_json()
+def create_card_by_board(board_id):
+    chosen_board = get_board_or_abort(board_id)
+    request_card = validate_key_card()
 
-    for card_id in request_body["card_ids"]:
-        card = get_card_or_abort(card_id)
-        board.cards.append(card)
-
+    new_card = Card(
+        message = request_card["message"],
+        likes_count = 0,
+        board_id = chosen_board.board_id
+    )
+    db.session.add(new_card)
     db.session.commit()
+    # return jsonify(new_card.card_response_dict()), 201
+    return jsonify({"cards": new_card.card_response_dict()}), 201
 
-    return {
-        "id": board.board_id,
-        "card_ids": request_body["card_ids"]
-    }
 
-# Get cards for a particular board
+# get cards by board
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
-def read_cards_from_board(board_id):
-    board = get_board_or_abort(board_id)
-
-    cards_response = []
-    for card in board.cards:
-        cards_response.append(board.to_dict_board())
-        
-    return jsonify({
-        "id": board.board_id,
-        "title": board.title,
-        "owner": cards_response
-    })
-
+def get_cards_by_board(board_id):
+    chosen_board = get_board_or_abort(board_id)
+    # response_body = {
+    #     "cards": [card.card_response_dict() for card in chosen_board.cards]
+    # }
+    response_body = [card.card_response_dict() for card in chosen_board.cards]
+    return jsonify(response_body), 200
 
 ##################################
 # Helper Function
@@ -90,6 +84,7 @@ def validate_key():
     if "title" not in request_board or "owner" not in request_board:
         abort(make_response({"details": "Invalid data"}, 400))
     return request_board
+
 
 # Helper Function
 def get_board_or_abort(board_id):
@@ -104,21 +99,15 @@ def get_board_or_abort(board_id):
             return board
     abort(make_response({"message": f"The board id {board_id} is not found"}, 404))
 
-# Helper Function 
-def get_card_or_abort(card_id):
-    try:
-        card_id = int(card_id)
-    except ValueError:
-        abort(make_response(jsonify({'msg': f"Invalid card id: '{card_id}'. ID must be an integer"}), 400))
 
-    chosen_card = Card.query.get(card_id)
-
-    if chosen_card is None:
-        abort(make_response(jsonify({'msg': f'Could not find card with id {card_id}'}), 404))
-
-    return chosen_card
-
-
+# validating for input of card
+def validate_key_card():
+    request_board = request.get_json()
+    if "message" not in request_board:
+        abort(make_response({"details": "Invalid data"}, 400))
+    elif len(request_board["message"]) > 40:
+        abort(make_response({"details": "Message must be less than 40 characters"}, 400))
+    return request_board
 
 
 
