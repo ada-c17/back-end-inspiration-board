@@ -12,19 +12,19 @@ def check_request_body():
         abort(make_response({"details": f"invalid data: should contain a message"}, 404))
     return request_body
 
-# @cards_bp.route("", methods=["GET"])
-# def get_cards(board_id):
+@cards_bp.route("", methods=["GET"])
+def get_cards():
     
-#     cards = Card.query.all()
-#     cards_response = []
-#     for card in cards:
-#         cards_response.append(
-#             {"id":card.card_id,
-#              "message": card.message,
-#              "likes_count": card.likes_count
-#              })
+    cards = Card.query.all()
+    cards_response = []
+    for card in cards:
+        cards_response.append(
+            {"id":card.card_id,
+             "message": card.message,
+             "likes_count": card.likes_count
+             })
     
-#     return jsonify(cards_response), 200
+    return jsonify(cards_response), 200
 
 def validate_card(card_id):
     try:
@@ -49,9 +49,9 @@ def get_one_card( card_id):
 
 
 @cards_bp.route("", methods=["POST"])
-def create_cards(board_id):
+def create_cards():
     request_body = check_request_body()
-    new_card = Card(message=request_body["message"] )
+    new_card = Card(message=request_body["message"] ,likes_count=0 )
     db.session.add(new_card)
     db.session.commit()
     
@@ -62,7 +62,7 @@ def create_cards(board_id):
     
 
 @cards_bp.route("/<card_id>", methods=["DELETE"])
-def delete_card(board_id,card_id):
+def delete_card(card_id):
     card = validate_card(card_id)
     
     db.session.delete(card)
@@ -71,7 +71,7 @@ def delete_card(board_id,card_id):
     return { "msg": f"Card {card_id} is successfully deleted." }, 200
 
 @cards_bp.route("/<card_id>", methods=["PATCH"])
-def update_card_likes(board_id,card_id):
+def update_card_likes(card_id):
 
     card = validate_card(card_id) 
    
