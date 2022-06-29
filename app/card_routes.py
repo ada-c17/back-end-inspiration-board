@@ -4,21 +4,6 @@ from app.models.card import Card
 
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
-# POST
-@cards_bp.route("", methods=["POST"])
-def create_card():
-    request_body = request.get_json()
-
-    try:
-        new_card = Card.create_card(request_body)
-    except KeyError:
-        return make_response({"details":"Invalid data"}, 400)
-
-    db.session.add(new_card)
-    db.session.commit()
-
-    return jsonify(new_card.to_dict()), 201
-
 # GET 
 @cards_bp.route("", methods=["GET"])
 def get_cards():
