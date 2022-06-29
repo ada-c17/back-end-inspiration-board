@@ -11,13 +11,15 @@ boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 def post_board():
     
     post_dict = request.get_json()
+    title = post_dict.get('title', None)
+    owner = post_dict.get('owner', None)
     
-    if 'title' not in post_dict or 'owner' not in post_dict:
-        return make_response({"details":"Invalid data"},400)
+    if not title or not owner:
+        abort(make_response({
+            "message":"Invalid data: New board must have a title and an owner"
+            }, 400))
     
-    title = post_dict['title']
-    owner = post_dict['owner']
-    board = Board(title=title, owner=owner) 
+    board = Board(title=title, owner=owner)
     db.session.add(board)
     db.session.commit()
 
@@ -25,7 +27,10 @@ def post_board():
     board_dict['id'] = board.id
     board_dict['title'] = board.title
     board_dict['owner'] = board.owner
-    return_dict = {"board": board_dict}
+    return_dict = {
+        "message": f"Board with id of {board.id} successfully created",
+        "board": board_dict
+        }
     return jsonify(return_dict), 201
 
 #------------GET ALL BOARDS---------------
