@@ -9,16 +9,16 @@ class Board(db.Model):
     cards = db.relationship("Card", back_populates="board")
     
     def to_dict(self):
-        card_list = []
-        for card in self.cards:
-            card_list.append(card.to_dict())
-        
         board_dict =  {
             "id": self.board_id,
             "title": self.title,
             "owner": self.owner
             }
-        
+            
+        card_list = []
+        for card in self.cards:
+            card_list.append(card.to_dict())
+
         if card_list:
             board_dict["cards"] = card_list
         return board_dict

@@ -22,6 +22,7 @@ class Card(db.Model):
 
 
 
+
     # def to_dict(self):
     #   return {
     #           "card_id": self.card_id,

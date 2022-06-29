@@ -46,30 +46,30 @@ def create_new_board():
     response = {"board": new_board.to_dict()}
     return jsonify(response), 201
 
-# @board_bp.route("/<board_id>/cards", methods=["POST"])
-# def add_cards_to_board(board_id):
-#     board = validate_id(board_id)
+@board_bp.route("/<board_id>/cards", methods=["POST"])
+def add_cards_to_board(board_id):
+    board = validate_id(board_id)
 
-#     request_body = request.get_json()
-#     try:
-#         card_ids = request_body["card_ids"]
-#     except KeyError:
-#         rsp = {"msg": "Missing card_ids in request body"}
-#         return jsonify(rsp), 400
+    request_body = request.get_json()
+    try:
+        card_ids = request_body["card_ids"]
+    except KeyError:
+        rsp = {"msg": "Missing card_ids in request body"}
+        return jsonify(rsp), 400
 
-#     if not isinstance(card_ids, list):
-#         return jsonify({"msg": "Not a list of board ids"}), 400
+    if not isinstance(card_ids, list):
+        return jsonify({"msg": "Not a list of card ids"}), 400
 
-#     cards = []
-#     for id in card_ids:
-#         cards.append(validate_id(id))
+    cards = []
+    for id in card_ids:
+        cards.append(validate_id(id))
 
-#     for card in cards:
-#         card.board_id = board_id
+    # for card in cards:
+    #     card.board_id = board_id
 
-#     db.session.commit()
-#     response = {"id": board.board_id, "card_ids": card_ids}
-#     return jsonify(response), 200
+    db.session.commit()
+    response = {"board_id": board.board_id, "card_ids": card_ids}
+    return jsonify(response), 200
 
 
 @board_bp.route("", methods=["GET"])
