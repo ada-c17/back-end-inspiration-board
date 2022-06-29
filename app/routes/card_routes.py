@@ -7,12 +7,6 @@ from os import abort
 from app.models.card import Card
 
 # Card Model routes:
-
-
-# GET: View a list of cards that belong to the selected board.
-# DELETE: DONE.
-
-
 cards_bp = Blueprint('cards', __name__, url_prefix='/cards')
 
 
@@ -28,7 +22,7 @@ def create_one_card():
         return {'msg': 'failed to create new card due to missing attributes'}, 400
 
     new_card = Card(message=message)
-                    # like_count=like_count)
+    # like_count=like_count)
     db.session.add(new_card)
     db.session.commit()
 

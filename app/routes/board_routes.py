@@ -46,34 +46,53 @@ def validate_board_input(request_body):
     return request_body
 
 # GET- Read; View a list of all boards
+
+
 @board_bp.route("", methods=["GET"])
 def get_all_boards():
-    boards= Board.query.all()
-    boards_response=[]
+    boards = Board.query.all()
+    boards_response = []
     for board in boards:
         boards_response.append({
             "id": board.board_id,
             "owner": board.owner,
-            "title" :board.title,
+            "title": board.title,
             # not returning card list at this time. May want to add in later.
         })
 
         return jsonify(boards_response), 200
 # GET - Read; Select a specific board
+
+
 @board_bp.route("/<board_id>", methods=["GET"])
 def get_one_board(board_id):
-    chosen_board=validate_board(board_id)
+    chosen_board = validate_board(board_id)
 
-    response= {
-            "id": chosen_board.board_id,
-            "owner": chosen_board.owner,
-            "title" :chosen_board.title,
-            # not returning card list at this time. May want to add in later.
-        }
+    response = {
+        "id": chosen_board.board_id,
+        "owner": chosen_board.owner,
+        "title": chosen_board.title,
+        # not returning card list at this time. May want to add in later.
+    }
     return jsonify(response), 200
 
-# Helper function to validate board_id:
 
+# GET- Read all cards in a selected board
+@board_bp.route("/<board_id>/cards", methods=["GET"])
+def get_all_cards_for_board(board_id):
+    chosen_board = validate_board(board_id)
+    chosen_board_cards = []
+    for card in chosen_board.cards:
+        chosen_board_cards.append({
+            'card_id': card.card_id,
+            'message': card.message,
+            'like_count': card.like_count,
+            'board_id': card.board_id
+        })
+    return jsonify(chosen_board_cards), 200
+
+
+# Helper function to validate board_id:
 
 def validate_board(board_id):
     try:
@@ -93,6 +112,7 @@ def validate_board(board_id):
 # All error messages can look like a new section on the screen, a red outline around the input field, and/or disabling the input, as long as it's visible
 # See an error message if I try to make a new card with an empty/blank/invalid/missing "message."
 
+
 @board_bp.route("/<board_id>/card", methods=["POST"])
 def create_card_for_board(board_id):
     board = validate_board(board_id)
@@ -103,7 +123,7 @@ def create_card_for_board(board_id):
         new_card = Card(
             message=request_body["message"],
             # card_id= new_card.card_id,
-            like_count=new_card.like_count,
+            # like_count=new_card.like_count,
             board=board,
         )
     else:
