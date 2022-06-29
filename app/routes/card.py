@@ -81,3 +81,12 @@ def delete_one_card(card_id):
     rsp = {"details": f'Card {card_id} successfully deleted'}
 
     return jsonify(rsp), 200
+
+@card_bp.route("/<board_id>/cards", methods=["GET"])
+def get_cards_one_board(board_id):
+    chosen_board = validate_id(board_id)
+    chosen_board_dict = chosen_board.to_dict()
+    if "cards" not in chosen_board_dict:
+        chosen_board_dict["cards"] = []
+
+    return jsonify(chosen_board_dict), 200
