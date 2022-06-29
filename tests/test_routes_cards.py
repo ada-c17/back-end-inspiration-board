@@ -1,7 +1,7 @@
 from app.models.card import Card
 import pytest
 
-# @pytest.mark.skip(reason="No way to test this feature yet")
+@pytest.mark.skip(reason="No way to test this feature yet")
 def test_update_card(client, one_card):
     # Act
     response = client.put("/cards/1", json={

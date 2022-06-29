@@ -62,9 +62,9 @@ def delete_card(card_id):
     db.session.delete(chosen_card)
     db.session.commit()
 
-    return {{
-        'details':f'card 1 \'{chosen_card.message}\' successfully deleted'
-    }}, 200
+    return {
+        'details':f'card {chosen_card.card_id} "{chosen_card.message}" successfully deleted'
+    }, 200
 
 
 #helper function for card 
