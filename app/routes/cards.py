@@ -8,8 +8,8 @@ cards_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
 def check_request_body():
     request_body = request.get_json()
-    if "message" not in request_body or "likes_count" not in request_body:
-        abort(make_response({"details": f"invalid data"}, 404))
+    if "message" not in request_body:
+        abort(make_response({"details": f"invalid data: should contain a message"}, 404))
     return request_body
 
 @cards_bp.route("", methods=["GET"])
@@ -51,13 +51,13 @@ def get_one_card(card_id):
 @cards_bp.route("", methods=["POST"])
 def create_cards():
     request_body = check_request_body()
-    new_card = Card(message=request_body["message"], likes_count=request_body["likes_count"])
+    new_card = Card(message=request_body["message"] )
     db.session.add(new_card)
     db.session.commit()
     
     response = {"id": new_card.card_id,
                 "message": new_card.message,
-                "likes_count": new_card.likes_count}
+                "likes_count": 0}
     return jsonify(response), 201
     
 
