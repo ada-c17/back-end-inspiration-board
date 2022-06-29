@@ -1,5 +1,4 @@
-from calendar import c
-from urllib import response
+
 from flask import Blueprint, request, jsonify, make_response, abort
 from app.models.board import Board
 from app.models.card import Card
@@ -38,8 +37,15 @@ def get_all_boards():
     return jsonify([board.to_dict_board() for board in boards]), 200
 
 
+# Get one board
+@boards_bp.route("/<board_id>", methods= ["GET"])
+def get_one_board(board_id):
+    board = get_board_or_abort(board_id)
+    return jsonify({"board":board.to_dict_board()}), 200
+
+
 # update a board by id
-@boards_bp.route("<board_id>", methods=["PUT"])
+@boards_bp.route("/<board_id>", methods=["PUT"])
 def update_board(board_id):
     chosen_board = get_board_or_abort(board_id)
     request_board = validate_key()
@@ -104,12 +110,12 @@ def get_card_or_abort(card_id):
         card_id = int(card_id)
     except ValueError:
         abort(make_response({"message": f"The card id {card_id} is invalid. The id must be integer."}, 400))
-    chonse_card = Card.query.get(card_id)
-    
-    if chonse_card.card_id is None:
-        abort(make_response({"message": f"The card id {card_id} is not found"}, 404))
-    return chonse_card
-
+    #chonse_card = Card.query.get(card_id)
+    cards = Card.query.all()
+    for card in cards:
+        if card.card_id == card_id:
+            return card
+    abort(make_response({"message": f"The card id {card_id} is not found"}, 404))
 
 # validating for input of card
 def validate_key_card():
