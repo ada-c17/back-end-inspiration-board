@@ -25,9 +25,12 @@ def create_one_card():
     # like_count=like_count)
     db.session.add(new_card)
     db.session.commit()
-
-    rsp = {'msg': f'Succesfully created card with id {new_card.card_id}'}
-    return jsonify(rsp), 201
+    response = {
+        'message': 'Succesfully created new card',
+        'card_id': new_card.card_id,
+        'like_count': new_card.like_count
+    }
+    return jsonify(response), 201
 
 
 @cards_bp.route('', methods=['GET'])
