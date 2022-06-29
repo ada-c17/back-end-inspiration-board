@@ -22,6 +22,18 @@ def validate_board(board_id):
         abort(make_response(jsonify(response), 400))
     return chosen_board
 
+def validate_card(card_id):
+    try:
+        card = int(card_id)
+    except ValueError:
+        response = {"msg": f"Invalid id: {card_id}"}
+        abort(make_response(jsonify(response), 400))
+    chosen_card = Card.query.get(card_id)
+
+    if chosen_card is None:
+        response = {"msg": f"Could not find board with id #{card_id}"}
+        abort(make_response(jsonify(response), 400))
+    return chosen_card
 
 @board_bp.route("", methods=["GET"])
 def get_all_boards():
@@ -81,6 +93,7 @@ def get_cards_from_one_board(board_id):
 
 @board_bp.route("/<board_id>/cards", methods=["POST"])
 def create_one_card(board_id):
+    validate_board(board_id)
     request_body = request.get_json()
     try:
         new_message = request_body["message"]
@@ -98,7 +111,7 @@ def create_one_card(board_id):
 
 @card_bp.route("/<card_id>", methods=["PATCH"])
 def update_card_likecount(card_id):
-    card = Card.query.get(card_id)
+    card = validate_card(card_id)
     card.likes_count += 1
     db.session.commit()
 
@@ -108,7 +121,7 @@ def update_card_likecount(card_id):
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_one_card(card_id):
-    card = Card.query.get(card_id)
+    card = validate_card(card_id)
     db.session.delete(card)
     db.session.commit()
 
