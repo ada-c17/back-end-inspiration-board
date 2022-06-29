@@ -13,19 +13,6 @@ def check_request_body_for_card():
         abort(make_response({"details": f"invalid data: should contain a message"}, 404))
     return request_body
 
-# post card for specific board id 
-@boards_bp.route("/<board_id>/cards", methods=["POST"])
-def create_cards(board_id):
-    request_body = check_request_body_for_card()
-    board = validate_board_id(board_id)
-    new_card = Card(message=request_body["message"], likes_count=0 )
-    board.cards.append(new_card)
-    db.session.commit()
-    
-    response = {"id": new_card.card_id,
-                "message": new_card.message,
-                "likes_count": 0}
-    return jsonify(response), 201
 
 def validate_board_id(board_id):
     try:
@@ -38,6 +25,19 @@ def validate_board_id(board_id):
         abort(make_response({"details": f"No board with id: {board_id}"}, 404
                             ))
     return board
+
+
+# post card for specific board id 
+@boards_bp.route("/<board_id>/cards", methods=["POST"])
+def create_cards(board_id):
+    request_body = check_request_body_for_card()
+    board = validate_board_id(board_id)
+    new_card = Card(message=request_body["message"], likes_count=0 )
+    board.cards.append(new_card)
+    db.session.commit()
+    
+    response = new_card.to_json()
+    return jsonify(response), 201
         
 
 @boards_bp.route('', methods=['GET'])
@@ -53,12 +53,9 @@ def get_all_boards():
 def get_all_cards_from_board(board_id):
     board = validate_board_id(board_id)
     cards = board.cards
-    list_all_cards = []
-    for card in cards:
-        list_all_cards.append({'id': card.card_id, 'message': card.message, 'likes_count': card.likes_count})
+    list_all_cards = [card.to_json() for card in cards]
     
     return jsonify(list_all_cards), 200
-
 
 
 @boards_bp.route('', methods=['POST'])

@@ -6,26 +6,6 @@ from flask import Blueprint, jsonify, make_response, request, abort
 
 cards_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
-def check_request_body():
-    request_body = request.get_json()
-    if "message" not in request_body:
-        abort(make_response({"details": f"invalid data: should contain a message"}, 404))
-    return request_body
-
-@cards_bp.route("", methods=["GET"])
-def get_cards():
-    
-    cards = Card.query.all()
-    cards_response = []
-    for card in cards:
-        cards_response.append(
-            {"id":card.card_id,
-             "message": card.message,
-             "likes_count": card.likes_count
-             })
-    
-    return jsonify(cards_response), 200
-
 def validate_card(card_id):
     try:
         card_id = int(card_id)  
@@ -38,29 +18,6 @@ def validate_card(card_id):
         
     return valid_id
 
-@cards_bp.route("/<card_id>", methods=["GET"])
-def get_one_card( card_id):
-    card = validate_card(card_id)
-
-    response = {"id":card.card_id,
-                "message": card.message,
-                "likes_count": card.likes_count}
-    return jsonify(response), 200
-
-
-@cards_bp.route("", methods=["POST"])
-def create_cards():
-    request_body = check_request_body()
-    new_card = Card(message=request_body["message"] ,likes_count=0 )
-    db.session.add(new_card)
-    db.session.commit()
-    
-    response = {"id": new_card.card_id,
-                "message": new_card.message,
-                "likes_count": 0}
-    return jsonify(response), 201
-    
-
 @cards_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card(card_id):
     card = validate_card(card_id)
@@ -70,7 +27,7 @@ def delete_card(card_id):
     
     return { "msg": f"Card {card_id} is successfully deleted." }, 200
 
-@cards_bp.route("/<card_id>", methods=["PATCH"])
+@cards_bp.route("/<card_id>/like", methods=["PATCH"])
 def update_card_likes(card_id):
 
     card = validate_card(card_id) 
@@ -78,9 +35,7 @@ def update_card_likes(card_id):
     card.likes_count+=1
     db.session.commit() 
 
-    response={"id": card.card_id,
-                "message": card.message,
-                "likes_count": card.likes_count}
+    response = card.to_json()
 
     return jsonify(response), 200
 
