@@ -7,15 +7,16 @@ class Board(db.Model):
     cards = db.relationship("Card", back_populates="board", lazy=True)
 
     def to_dict(self):
-        return {
+        response = {
             "board_id": self.board_id,
             "title": self.title,
             "owner": self.owner
             }
+        return response
 
     @classmethod
-    def create(cls, request_body):
+    def create(cls, data_dict):
         return cls(
-            title=request_body["title"],
-            owner=request_body["owner"]
+            title=data_dict["title"],
+            owner=data_dict["owner"]
             )

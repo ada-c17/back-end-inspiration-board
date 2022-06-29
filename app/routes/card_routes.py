@@ -9,18 +9,17 @@ from dotenv import load_dotenv
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
 # CREATE aka POST new card at endpoint: /cards
-@cards_bp.route("", methods=["POST"])
-def create_card():
-    request_body = request.get_json()
+# @cards_bp.route("", methods=["POST"])
+def create_card(request_body):
     if "message" not in request_body:
         return make_response(jsonify(dict(details="Invalid data")), 400)
     
-    new_card = Card.create(request_body)
+    added_card = Card.create(request_body)
     
-    db.session.add(new_card)
+    db.session.add(added_card)
     db.session.commit()
     
-    return jsonify({"card": new_card.to_dict()}), 201   
+    return added_card.to_dict()   
 
 # @cards_bp.route("/<id>", methods=['PUT'])
 # def update_card(id):
@@ -40,22 +39,19 @@ def delete_one_card(id):
     db.session.delete(card)
     db.session.commit()
 
-    return jsonify({'details': f'Card {id} "{card.title}" successfully deleted'}), 200
+    return jsonify({'details': f'Card {id} "{card.message}" successfully deleted'}), 200
   
 #########   
 # PATCH a card at endpoint: cards/id  #Remember PATCH is just altering one or some attributes whereas PUT replaces a record. 
 @cards_bp.route("/<id>", methods=["PATCH"])
 def update_one_card(id):
     card = validate_card(id)
-    request_body = request.get_json()
-    card_keys = request_body.keys()
-
-    if "likes_count" in card_keys:
-        card.likes_count = request_body["likes_count"]
-    # if "message" in card_keys:
-    #     card.message = request_body["message"]
-
+    # request_body = request.get_json()
+    likes_param = request.args.get("likes_count")
+    
+    card.likes_count = likes_param    
     db.session.commit()
+
     return make_response(f"Card# {card.card_id} successfully updated"), 200
 
 #QUALITY CONTROL HELPER FUNCTION

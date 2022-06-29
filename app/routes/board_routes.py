@@ -1,3 +1,4 @@
+from email import message
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 
@@ -28,11 +29,14 @@ def create_board():
 #app/board_routes.py
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
 def create_card_for_board(board_id):
+    new_card = {}
     board = validate_board(board_id)   
     
-    request_body = request.get_json()
+    request_body = request.get_json()    
+
     new_card = create_card(request_body)
-    card_id = new_card.card_id
+    
+    card_id = new_card["card_id"]
 
     cards_list = []
     card = validate_card(card_id)
@@ -43,7 +47,16 @@ def create_card_for_board(board_id):
 
     db.session.commit()
 
-    return make_response(jsonify(dict(id=board.board_id, cards=cards_list))), 200
+    updatedBoard = {
+        "board_id": board_id,
+        "title": board.title,
+        "owner": board.owner,
+        "card_id": card_id,
+        "message": card.message,
+        "likes_count": card.likes_count
+    }
+
+    return make_response(jsonify(updatedBoard)), 200
     # return make_response(jsonify(f"id: {card.title} for Board: {card.board.title} successfully created"), 200)
 
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
@@ -62,20 +75,11 @@ def get_cards_per_board(board_id):
 def read_all_boards():
     boards_response = []
 
-    title_query = request.args.get("sort")
-
-    if title_query == "asc":
-        boards = Board.query.order_by(Board.title.asc())
-
-    elif title_query == "desc":
-        boards = Board.query.order_by(Board.title.desc())
-    
-    else:
-        boards = Board.query.all()
+    boards = Board.query.all()
 
     boards_response = [board.to_dict() for board in boards]
 
-    return make_response(jsonify(boards_response), 200) 
+    return jsonify(boards_response)
 
 #####
 # GET aka READ board at endpoint: /boards/id 
