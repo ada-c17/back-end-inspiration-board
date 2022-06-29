@@ -2,12 +2,13 @@ from flask import Blueprint, request, jsonify, make_response
 from flask import abort
 from app import db
 from os import abort
-# import models:
 
 from app.models.card import Card
 
-# Card Model routes:
+
 cards_bp = Blueprint('cards', __name__, url_prefix='/cards')
+
+# Is this really necessary?  Cards also made through: board_bp.route("/<board_id>/card", methods=["POST"])
 
 
 @cards_bp.route('', methods=['POST'])
@@ -17,7 +18,6 @@ def create_one_card():
     request_body = request.get_json()
     try:
         message = request_body['message']
-        # like_count = request_body['like_count']
     except KeyError:
         return {'msg': 'failed to create new card due to missing attributes'}, 400
 
@@ -26,7 +26,8 @@ def create_one_card():
     db.session.add(new_card)
     db.session.commit()
     response = {
-        'message': 'Succesfully created new card',
+        'msg': 'Succesfully created new card',
+        'message': new_card.message,
         'card_id': new_card.card_id,
         'like_count': new_card.like_count
     }
@@ -38,40 +39,44 @@ def get_all_cards():
     cards = Card.query.all()
     cards_response = []
     for card in cards:
-        cards_response.append(card.get_dict())
-
+        cards_response.append({
+            'message': card.message,
+            'card_id': card.card_id,
+            'like_count': card.like_count
+        })
     return jsonify(cards_response), 200
 
 
 @cards_bp.route('/<card_id>', methods=['GET'])
 def get_one_card(card_id):
     card = validate_card(card_id)
-
-    return jsonify(card.get_dict()), 200
+    return jsonify({
+        'message': card.message,
+        'card_id': card.card_id,
+        'like_count': card.like_count
+    }), 200
 
 
 @cards_bp.route('/<card_id>', methods=['PUT'])
 def update_one_card(card_id):
     card = validate_card(card_id)
-
     if not request.is_json:
         return {'msg': 'Missing json request body'}, 400
-
     request_body = request.get_json()
     try:
-        card.message = request_body['message']
-        card.like_count = request_body['like_count']
+        # card.message = request_body['message']
+        card.like_count = request_body['like_count'] + 1
     except KeyError:
         return {
-            'msg': 'Update failed. message and like_count are required!'
+            'msg': 'Update failed. like_count is required!'
         }, 400
 
     db.session.commit()
-
-    # updated the response msg to key-value pairs with all the info
-    # return like_count, etc.
-    rsp = {"msg": f"Card #{card_id} successfully updated!"}
-    return jsonify(rsp), 200
+    return jsonify({
+        'message': card.message,
+        'card_id': card.card_id,
+        'like_count': card.like_count
+    }), 200
 
 
 @cards_bp.route('/<card_id>', methods=['DELETE'])

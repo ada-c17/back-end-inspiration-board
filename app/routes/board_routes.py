@@ -1,17 +1,12 @@
 from flask import Blueprint, request, jsonify, make_response
-from flask import abort  # added for validations
+from flask import abort
 from app import db
 from os import abort
-# import models:
 
 from app.models.board import Board
 from app.models.card import Card
 
-
-# example_bp = Blueprint('example_bp', __name__)
 board_bp = Blueprint("board_bp", __name__, url_prefix="/boards")
-
-# Board Model routes:
 
 # 1. POST - Create a new board, by filling out a form. The form includes "title" and "owner" name of the board.
 # POST displays ERROR msg if empty/blank/invalid/missing "title" or "owner" input.
@@ -116,14 +111,11 @@ def validate_board(board_id):
 @board_bp.route("/<board_id>/card", methods=["POST"])
 def create_card_for_board(board_id):
     board = validate_board(board_id)
-    # print(board)
     request_body = request.get_json()
 
     if len(request_body["message"]) > 0 and len(request_body["message"]) <= 40:
         new_card = Card(
             message=request_body["message"],
-            # card_id= new_card.card_id,
-            # like_count=new_card.like_count,
             board=board,
         )
     else:
@@ -134,5 +126,9 @@ def create_card_for_board(board_id):
     db.session.commit()
 
     return {
-        "msg": f" New card created for {board.title}"
+        'msg': f'Succesfully created new card for {board.title}',
+        'message': new_card.message,
+        'card_id': new_card.card_id,
+        'like_count': new_card.like_count,
+        'board_id': board_id
     }, 201
