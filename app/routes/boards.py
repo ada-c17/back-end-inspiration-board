@@ -1,9 +1,16 @@
 
 from flask import Blueprint, jsonify, request, abort, make_response
 from app.models.board import Board
+from app.models.card import Card
 from app import db
 
 boards_bp = Blueprint('boards_bp', __name__, url_prefix='/boards')
+
+def check_request_body_for_card():
+    request_body = request.get_json()
+    if "message" not in request_body:
+        abort(make_response({"details": f"invalid data: should contain a message"}, 404))
+    return request_body
 
 def validate_board_id(board_id):
     try:
@@ -37,6 +44,19 @@ def get_all_cards_from_board(board_id):
     
     return jsonify(list_all_cards), 200
 
+
+@boards_bp.route("/<board_id>/cards", methods=["POST"])
+def create_cards(board_id):
+    request_body = check_request_body_for_card()
+    board = validate_board_id(board_id)
+    new_card = Card(message=request_body["message"] )
+    board.cards.append(new_card)
+    db.session.commit()
+    
+    response = {"id": new_card.card_id,
+                "message": new_card.message,
+                "likes_count": 0}
+    return jsonify(response), 201
 
 @boards_bp.route('', methods=['POST'])
 def post_new_board():
