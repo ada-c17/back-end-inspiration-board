@@ -10,10 +10,19 @@ class Board(db.Model):
 
     def make_json(self):
         board_dic = {
-        "id": self.board_id,
-        "title": self.title,
-        "owner": self.owner,
-    }    
+            "id": self.board_id,
+            "title": self.title,
+            "owner": self.owner,
+        }    
+        return board_dic
+
+    def make_json_with_cards(self):
+        board_dic = {
+            "id": self.board_id,
+            "title": self.title,
+            "owner": self.owner,
+            "cards": self.cards,
+        }
         return board_dic
 
 

@@ -1,33 +1,23 @@
 from crypt import methods
 import json
 from attr import validate
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.card import Card
 
 card_bp = Blueprint("card", __name__, url_prefix="/cards")
 
-@card_bp.route("", methods=["GET"])
-def get_cards():
-    cards = Card.query.all()
-    cards_response = []
-
-    for card in cards:
-        cards_response.append({
-            "id": card.id,
-            "message": card.message,
-            "likes_count": card.likes_count
-        })
+def get_card(card_id):
+    try:
+        card_id = int(card_id)
+    except ValueError:
+        abort(make_response({"message": f"The card id {card_id} is invalid. The id must be integer."}, 400))
     
-    return make_response(jsonify(cards_response), 200)
+    board = Card.query.get(card_id)
+    if not board:
+        abort(make_response({"message": f"The card id {card_id} is not found"}, 404))
 
-
-@card_bp.route("/<int:id>", methods=["GET"])
-def get_card(id):
-    # card = validate_item(id)
-
-    return jsonify({"card": card.to_json()}), 200
-
+    return board
 
 @card_bp.route("", methods=["POST"])
 def create_card():
@@ -36,7 +26,7 @@ def create_card():
     try:
         new_card = Card(
             message = request_body["message"],
-            likes_count = request_body["likes_count"]
+            likes_count = 0
         )
 
     except KeyError:
@@ -45,16 +35,15 @@ def create_card():
     db.session.add(new_card)
     db.session.commit()
 
-    return jsonify({"card": new_card.to_json()}, 201)
+    return make_response({"card": new_card.to_dict()}, 201)
 
 
-@card_bp.route("/<int:id>", methods=["GET"])
-def update_card(id):
-    # card = validate_item(id)
-    request_body = request.get_json()
+@card_bp.route("/add-like/<int:id>", methods=["PATCH"])
+def add_like(id):
+    card = get_card(id)
 
-    card.message = request_body["message"]
+    card.likes_count += 1
 
     db.session.commit()
 
-    return jsonify({"card": card.to_json()}, 200)
+    return make_response({"card": card.to_dict()}, 200)

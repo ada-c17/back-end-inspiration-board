@@ -51,8 +51,7 @@ def get_all_boards():
 @boards_bp.route("/<board_id>", methods= ["GET"])
 def get_one_board(board_id):
     board = get_board_or_abort(board_id)
-    return jsonify({"board":board.make_json()}), 200
-
+    return jsonify({"board": board.make_json_with_cards()}), 200
 
 @boards_bp.route("/<board_id>", methods=["DELETE"])
 def delete_a_board(board_id):
