@@ -46,31 +46,6 @@ def create_new_board():
     response = {"board": new_board.to_dict()}
     return jsonify(response), 201
 
-@board_bp.route("/<board_id>/cards", methods=["POST"])
-def add_cards_to_board(board_id):
-    board = validate_id(board_id)
-
-    request_body = request.get_json()
-    try:
-        card_ids = request_body["card_ids"]
-    except KeyError:
-        rsp = {"msg": "Missing card_ids in request body"}
-        return jsonify(rsp), 400
-
-    if not isinstance(card_ids, list):
-        return jsonify({"msg": "Not a list of card ids"}), 400
-
-    cards = []
-    for id in card_ids:
-        cards.append(validate_id(id))
-
-    # for card in cards:
-    #     card.board_id = board_id
-
-    db.session.commit()
-    response = {"board_id": board.board_id, "card_ids": card_ids}
-    return jsonify(response), 200
-
 
 @board_bp.route("", methods=["GET"])
 def get_all_boards():
@@ -90,3 +65,11 @@ def get_one_board(board_id):
     return jsonify(board.to_dict()), 200
 
 
+@board_bp.route("/<board_id>/cards", methods=["GET"])
+def get_cards_one_board(board_id):
+    chosen_board = validate_id(board_id)
+    chosen_board_dict = chosen_board.to_dict()
+    if "cards" not in chosen_board_dict:
+        chosen_board_dict["cards"] = []
+
+    return jsonify(chosen_board_dict), 200

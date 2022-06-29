@@ -17,7 +17,7 @@ def validate_id(card_id):
     chosen_card = Card.query.get(card_id)
 
     if chosen_card is None:
-        rsp = {"msg": f"Could not find task with id {card_id}"}
+        rsp = {"msg": f"Could not find card with id {card_id}"}
         abort(make_response(jsonify(rsp), 404))
     return chosen_card
 
@@ -82,11 +82,10 @@ def delete_one_card(card_id):
 
     return jsonify(rsp), 200
 
-@card_bp.route("/<board_id>/cards", methods=["GET"])
-def get_cards_one_board(board_id):
-    chosen_board = validate_id(board_id)
-    chosen_board_dict = chosen_board.to_dict()
-    if "cards" not in chosen_board_dict:
-        chosen_board_dict["cards"] = []
-
-    return jsonify(chosen_board_dict), 200
+@card_bp.route("/<card_id>/likes", methods=["PATCH"])
+def add_likes_by_one(card_id):
+    card = validate_id(card_id)
+    card.likes_count += 1 
+    
+    db.session.commit()
+    return jsonify({'msg': f'likes in card {card_id} increased by one'})
