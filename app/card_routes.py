@@ -5,6 +5,14 @@ from app.models.card import Card
 # example_bp = Blueprint('example_bp', __name__)
 card_bp = Blueprint('card_bp', __name__, url_prefix="/boards/")
 
+#get all cards
+@card_bp.route("/cards", methods=["GET"], strict_slashes=False)
+def get_cards():
+    cards = Card.query.all()
+    cards_response = [card.to_json() for card in cards]
+    return jsonify(cards_response)
+
+@card_bp.route("<board_id>/cards", methods=["CREATE"], strict_slashes=False)
 @card_bp.route("<board_id>/cards", methods=["POST"], strict_slashes=False)
 def create_card(board_id):
     #validate
