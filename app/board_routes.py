@@ -116,4 +116,7 @@ def validate_key_card():
     request_board = request.get_json()
     if "message" not in request_board:
         abort(make_response({"details": "Invalid data"}, 400))
+    elif len(request_board["message"]) > 40:
+        abort(make_response({"details": "Message must be less than 40 characters"}, 400))
+
     return request_board
