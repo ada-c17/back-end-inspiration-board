@@ -20,9 +20,14 @@ def handle_id_request(id, db):
 def validate_card_body(card_body):
     expected_elements = ("message", "board_id")
     for element in expected_elements:
+        print(len(element))
         if element not in card_body:
             abort(
                 make_response({"msg": f"Invalid data: Missing {element}"},400)
+            )
+        elif len(card_body["message"]) > 40:
+            abort(
+                make_response({"msg": f"Invalid data: Message longer than 40 characters"},400)
             )
     return card_body
 
