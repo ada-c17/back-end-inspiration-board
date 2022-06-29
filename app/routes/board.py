@@ -1,15 +1,23 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
 from app.models.card import Card
 from app.routes.helper import validate
 
+def validate_board_body(request_body):
+    expected_elements = ("title", "owner")
+    for element in expected_elements:
+        if element not in request_body:
+            abort(
+                make_response({"msg": f"Invalid data: Missing {element}"},400)
+            )
+    return request_body
 # example_bp = Blueprint('example_bp', __name__)
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
 @boards_bp.route("", methods=["POST"])
 def create_board():
-    request_body = request.get_json()
+    request_body = validate_board_body(request.get_json())
 
     new_board = Board(
         title=request_body["title"],
@@ -19,9 +27,8 @@ def create_board():
     db.session.add(new_board)
     db.session.commit()
 
-    return {
-        "id": new_board.board_id
-    }, 201
+    confirmation_msg = jsonify(f"New board #{new_board.board_id} successfully created")
+    return make_response(confirmation_msg, 201)
 
 @boards_bp.route("", methods=["GET"])
 def get_all_boards():
