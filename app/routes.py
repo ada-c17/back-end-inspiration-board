@@ -71,7 +71,7 @@ def create_one_card(board_id):
             "details": "Must include message"
         }), 400
     
-    new_card = Card(message=request_body["message"], board_id=board_id)
+    new_card = Card(message=request_body["message"], board_id=board_id, likes_count=0)
 
     db.session.add(new_card)
     db.session.commit()
@@ -79,7 +79,8 @@ def create_one_card(board_id):
     return {
         "card_id": new_card.card_id, 
         "board_id": new_card.board_id,
-        "message": new_card.message
+        "message": new_card.message,
+        "likes_count": new_card.likes_count
     }
 
 # ***** GET /boards/<board_id>/cards *****
@@ -93,13 +94,62 @@ def get_all_cards_by_board_id(board_id):
         cards_response.append({
             "card_id": card.card_id,
             "message": card.message,
-            "likes_count": 0, # change this to card.likes_count later
+            "likes_count": card.likes_count,
             "board_id": card.board_id
         })
     
     return jsonify(cards_response), 200
 
-# ***** DELETE /cards/<card_id> *****
 
+# ***** GET /cards *****
+@cards_bp.route("", methods=["GET"])
+def get_all_cards():
+    cards = Card.query.all()
+    card_response = []
+    for card in cards:
+        card_response.append({
+            "card_id": card.card_id,
+            "message": card.message,
+            "likes_count": card.likes_count,
+            "board_id": card.board_id
+        })
+    return jsonify(card_response), 200
+
+# ***** Helper function for Card Validation *****
+def validate_card(card_id):
+    try:
+        card_id = int(card_id)
+    except ValueError:
+        rsp = {"details": f"Invalid id: {card_id}"}
+        abort(make_response(jsonify(rsp), 400))
+
+    selected_card = Card.query.get(card_id)
+    if selected_card is None:
+        rsp = {"details": f"Could not find card with ID: {card_id}"}    
+        abort(make_response(jsonify(rsp), 404))
+
+    return selected_card  
+
+# ***** DELETE /cards/<card_id> *****
+@cards_bp.route("/<card_id>", methods=["DELETE"])
+def delete_card(card_id):
+    card = validate_card(card_id)
+    db.session.delete(card)
+    db.session.commit()
+
+    return {
+        "details": f"Card {card_id} successfully deleted"
+    }, 200
 
 # ***** PUT /cards/<card_id>/like *****
+@cards_bp.route("/<card_id>/like", methods=["PUT"])
+def like_card(card_id):
+    card = validate_card(card_id)
+
+    card.likes_count = card.likes_count + 1
+    db.session.add(card)
+    db.session.commit()
+
+    return {
+        "details": f"Card {card_id}'s likes successfully updated"
+    }, 200
