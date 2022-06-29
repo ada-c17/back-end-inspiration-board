@@ -18,7 +18,6 @@ class Board(db.Model):
     @classmethod
     def from_json(cls, json_data):
         return cls(
-            board_id = json_data["boardId"],
             title = json_data["title"],
             owner =  json_data["owner"]
         )
