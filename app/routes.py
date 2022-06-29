@@ -1,5 +1,3 @@
-from crypt import methods
-from attr import validate
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
@@ -8,12 +6,12 @@ from app.models.card import Card
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards") 
 
 def validate_board(id):
-        board = Board.query.get(id)
+    board = Board.query.get(id)
 
-        if not board:
-            abort(make_response({"message": f"board {id} not found"}, 404))
+    if not board:
+        abort(make_response({"message": f"board {id} not found"}, 404))
 
-        return board
+    return board
 
 # Create board
 @boards_bp.route("", methods=["POST"])
