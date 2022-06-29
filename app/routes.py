@@ -1,12 +1,7 @@
-from app.models.card import *
-from app.models.board import *
+from app.models.card import Card
+from app.models.board import Board
 from flask import Blueprint, request, jsonify, make_response, jsonify, abort
-import requests
-import os
-from dotenv import load_dotenv
-load_dotenv()
-
-# from app import db
+from app import db
 
 # example_bp = Blueprint('example_bp', __name__)
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/boards")
