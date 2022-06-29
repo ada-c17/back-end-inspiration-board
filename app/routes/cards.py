@@ -1,4 +1,5 @@
 from email import message
+from turtle import reset
 from app.models.card import Card
 from app import db
 from flask import Blueprint, jsonify, make_response, request, abort
@@ -69,3 +70,19 @@ def delete_card(card_id):
     db.session.commit()
     
     return { "msg": f"Card {card_id} is successfully deleted." }, 200
+
+@cards_bp.route("/<card_id>", methods=["PATCH"])
+def update_card_likes(card_id):
+
+    card = validate_card(card_id) 
+   
+    card.likes_count+=1
+    db.session.commit() 
+
+    response={"id": card.card_id,
+                "message": card.message,
+                "likes_count": card.likes_count}
+
+    return jsonify(response), 200
+
+
