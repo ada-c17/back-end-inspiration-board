@@ -39,13 +39,6 @@ def get_one_board(board_id):
     board = get_board_or_abort(board_id)
     return jsonify({"board":board.to_dict_board()}), 200
 
-# Get one board
-@boards_bp.route("/<board_id>", methods= ["GET"])
-def get_one_board(board_id):
-    board = get_board_or_abort(board_id)
-    return jsonify({"board":board.to_dict_board()}), 200
-
-
 # update a board by id
 @boards_bp.route("/<board_id>", methods=["PUT"])
 def update_board(board_id):

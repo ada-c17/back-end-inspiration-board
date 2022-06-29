@@ -1,8 +1,8 @@
-"""adds Board and Card model
+"""empty message
 
-Revision ID: d63a5900336d
+Revision ID: 37ebebf5f62c
 Revises: 
-Create Date: 2022-06-29 11:02:54.076000
+Create Date: 2022-06-29 11:38:56.011787
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd63a5900336d'
+revision = '37ebebf5f62c'
 down_revision = None
 branch_labels = None
 depends_on = None
