@@ -121,7 +121,7 @@
 
 ## Create New Card
 
-**Endpoint:** POST '/boards/(id)/cards'
+**Endpoint:** POST '/boards/(board_id)/cards'
 
 **Request body:** JSON object 
 
@@ -143,7 +143,7 @@
 
 ## Update Card Details
 
-**Endpoint:** PATCH '/boards/(id)/cards/(id)'
+**Endpoint:** PATCH '/boards/(board_id)/cards/(card_id)'
 
 **Request body:** JSON object 
 
@@ -157,7 +157,7 @@
 
 ## Delete Card
 
-**Endpoint:** DELETE '/boards/(id)/cards/(id)'
+**Endpoint:** DELETE '/boards/(board_id)/cards/(card_id)'
 
 **Request body:** N/A 
 
@@ -167,7 +167,7 @@
 
 ## Delete All Cards of Board (?)
 
-**Endpoint:** DELETE '/boards/(id)/cards'
+**Endpoint:** DELETE '/boards/(board_id)/cards'
 
 **Request body:** N/A 
 
