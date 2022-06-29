@@ -93,15 +93,18 @@ def validate_board(board_id):
 # All error messages can look like a new section on the screen, a red outline around the input field, and/or disabling the input, as long as it's visible
 # See an error message if I try to make a new card with an empty/blank/invalid/missing "message."
 
-@board_bp.route("/<board_id>/cards", methods=["POST"])
+@board_bp.route("/<board_id>/card", methods=["POST"])
 def create_card_for_board(board_id):
     board = validate_board(board_id)
+    # print(board)
     request_body = request.get_json()
 
     if len(request_body["message"]) > 0 and len(request_body["message"]) <= 40:
         new_card = Card(
             message=request_body["message"],
-            board=board
+            # card_id= new_card.card_id,
+            like_count=new_card.like_count,
+            board=board,
         )
     else:
         abort(make_response(
