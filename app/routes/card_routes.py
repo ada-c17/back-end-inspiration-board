@@ -4,14 +4,11 @@ from app import db
 from os import abort
 # import models:
 
-from models.card import Card
+from app.models.card import Card
 
 # Card Model routes:
-# POST: Create a new card for the selected board,
-# by filling out a form and filling out a "message."
-# See an error message if I try to make the card's "message" more than 40 characters.
-# All error messages can look like a new section on the screen, a red outline around the input field, and/or disabling the input, as long as it's visible
-# See an error message if I try to make a new card with an empty/blank/invalid/missing "message."
+
+
 # GET: View a list of cards that belong to the selected board.
 # DELETE: DONE.
 
