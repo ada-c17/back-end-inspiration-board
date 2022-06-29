@@ -1,5 +1,6 @@
 from crypt import methods
 import json
+from sre_constants import CATEGORY_WORD
 from attr import validate
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
@@ -37,6 +38,14 @@ def create_card():
 
     return make_response({"card": new_card.to_dict()}, 201)
 
+@card_bp.route("/<card_id>", methods=["DELETE"])
+def delete_a_card(card_id):
+    card = get_card(card_id)
+
+    db.session.delete(card)
+    db.session.commit()
+
+    return make_response({'details':f'Card {card.card_id} "{card.message}" successfully deleted'}, 200)
 
 @card_bp.route("/add-like/<int:id>", methods=["PATCH"])
 def add_like(id):
