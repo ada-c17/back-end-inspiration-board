@@ -25,7 +25,7 @@
 
 `{ "title": string, "owner": string }`
 
-| *Title is required for successful creation, but owner can be an empty string.*
+| *Both title and owner are required to not be empty for successful creation.*
 
 **Response body:** String with success message.  
 
