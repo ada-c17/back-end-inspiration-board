@@ -22,7 +22,6 @@ def create_board():
         owner = request_body["owner"])
     db.session.add(new_board)
     db.session.commit()
-    #return jsonify({"board": new_board.to_dict_board()}), 201
     return jsonify(new_board.to_dict_board()), 201
 
 
@@ -39,7 +38,7 @@ def get_all_boards():
     return jsonify([board.to_dict_board() for board in boards]), 200
 
 
-# update a board
+# update a board by id
 @boards_bp.route("<board_id>", methods=["PUT"])
 def update_board(board_id):
     chosen_board = get_board_or_abort(board_id)
@@ -48,9 +47,10 @@ def update_board(board_id):
     chosen_board.owner = request_board["owner"]
     db.session.add(chosen_board)
     db.session.commit()
-    return jsonify({"board": chosen_board.to_dict_board()}), 200
+    return jsonify(chosen_board.to_dict_board()), 200
 
 
+# creat card by specific board id
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
 def create_card_by_board(board_id):
     chosen_board = get_board_or_abort(board_id)
@@ -63,43 +63,13 @@ def create_card_by_board(board_id):
     )
     db.session.add(new_card)
     db.session.commit()
-    # return jsonify(new_card.card_response_dict()), 201
-    return jsonify({"cards": new_card.card_response_dict()}), 201
+    return jsonify(new_card.card_response_dict()), 201
 
 
-# get cards by board
+# get all cards belong specific borad id
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
 def get_cards_by_board(board_id):
     chosen_board = get_board_or_abort(board_id)
-    # response_body = {
-    #     "cards": [card.card_response_dict() for card in chosen_board.cards]
-    # }
-    response_body = [card.card_response_dict() for card in chosen_board.cards]
-    return jsonify(response_body), 200
-
-
-@boards_bp.route("/<board_id>/cards", methods=["POST"])
-def create_card_by_board(board_id):
-    chosen_board = get_board_or_abort(board_id)
-    request_card = validate_key_card()
-    new_card = Card(
-        message = request_card["message"],
-        likes_count = 0,
-        board_id = chosen_board.board_id
-    )
-    db.session.add(new_card)
-    db.session.commit()
-    # return jsonify(new_card.card_response_dict()), 201
-    return jsonify({"cards": new_card.card_response_dict()}), 201
-
-
-# get cards by board
-@boards_bp.route("/<board_id>/cards", methods=["GET"])
-def get_cards_by_board(board_id):
-    chosen_board = get_board_or_abort(board_id)
-    # response_body = {
-    #     "cards": [card.card_response_dict() for card in chosen_board.cards]
-    # }
     response_body = [card.card_response_dict() for card in chosen_board.cards]
     return jsonify(response_body), 200
 
