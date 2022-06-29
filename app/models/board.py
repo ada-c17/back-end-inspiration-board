@@ -19,5 +19,5 @@ class Board(db.Model):
     def from_json(cls, json_data):
         return cls(
             title = json_data["title"],
-            owner =  json_data["owner"]
+            owner = json_data["owner"]
         )
