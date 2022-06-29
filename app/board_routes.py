@@ -9,12 +9,12 @@ board_bp = Blueprint('boards', __name__, url_prefix="/boards")
 def create_board():
     request_body = request.get_json()
 
-    if "owner" not in request_body:
+    if "owner" not in request_body or request_body["owner"].split() == []:
         return jsonify(
             {
                 "details": "Please provide owner information!"
             }), 400
-    if "title" not in request_body:
+    if "title" not in request_body or request_body["title"].split() == []:
         return jsonify(
             {
                 "details": "Please provide title!"
