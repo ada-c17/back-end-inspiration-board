@@ -1,3 +1,4 @@
+from flask import abort, make_response
 from app import db
 
 class Card(db.Model):
@@ -13,3 +14,20 @@ class Card(db.Model):
             'message': self.message,
             'likes_count': self.likes_count
         }
+
+    @classmethod
+    def validate_and_get_by_id(cls, id):
+        try:
+            id = int(id)
+        except:
+            abort(make_response({
+                "message": f"{id} is not a valid id"
+                }, 400))
+        
+        card = cls.query.get(id)
+        if card is None:
+            abort(make_response({
+                "message":f"Card with id of {id} was not found"
+                }, 404))
+        
+        return card

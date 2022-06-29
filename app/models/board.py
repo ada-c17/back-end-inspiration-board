@@ -1,3 +1,4 @@
+from flask import abort, make_response
 from app import db
 
 class Board(db.Model):
@@ -13,3 +14,20 @@ class Board(db.Model):
             'owner': self.owner,
             'cards': [card.as_dict() for card in self.cards]
         }
+    
+    @classmethod
+    def validate_and_get_by_id(cls, id):
+        try:
+            id = int(id)
+        except:
+            abort(make_response({
+                "message": f"{id} is not a valid id"
+                }, 400))
+        
+        board = cls.query.get(id)
+        if board is None:
+            abort(make_response({
+                "message":f"Board with id of {id} was not found"
+                }, 404))
+        
+        return board
