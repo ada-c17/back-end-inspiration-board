@@ -45,42 +45,46 @@ def get_all_boards():
         board_dict = {'id': board.id,
                 'title': board.title,
                 'owner':board.owner
-    }             
+            }             
         boards_response.append(board_dict)
-    return jsonify(boards_response), 200  
+    return jsonify({"boards": boards_response}), 200  
 
 #-----------------------------------
-@boards_bp.route("/<id>",methods = ["GET"]) 
+@boards_bp.route("/<id>", methods=["GET"]) 
 def get_board_by_id(id):
-    # Remember that id from the request is a string and not an integer
+    try:
+        id = int(id)
+    except:
+        abort(make_response({"message": f"{id} is not a valid id"}, 400))
 
     board = Board.query.get(id)
     if (board == None):
-        abort(make_response({"message":f"goal {id} not found"}, 404))
-    else:
-        board_dict={}
-        board_dict['id'] = board.id
-        board_dict['title'] = board.title
-        board_dict['owner'] = board.owner
-        return_dict = {"board": board_dict}
-        return jsonify(return_dict), 200
+        abort(make_response({"message":f"Board with id {id} not found"}, 404))
 
-#------------PUT Method - update board by id---------
-@boards_bp.route("/<id>", methods=["PUT"])
+    board_dict={}
+    board_dict['id'] = board.id
+    board_dict['title'] = board.title
+    board_dict['owner'] = board.owner
+    return_dict = {"board": board_dict}
+    return jsonify(return_dict), 200
+
+#------------Update board details---------
+@boards_bp.route("/<id>", methods=["PATCH"])
 def update_board_by_id(id):
-    board = Board.query.get(id)
+    try:
+        id = int(id)
+    except:
+        abort(make_response({"message": f"{id} is not a valid id"}, 400))
     
+    board = Board.query.get(id)
     if (board == None):
-        abort(make_response({"message":f"board {id} not found"}, 404))
+        abort(make_response({"message": f"board {id} not found"}, 404))
 
     update_dict = request.get_json()
-    if 'title' not in update_dict or 'owner' not in update_dict:
-        return make_response({"details":"Invalid data"},400)
 
-    title = update_dict['title']
-    owner = update_dict['owner']
-    board.title = title
-    board.owner = owner
+    for k, v in update_dict.items():
+        if k in {'title', 'owner'}:
+            setattr(board, k, v)
     
     db.session.commit()
 
@@ -89,12 +93,19 @@ def update_board_by_id(id):
     board_dict['title'] = board.title
     board_dict['owner'] = board.owner
     
-    return_dict = {"goal": board_dict}
+    return_dict = {
+        "message": f"Board with id of {board.id} successfully updated",
+        "board": board_dict
+        }
     return jsonify(return_dict), 200
 
 #------------remove board by id------------
 @boards_bp.route("/<id>", methods=["DELETE"])
 def remove_board_by_id(id):
+    try:
+        id = int(id)
+    except:
+        abort(make_response({"message": f"{id} is not a valid id"}, 400))
     board = Board.query.get(id)
     
     if (board == None):
@@ -102,7 +113,9 @@ def remove_board_by_id(id):
     
     db.session.delete(board)
     db.session.commit()
-    return make_response({"details":f"Board {id} \"{board.title}\" successfully deleted"},200)
+    return jsonify({
+        "message":f"Board {id} \"{board.title}\" successfully deleted"
+        }, 200)
 
 #------------------------------------------------
 
