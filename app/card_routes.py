@@ -1,10 +1,11 @@
 from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.card import Card
+from app.models.board import Board
 
 # example_bp = Blueprint('example_bp', __name__)
 card_bp = Blueprint('card_bp', __name__, url_prefix="/boards/")
-
+board_bp = Blueprint('board_bp', __name__, url_prefix="/boards/")
 @card_bp.route("<board_id>/cards", methods=["CREATE"], strict_slashes=False)
 def create_card(board_id):
     #validate
@@ -39,3 +40,13 @@ def delete_card(board_id, card_id):
     db.session.delete(card)
     db.session.commit()
     return make_response("Card successfully deleted", 200)
+
+# board routes
+
+# get all boards
+@board_bp.route("", methods=["GET"], strict_slashes=False)
+def get_boards():
+    # do sort stuff
+    boards = Board.query.all()
+    boards_response = [board.to_json() for board in boards]
+    return jsonify(boards_response)
