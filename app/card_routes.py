@@ -21,6 +21,11 @@ def create_one_card_for_a_board(my_board_id):
             }), 400
     elif "likes_count" not in request_body:
         new_card = Card(message=request_body["message"], likes_count = 0, board_id = my_board_id)
+    elif not type(request_body["likes_count"]) is int:
+        return jsonify(
+            {
+                "details": "Please enter a number for the likes_count!"
+            }), 400
     else:
         new_card = Card(message=request_body["message"], likes_count = request_body["likes_count"], board_id = my_board_id)
 
