@@ -27,7 +27,16 @@
 
 | *Both title and owner are required to not be empty for successful creation.*
 
-**Response body:** String with success message.  
+**Response body:** JSON object
+```
+{
+    "board": {
+        "board_id": integer,
+        "title": string,
+        "owner": string
+    }
+}
+```  
 
 ---
 
@@ -92,7 +101,7 @@
 
 `{ "title": string, "owner": string }`
 
-| *Object can contain one of 'title' or 'owner' keys, or both*
+| *JSON can contain one of 'title' or 'owner' keys, or both.*
 
 **Response body:** String with success message.
 
@@ -118,7 +127,17 @@
 
 `{ "message": string }`
 
-**Response body:** String with success message. 
+**Response body:** JSON object
+
+```
+{
+    "card": {
+        "id": integer,
+        "message": string,
+        "likes_count": integer
+    }
+}
+```
 
 ---
 
@@ -130,7 +149,7 @@
 
 `{ "message": string, "likes_count": integer }`
 
-| *Object can contain one of 'message' or 'likes_count' keys, or both*
+| *JSON can contain one of 'message' or 'likes_count' keys, or both*
 
 **Response body:** String with success message.
 
