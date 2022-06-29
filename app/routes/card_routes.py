@@ -46,13 +46,16 @@ def delete_one_card(id):
 @cards_bp.route("/<id>", methods=["PATCH"])
 def update_one_card(id):
     card = validate_card(id)
-    # request_body = request.get_json()
     likes_param = request.args.get("likes_count")
     
     card.likes_count = likes_param    
     db.session.commit()
-
-    return make_response(f"Card# {card.card_id} successfully updated"), 200
+    response_body = {
+            "card_id":{card.card_id}, 
+            "likes_count": 0,
+            "message": {card.message}
+    }
+    return make_response(response_body), 200
 
 #QUALITY CONTROL HELPER FUNCTION
 def validate_card(card_id):

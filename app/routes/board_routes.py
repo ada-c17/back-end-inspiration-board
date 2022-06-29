@@ -67,7 +67,7 @@ def get_cards_per_board(board_id):
 
     db.session.commit()
 
-    return jsonify(dict(id=board.board_id, title=board.title, cards=cards_info)), 200
+    return jsonify(dict(board_id=board.board_id, title=board.title, cards=cards_info)), 200
 
 
 # GET ALL boardS aka READ at endpoint /boards
@@ -121,7 +121,7 @@ def delete_one_board(id):
 
     db.session.delete(board)
     db.session.commit()
-
+    
     return jsonify({'details': f'Board {id} "{board.title}" successfully deleted'}), 200
 
 #QUALITY CONTROL HELPER FUNCTION
