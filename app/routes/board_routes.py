@@ -6,11 +6,9 @@ from sqlalchemy import asc, desc
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
-def validate_key():
-    request_board = request.get_json()
-    if "title" not in request_board or "owner" not in request_board:
+def validate_request(request_body):
+    if "title" not in request_body or "owner" not in request_body:
         abort(make_response({"details": "Invalid data"}, 400))
-    return request_board
 
 # helper function for validate id
 def get_board_or_abort(board_id):
@@ -19,16 +17,14 @@ def get_board_or_abort(board_id):
     except ValueError:
         abort(make_response({"message": f"The board id {board_id} is invalid. The id must be integer."}, 400))
     
-    boards = Board.query.all()
-    for board in boards:
-        if board.board_id == board_id:
-            return board
-    abort(make_response({"message": f"The board id {board_id} is not found"}, 404))
+    board = Board.query.get(board_id)
+    if not board:
+        abort(make_response({"message": f"The board id {board_id} is not found"}, 404))
 
 @boards_bp.route("", methods=["POST"])
 def create_board():
     request_body = request.get_json()
-    validate_key()
+    validate_request(request_body)
 
     new_board = Board(
         title = request_body["title"],
@@ -51,31 +47,18 @@ def get_all_boards():
         boards = Board.query.all()
     return jsonify([board.make_json() for board in boards]), 200
 
-
 #get one board using Get in routes and accessing by id
 @boards_bp.route("/<board_id>", methods= ["GET"])
 def get_one_board(board_id):
-    board = validate_board(board_id)
+    board = get_board_or_abort(board_id)
     return jsonify({"board":board.make_json()}), 200
 
-# validating board and using as a helper function 
-def validate_board(board_id):
-    try:
-        board_id = int(board_id)
-    except ValueError:
-        abort(make_response({"message": f"The board id {board_id} is invalid. The id must be integer."}, 400))
-    
-    boards = Board.query.all()
-    for board in boards:
-        if board.board_id == board_id:
-            return board
-    abort(make_response({"message": f"The board id {board_id} is not found"}, 404))
 
 @boards_bp.route("/<board_id>", methods=["DELETE"])
 def delete_a_board(board_id):
-    board = validate_board(board_id)
+    board = get_board_or_abort(board_id)
 
     db.session.delete(board)
     db.session.commit()
 
-    return make_response({'details':f'Board {board.board_id} "{board.title}" successfully deleted'},200)
+    return make_response({'details':f'Board {board.board_id} "{board.title}" successfully deleted'}, 200)
