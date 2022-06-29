@@ -6,5 +6,15 @@ class Card(db.Model):
     message = db.Column(db.String)
     likes_count = db.Column(db.Integer)
     board_id = db.Column(db.Integer, db.ForeignKey("board.board_id"), nullable=True)
-    # I checked how to use laze in this website...
-    #https://medium.com/@ns2586/sqlalchemys-relationship-and-lazy-parameter-4a553257d9ef
+    
+
+    def to_dict_card(self):
+        response = {
+            "id":self.card_id,
+            "likes_count":self.likes_count,
+            "message":self.message
+        }
+        return response
+
+
+    
