@@ -58,7 +58,7 @@ def add_card_to_board(board_id):
     db.session.commit()
     send_slack_new_card_message(new_card)
     #change return?
-    return jsonify({"boardId": board.board_id, "cardId": new_card.card_id}), 200
+    return jsonify({"card": new_card.to_json()}), 200
 
 #GET /boards/<board_id>/cards
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
