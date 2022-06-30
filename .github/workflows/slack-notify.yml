@@ -1,5 +1,5 @@
 on: push
-name: Slack Notification Demo
+name: INSPO BACK END
 jobs:
   slackNotification:
     name: Slack Notification
