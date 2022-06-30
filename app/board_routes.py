@@ -23,37 +23,13 @@ def validate_board(board_id):
 # GET all boards
 @board_bp.route('', methods=['GET'])
 def get_all_boards():
-
-    params = request.args
-    if not params:
-        boards = Board.query.all()
-    elif 'title' in params:
-        found_title = params['title']
-        boards = Board.query.filter(func.lower(Board.title)==func.lower(found_title))
-    elif 'owner' in params:
-        found_owner = params['owner']
-        boards = Board.query.filter(func.lower(Board.owner)==func.lower(found_owner))
-    else: 
-        return {'details': 'Sorry query not found, please search elsewhere.'}
+    boards = Board.query.all()
 
     wall = []
     for board in boards:
-        wall.append({'title': board.title,
-                            'owner': board.owner,
-                            'id': board.board_id})
-    return jsonify(wall)
+        wall.append(board.to_dict())
 
-
-# # GET all boards
-# @board_bp.route('', methods=['GET'])
-# def get_all_boards():
-#     boards = Board.query.all()
-
-#     wall = []
-#     for board in boards:
-#         wall.append(board.to_dict())
-
-#     return jsonify(wall), 200
+    return jsonify(wall), 200
 
 
 # GET one board by id
