@@ -7,11 +7,14 @@
   - [Get One Board](#get-one-board)
   - [Update Board Details](#update-board-details)
   - [Delete Board](#delete-board)
+- [*Nested Routes*](#nested-routes)
+  - [Create New Card (1)](#create-new-card-1)
+  - [Get All Cards of Board by Board ID](#get-all-cards-of-board-by-board-id)
+  - [Delete All Cards of Board bu Board ID](#delete-all-cards-of-board-bu-board-id)
 - [*Card Routes*](#card-routes)
-  - [Create New Card](#create-new-card)
+  - [Create New Card (2)](#create-new-card-2)
   - [Update Card Details](#update-card-details)
   - [Delete Card](#delete-card)
-  - [Delete All Cards of Board (?)](#delete-all-cards-of-board-)
 
 ---
 
@@ -145,9 +148,9 @@
 
 ---
 
-# *Card Routes*
+# *Nested Routes*
 
-## Create New Card
+## Create New Card (1)
 
 **Endpoint:** POST '/boards/(board_id)/cards'
 
@@ -171,9 +174,70 @@
 
 ---
 
+## Get All Cards of Board by Board ID
+
+**Endpoint:** GET '/boards/(id)/cards
+
+**Request body:** N/A
+
+**Response body:** JSON object
+```
+{
+    "cards": [
+        {
+            "board_id": integer,
+            "card_id": integer,
+            "likes_count": integer,
+            "message": string
+        },
+        ...
+    ]
+}
+```
+
+---
+
+## Delete All Cards of Board bu Board ID
+
+**Endpoint:** DELETE '/boards/(id)/cards'
+
+**Request body:** N/A 
+
+**Response body:**  JSON object
+
+`{ "message": string (success/error message) }`
+
+# *Card Routes*
+
+## Create New Card (2)
+
+**Endpoint:** POST '/cards'
+
+**Request body:** JSON object 
+
+`{ "message": string, "board_id": integer }`
+
+| *Request JSON must contain 'board_id' value when creating by this route*
+
+**Response body:** JSON object
+
+```
+{
+    "message": string (success/error message),
+    "card": {
+        "card_id": integer,
+        "message": string,
+        "likes_count": integer,
+        "board_id": integer
+    }
+}
+```
+
+---
+
 ## Update Card Details
 
-**Endpoint:** PATCH '/boards/(board_id)/cards/(card_id)'
+**Endpoint:** PATCH '/cards/(id)'
 
 **Request body:** JSON object 
 
@@ -198,7 +262,7 @@
 
 ## Delete Card
 
-**Endpoint:** DELETE '/boards/(board_id)/cards/(card_id)'
+**Endpoint:** DELETE '/cards/(id)'
 
 **Request body:** N/A 
 
@@ -206,12 +270,3 @@
 
 `{ "message": string (success/error message) }`
 
----
-
-## Delete All Cards of Board (?)
-
-**Endpoint:** DELETE '/boards/(board_id)/cards'
-
-**Request body:** N/A 
-
-**Response body:** String with success message. 
