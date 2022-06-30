@@ -84,6 +84,8 @@ def update_board(board_id):
     request_body = request.get_json()
 
     board.title = request_body["title"]
+
+    # !!!!!!
     board.owner = request_body["owner"]
 
     db.session.commit()
@@ -101,9 +103,10 @@ def create_one_card(id):
     request_body = request.get_json()
     
     if 'message' not in request_body:
-        return {"message": "Please enter both message and likes"}, 400
+        return {"message": "Please add a message to post a card"}, 400
 
     new_card = Card(message = request_body['message'],
+                    likes_count=0,
                     board_id = id)
     
     db.session.add(new_card)
@@ -116,6 +119,7 @@ def create_one_card(id):
     }}, 201
 
 #UPDATE ONE CARD
+# !!!!!!!
 @cards_bp.route('/<card_id>', methods=['PUT'])
 def replace_one_card(card_id):
     chosen_card = get_card_or_abort(card_id)
@@ -139,6 +143,17 @@ def replace_one_card(card_id):
         'likes_count': chosen_card.likes_count
         }}, 200
 
+#Delete board
+@boards_bp.route('/<board_id>', methods = ['DELETE'])
+def delete_board(board_id):
+    chosen_board = validate_board_id(board_id)
+    db.session.delete(chosen_board)
+    db.session.commit()
+
+    return {
+        'details':f'board {chosen_board.board_id} {chosen_board.title} successfully deleted'
+    }, 200
+
 #Delete card
 @cards_bp.route('/<card_id>', methods = ['DELETE'])
 def delete_card(card_id):
@@ -147,7 +162,7 @@ def delete_card(card_id):
     db.session.commit()
 
     return {
-        'details':f'card {chosen_card.card_id} "{chosen_card.message}" successfully deleted'
+        'details':f'card {chosen_card.card_id} {chosen_card.message} successfully deleted'
     }, 200
 
 #READ ALL CARDS FOR ONE BOARD

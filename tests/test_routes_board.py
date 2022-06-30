@@ -90,7 +90,7 @@ def test_put_board_not_found(client):
 def test_update_board(client, one_board):
     # Act
     response = client.put("/boards/1", json={
-        "title": "Updated board Title",
+        "title": "Updated board title",
         "owner": "Updated board owner"
     })
     response_body = response.get_json()
@@ -102,53 +102,13 @@ def test_update_board(client, one_board):
     assert response_body == {
         "board": {
             "id": 1,
-            "title": "Updated board Title",
+            "title": "Updated board title",
             "owner": "Updated board owner"
         }
     }
     board = Board.query.get(1)
-    assert board.title == "Updated board Title"
+    assert board.title == "Updated board title"
     assert board.owner == "Updated board owner"
-
-
-# @pytest.mark.skip(reason="No way to test this feature yet")
-def test_post_card_ids_to_board(client, one_board, three_cards):
-    # Act
-    response = client.post("/boards/1/cards", json={
-        "card_ids": [1, 2, 3]
-    })
-    response_body = response.get_json()
-
-    # Assert
-    assert response.status_code == 200
-    assert "id" in response_body
-    assert "card_ids" in response_body
-    assert response_body == {
-        "id": 1,
-        "card_ids": [1, 2, 3]
-    }
-
-    # Check that Board was updated in the db
-    assert len(Board.query.get(1).cards) == 3
-
-
-# @pytest.mark.skip(reason="No way to test this feature yet")
-def test_post_card_ids_to_board_already_with_boards(client, one_card_belongs_to_one_board, three_cards):
-    # Act
-    response = client.post("/boards/1/cards", json={
-        "card_ids": [1, 4]
-    })
-    response_body = response.get_json()
-
-    # Assert
-    assert response.status_code == 200
-    assert "id" in response_body
-    assert "card_ids" in response_body
-    assert response_body == {
-        "id": 1,
-        "card_ids": [1, 4]
-    }
-    assert len(Board.query.get(1).cards) == 2
 
 
 # @pytest.mark.skip(reason="No way to test this feature yet")

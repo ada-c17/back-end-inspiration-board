@@ -47,7 +47,7 @@ def test_delete_card(client, one_card):
     assert response.status_code == 200
     assert "details" in response_body
     assert response_body == {
-        "details": 'card 1 "Be happy" successfully deleted'
+        "details": 'card 1 Be happy successfully deleted'
     }
     assert Card.query.get(1) == None
 
