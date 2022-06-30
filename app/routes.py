@@ -85,9 +85,6 @@ def update_board(board_id):
 
     board.title = request_body["title"]
 
-    # !!!!!!
-    board.owner = request_body["owner"]
-
     db.session.commit()
     return jsonify({
         "board": {
@@ -118,30 +115,7 @@ def create_one_card(id):
         "likes_count": new_card.likes_count
     }}, 201
 
-#UPDATE ONE CARD
-# !!!!!!!
-@cards_bp.route('/<card_id>', methods=['PUT'])
-def replace_one_card(card_id):
-    chosen_card = get_card_or_abort(card_id)
-    request_body = request.get_json()
 
-    try:
-        chosen_card.message = request_body['message']
-        #NO NEED FOR REQUEST BODY TO INCLIDE LIKES COUNT
-        # chosen_card.likes_count = request_body['likes_count']
-        
-    except KeyError:
-        return {
-            'message': 'card {card_id} not found'
-        } , 400
-
-    db.session.commit()
-
-    return { 'card': {
-        'id': chosen_card.card_id,
-        'message': chosen_card.message,
-        'likes_count': chosen_card.likes_count
-        }}, 200
 
 #Delete board
 @boards_bp.route('/<board_id>', methods = ['DELETE'])
