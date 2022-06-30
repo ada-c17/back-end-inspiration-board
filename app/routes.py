@@ -111,6 +111,18 @@ def get_all_cards_of_board_by_id(id):
     }
     return jsonify(response), 200
 
+#-----delete all cards of board by board id---
+@boards_bp.route("/<id>/cards", methods=["DELETE"])
+def delete_all_cards_of_board_by_id(id):
+    board = Board.validate_and_get_by_id(id)
+    for card in board.cards:
+        db.session.delete(card)
+    db.session.commit()
+    response = {
+        "message": f"All cards from '{board.title}' were deleted"
+    }
+    return jsonify(response), 200
+
 #------------------CARD ROUTES-------------------------------
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
