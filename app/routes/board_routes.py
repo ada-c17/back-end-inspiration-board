@@ -87,7 +87,8 @@ def create_new_card(board_id):
         key = os.environ.get("SLACK_API")
         payload = {
             "channel": "bored_at_work",
-            "text": f"Someone just added the card \"{new_card.message}\""
+            "text": f"Someone just added the card \"{new_card.message}\""\
+                "to board {board_id}."
             }
         header = {"Authorization": f"Bearer {key}"}
         requests.post("https://slack.com/api/chat.postMessage", params=payload,
