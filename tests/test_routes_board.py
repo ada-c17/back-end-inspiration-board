@@ -75,7 +75,18 @@ def test_create_board(client):
     assert new_board.owner == "Marlyn"
 
 
-# @pytest.mark.skip(reason="No way to test this feature yet")
+@pytest.mark.skip(reason="No way to test this feature yet")
+def test_put_board_not_found(client):
+    # Act
+    response = client.put("/boards/1")
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 404
+    assert response_body=={"message": "board 1 not found"}
+
+
+@pytest.mark.skip(reason="No way to test this feature yet")
 def test_update_board(client, one_board):
     # Act
     response = client.put("/boards/1", json={
