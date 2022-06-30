@@ -68,7 +68,7 @@ def add_card_to_board(id):
     db.session.add(new_card)
     db.session.commit()
 
-    response_body = {"id": new_card.card_id, "board_id": new_card.board_id, "message": new_card.message}
+    response_body = new_card.to_dict()
     return make_response(jsonify(response_body), 200)
 
 @boards_bp.route("/<board_id>/cards/<card_id>", methods=["DELETE"])
@@ -79,3 +79,14 @@ def delete_card_by_id(board_id, card_id):
     db.session.commit()
 
     return make_response(dict(details=f'Card {card.card_id} "{card.message}" successfully deleted'), 200)
+
+@boards_bp.route("/<board_id>/cards/<card_id>", methods = ["PATCH"])
+def add_likes_to_card(board_id, card_id):
+    board = Board.validate(board_id)
+    card = Card.validate(card_id)
+
+    card.likes_count += 1
+
+    db.session.commit()
+
+    return make_response(card.to_dict(), 200)
