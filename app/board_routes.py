@@ -18,6 +18,7 @@ def validate_board(board_id):
     
     if not board:
         abort(make_response({'details': f'Board {board_id} does not exist'}, 404))
+    return board
 
 
 # GET ALL Boards
@@ -36,7 +37,11 @@ def get_all_boards():
 @board_bp.route ('/<board_id>', methods=['GET'])
 def get_one_board (board_id):
     board = validate_board(board_id)
-    return ({'Board': board.to_dict()}), 200
+    return ({
+        'id': board.board_id,
+        'title': board.title,
+        'owner': board.owner
+        }),200
 
 
 #POST ONE new Board
