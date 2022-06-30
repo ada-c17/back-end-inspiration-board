@@ -47,6 +47,15 @@ def get_all_boards():
     
     return jsonify(boards_response)
 
+@boards_bp.route("/<board_id>", methods = ["DELETE"])
+def delete_one_board(board_id):
+    chosen_board = validate_board(board_id)
+
+    db.session.delete(chosen_board)
+    db.session.commit()
+
+    return jsonify({"message": f"Deleted board with id {board_id}"})
+
 @boards_bp.route("/<board_id>", methods = ["GET"])
 def get_one_board(board_id):
     board = validate_board(board_id)
