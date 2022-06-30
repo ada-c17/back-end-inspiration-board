@@ -30,8 +30,9 @@
 **Response body:** JSON object
 ```
 {
+    "message": string (success/error message),
     "board": {
-        "board_id": integer,
+        "id": integer,
         "title": string,
         "owner": string
     }
@@ -48,22 +49,24 @@
 
 **Response body:** JSON array 
 ```
-[ 
-    {
-        "board_id": integer,
-        "title": string,
-        "owner": string,
-        "cards": array [
-            {
-                "card_id": integer,
-                "message": string,
-                "likes_count": integer
-            },
-            ...
-        ]
-    }, 
-    ...
-]
+{
+    "boards": array [ 
+        {
+            "id": integer,
+            "title": string,
+            "owner": string,
+            "cards": array [
+                {
+                    "id": integer,
+                    "message": string,
+                    "likes_count": integer
+                },
+                ...
+            ]
+        }, 
+        ...
+    ]
+}
 ```
 
 ---
@@ -77,17 +80,19 @@
 **Response body:** JSON object
 ```
 {
-    "board_id": integer,
-    "title": string,
-    "owner": string,
-    "cards": array [
-        {
-            "card_id": integer,
-            "message": string,
-            "likes_count": integer
-        },
-        ...
-    ]
+    "board": {
+        "id": integer,
+        "title": string,
+        "owner": string,
+        "cards": array [
+            {
+                "id": integer,
+                "message": string,
+                "likes_count": integer
+            },
+            ...
+        ]
+    }
 }
 ```
 
@@ -103,7 +108,25 @@
 
 | *JSON can contain one of 'title' or 'owner' keys, or both.*
 
-**Response body:** String with success message.
+**Response body:** JSON object
+```
+{
+    "message": string (success/error message),
+    "board": {
+        "id": integer,
+        "owner": string,
+        "title": string
+        "cards": array [
+            {
+                "id": integer,
+                "likes_count": integer,
+                "message": string
+            },
+            ...
+        ]
+    }
+}
+```
 
 ---
 
@@ -113,7 +136,9 @@
 
 **Request body:** N/A
 
-**Response body:** String with success message.
+**Response body:** JSON object
+
+`{ "message": string (success/error message) }`
 
 ---
 
@@ -131,6 +156,7 @@
 
 ```
 {
+    "message": string (success/error message),
     "card": {
         "id": integer,
         "message": string,
@@ -151,7 +177,17 @@
 
 | *JSON can contain one of 'message' or 'likes_count' keys, or both*
 
-**Response body:** String with success message.
+**Response body:** JSON object
+```
+{
+    "message": string (success/error message),
+    "card": {
+        "id": integer,
+        "likes_count": integer,
+        "message": string
+    }
+}
+```
 
 ---
 
@@ -161,7 +197,9 @@
 
 **Request body:** N/A 
 
-**Response body:** String with success message. 
+**Response body:** JSON object
+
+`{ "message": string (success/error message) }`
 
 ---
 
