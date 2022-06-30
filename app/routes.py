@@ -74,8 +74,8 @@ def remove_board_by_id(id):
     db.session.delete(board)
     db.session.commit()
     return jsonify({
-        "message": f"Board {id} \"{board.title}\" successfully deleted"
-        }, 200)
+        "message": f"Board {id} '{board.title}' successfully deleted"
+        }), 200
 
 #-----------------CARD--------------------------
 
@@ -106,26 +106,26 @@ def post_card(id):
 
 #------get card by id --------
 @cards_bp.route("/<board_id>/cards/<card_id>",methods = ["GET"]) 
-def get_card_by_id(card_id):
+def get_card_by_id(board_id, card_id):
     card = Card.validate_and_get_by_id(card_id)
     return_dict = {"card": card.as_dict()}
     return jsonify(return_dict), 200
 
 #------------remove card by id------------
 @cards_bp.route("/<board_id>/cards/<card_id>", methods=["DELETE"])
-def remove_card_by_id(card_id):
+def remove_card_by_id(board_id, card_id):
     card = Card.validate_and_get_by_id(card_id)
     
     db.session.delete(card)
     db.session.commit()
 
     return jsonify({
-        "message":f"Card {id} \"{card.message}\" successfully deleted"
-        }, 200)
+        "message":f"Card {card_id} '{card.message}' successfully deleted"
+        }), 200
     
 #------------update card by id---------
 @cards_bp.route("/<board_id>/cards/<card_id>", methods=["PATCH"])
-def update_card_by_id(card_id):
+def update_card_by_id(board_id, card_id):
     card = Card.validate_and_get_by_id(card_id)
     update_dict = request.get_json()
     
