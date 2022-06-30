@@ -43,5 +43,4 @@ def like_card(card_id):
     card.likes_count = request_body['likes_count']
 
     db.session.commit()
-
-    return jsonify({'details': f'Likes updated for card {card_id}'}), 204
+    return jsonify(f'Card {card_id} updated likes'), 200
