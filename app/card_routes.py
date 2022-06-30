@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response, abort
 # from flask import Blueprint, abort, request, jsonify, make_response
 from app import db
-from app.models.card import Card,
+from app.models.card import Card
 # from .board_routes import validate_board
 
 
