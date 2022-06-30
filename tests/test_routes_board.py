@@ -90,8 +90,7 @@ def test_put_board_not_found(client):
 def test_update_board(client, one_board):
     # Act
     response = client.put("/boards/1", json={
-        "title": "Updated board title",
-        "owner": "Updated board owner"
+        "title": "Updated board title"
     })
     response_body = response.get_json()
     print(response_body)
@@ -103,12 +102,12 @@ def test_update_board(client, one_board):
         "board": {
             "id": 1,
             "title": "Updated board title",
-            "owner": "Updated board owner"
+            "owner": "Nina"
         }
     }
     board = Board.query.get(1)
     assert board.title == "Updated board title"
-    assert board.owner == "Updated board owner"
+    assert board.owner == "Nina"
 
 
 # @pytest.mark.skip(reason="No way to test this feature yet")
