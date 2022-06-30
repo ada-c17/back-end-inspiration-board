@@ -12,7 +12,6 @@ def get_cards():
     cards_response = [card.to_json() for card in cards]
     return jsonify(cards_response)
 
-@card_bp.route("<board_id>/cards", methods=["CREATE"], strict_slashes=False)
 @card_bp.route("<board_id>/cards", methods=["POST"], strict_slashes=False)
 def create_card(board_id):
     #validate
