@@ -77,12 +77,10 @@ def remove_board_by_id(id):
         "message": f"Board {id} '{board.title}' successfully deleted"
         }), 200
 
-#-----------------CARD--------------------------
+#-----------------NESTED CARD ROUTES--------------------------
 
-cards_bp = Blueprint("cards", __name__, url_prefix="/boards")
-
-#-----post_card------
-@cards_bp.route("/<id>/cards", methods=["POST"])
+#-----post card to board------
+@boards_bp.route("/<id>/cards", methods=["POST"])
 def post_card(id):
     post_dict = request.get_json()
     message = post_dict.get('message', None)
@@ -104,29 +102,41 @@ def post_card(id):
         }
     return jsonify(return_dict), 201
 
+#-----get all cards of board by board id------
+@boards_bp.route("/<id>/cards", methods=["GET"])
+def get_all_cards_of_board_by_id(id):
+    board = Board.validate_and_get_by_id(id)
+    response = {
+        "cards": [card.as_dict() for card in board.cards]
+    }
+    return jsonify(response), 200
+
+#------------------CARD ROUTES-------------------------------
+cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
+
 #------get card by id --------
-@cards_bp.route("/<board_id>/cards/<card_id>",methods = ["GET"]) 
-def get_card_by_id(board_id, card_id):
-    card = Card.validate_and_get_by_id(card_id)
+@cards_bp.route("/<id>", methods = ["GET"]) 
+def get_card_by_id(id):
+    card = Card.validate_and_get_by_id(id)
     return_dict = {"card": card.as_dict()}
     return jsonify(return_dict), 200
 
 #------------remove card by id------------
-@cards_bp.route("/<board_id>/cards/<card_id>", methods=["DELETE"])
-def remove_card_by_id(board_id, card_id):
-    card = Card.validate_and_get_by_id(card_id)
+@cards_bp.route("/<id>", methods=["DELETE"])
+def remove_card_by_id(id):
+    card = Card.validate_and_get_by_id(id)
     
     db.session.delete(card)
     db.session.commit()
 
     return jsonify({
-        "message":f"Card {card_id} '{card.message}' successfully deleted"
+        "message":f"Card {id} '{card.message}' successfully deleted"
         }), 200
     
 #------------update card by id---------
-@cards_bp.route("/<board_id>/cards/<card_id>", methods=["PATCH"])
-def update_card_by_id(board_id, card_id):
-    card = Card.validate_and_get_by_id(card_id)
+@cards_bp.route("/<id>", methods=["PATCH"])
+def update_card_by_id(id):
+    card = Card.validate_and_get_by_id(id)
     update_dict = request.get_json()
     
     for k, v in update_dict.items():
