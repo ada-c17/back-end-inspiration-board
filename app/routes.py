@@ -89,10 +89,9 @@ def delete_board(board_id):
 
 @card_bp.route("", methods=["GET"])
 def get_all_cards():
-    request_body = request.get_json()
-    if request_body:
-        if "board_id" in request_body:
-            cards = Card.query.filter_by(board_id=request_body["board_id"])
+    board_id = request.args.get("board_id")
+    if board_id:
+        cards = Card.query.filter_by(board_id=board_id)
     else:
         cards = Card.query.all()
     return jsonify([card.to_dict() for card in cards]), 200
