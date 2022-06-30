@@ -29,6 +29,17 @@ def delete_card(board_id, card_id):
     db.session.commit()
     return make_response("Card successfully deleted", 200)
 
+# add one like
+@card_bp.route("<board_id>/cards/<card_id>/like", methods=["PATCH"], strict_slashes=False)
+def add_like(card_id):
+    # validate stuff
+    card = Card.query.get(card_id)
+    card.likes_count += 1
+
+    db.session.commit()
+    return make_response("Success", 200)
+
+
 
 # OPTIONAL ENHANCEMENT
 # update one card 
