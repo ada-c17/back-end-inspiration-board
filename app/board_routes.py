@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, request, jsonify, make_response, abort
 from sqlalchemy import func
 from app import db
@@ -66,10 +67,10 @@ def post_cards_to_specific_board(board_id):
     db.session.commit()
 
     return jsonify({
-        'card id': new_card.card_id,
+        'card_id': new_card.card_id,
         'message': new_card.message,
-        'board id': board.board_id,
-        'board title': board.title
+        'board_id': board.board_id,
+        'board_title': board.title
     }), 201
 
 
@@ -83,8 +84,8 @@ def get_all_cards_for_specific_board(board_id):
         card_list.append(card.to_dict())
 
     return jsonify({
-        'board id': board.board_id,
-        'board title': board.title,
+        'board_id': board.board_id,
+        'board_title': board.title,
         'cards': card_list
     }), 200
 
@@ -97,4 +98,22 @@ def delete_board(board_id):
     db.session.delete(board)
     db.session.commit()
 
-    return{'details': f'Board {board.board_id} was successfully deleted'}, 200
+    return{'details': f'Board {board_id} was successfully deleted'}, 200
+
+
+@board_bp.route ('/<board_id>', methods=['PUT'])
+def patch_board_title(board_id):
+    board = validate_board(board_id)
+    request_body = request.get_json()
+    try: 
+        board.title = request_body['title']
+        board.owner = request_body['owner']
+    except KeyError:
+        return jsonify({"details": "Please enter both Title and Owner"}), 400
+    db.session.commit()
+
+    return ({'Board': board.to_dict()}), 200
+
+
+
+
