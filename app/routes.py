@@ -22,7 +22,11 @@ boards_bp = Blueprint('boards_bp', __name__, url_prefix='/boards')
 
 @boards_bp.route('', methods=['GET'])
 def read_all_boards():
-    board_query = request.args.get("sort") # do we need this? - NJ
+    '''
+    GET method to /boards endpoint
+    Returns: JSON body with id, title, and owner from all boards
+    '''
+    # board_query = request.args.get("sort") # do we need this? - NJ
     boards = Board.query.all()
     board_response = []
     for board in boards:
@@ -37,6 +41,11 @@ def read_all_boards():
 
 @boards_bp.route('', methods=['POST'])
 def create_board():
+    '''
+    POST method to /boards endpoint
+    Input: title and owner which are both required
+    Returns: JSON response body with all input including id
+    '''
     request_body = request.get_json()
     try:
         new_board = Board(
@@ -57,6 +66,11 @@ def create_board():
 
 @boards_bp.route("/<board_id>", methods=["DELETE"])
 def delete_board(board_id):
+    '''
+    DELETE method to boards/<board_id> endpoint
+    Input: sending a board with a specific id will delete that board
+    Returns: success message with specific board id and board title 
+    '''
     board = validate_or_abort(board_id)
 
     db.session.delete(board)
@@ -66,6 +80,10 @@ def delete_board(board_id):
 
 @boards_bp.route("/<board_id>/cards", methods=["GET"]) 
 def read_cards_for_one_board(board_id): 
+    '''
+    GET method to /boards/<board_id>/cards endpoint
+    Returns: JSON body with id, message, and like_count of all cards for the specific board
+    '''
     board = validate_or_abort(board_id)
 
     cards_response = []
@@ -81,6 +99,11 @@ def read_cards_for_one_board(board_id):
 
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
 def create_cards_for_one_board(board_id): 
+    '''
+    POST method to /boards/<board_id>/cards endpoint
+    Input: message, like_count, and board title which are all required
+    Returns: JSON response body with all input including id and successfully created message
+    '''
     board = validate_or_abort(board_id)
 
     request_body = request.get_json()
