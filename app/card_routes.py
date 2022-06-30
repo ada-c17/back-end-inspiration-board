@@ -21,7 +21,11 @@ def validate_or_abort_card(card_id):
 
 @cards_bp.route('', methods=['GET'])
 def get_cards():
-    board_query = request.args.get("sort")
+    '''
+    GET method to /cards endpoint
+    Returns: JSON body with id, message, likes_count, and board_id from all cards
+    '''
+    # board_query = request.args.get("sort") # do we need this? - NJ
     cards = Card.query.all()
     card_response = []
     for card in cards:
@@ -38,6 +42,11 @@ def get_cards():
 
 @cards_bp.route('', methods=['POST'])
 def create_card():
+    '''
+    POST method to /cards endpoint
+    Input: message, likes_count, and board_id which are all required
+    Returns: JSON response body with all input including id
+    '''
     request_body = request.get_json()
     try:
         new_card = Card(
@@ -60,6 +69,11 @@ def create_card():
 
 @cards_bp.route("/<card_id>", methods=['DELETE'])
 def delete_card(card_id):
+    '''
+    DELETE method to cards/<card_id> endpoint
+    Input: sending card with a specific id will delete that card
+    Returns: success message with specific card id
+    '''
     card= validate_or_abort_card(card_id)
 
     db.session.delete(card)
