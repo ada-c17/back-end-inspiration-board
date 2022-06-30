@@ -18,8 +18,16 @@ def validate_board_id(board_id):
         return abort(make_response(jsonify({'message': f"board {board_id} not found"}), 404))
     return board
 
+#FROM DOINA'S BRANCH
+# def validate_board(board_id):
+#     board = Board.query.get(board_id)
 
-#Creating one new board using POST method
+#     if board is None:
+#         abort(make_response(jsonify(f"Board {board_id} not found"), 404))
+
+#     return board
+
+
 @boards_bp.route('', methods=['POST'])
 def create_one_board():
     request_body = request.get_json()
@@ -46,3 +54,61 @@ def get_one_board(board_id):
             "owner": one_board.owner
         }
     return jsonify({"board": response}), 200
+
+@boards_bp.route('', methods=['GET'])
+def read_all_boards():
+    boards = Board.query.all()
+    boards_response = []
+
+    for board in boards:
+        boards_response.append({
+            "id": board.board_id,
+            "title": board.title,
+            "owner": board.owner
+        })
+    
+    return jsonify(boards_response)
+
+
+@boards_bp.route("/<board_id>", methods=["PUT"])
+def update_board(board_id):
+    board = validate_board_id(board_id)
+    request_body = request.get_json()
+
+    board.title = request_body["title"]
+    board.owner = request_body["owner"]
+
+    db.session.commit()
+    return jsonify({
+        "board": {
+            "id": board.board_id,
+            "title": board.title,
+            "owner": board.owner
+        }
+    }), 200
+
+@boards_bp.route('/<id>/cards', methods=['POST'])
+def create_one_card(id):
+    request_body = request.get_json()
+    
+    if 'message' not in request_body:
+        return {"message": "Please enter both message and likes"}, 400
+
+    new_card = Card(message = request_body['message'],
+                    board_id = id)
+    
+    db.session.add(new_card)
+    db.session.commit()
+    return {
+        "card": {
+        "id": new_card.card_id,
+        "message": new_card.message,
+        "likes_count": new_card.likes_count
+    }}, 201
+
+
+
+    
+
+
+

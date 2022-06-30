@@ -3,7 +3,7 @@ import pytest
 
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_cards_one_saved_boards(client, one_board):
     # Act
     response = client.get("/boards")
@@ -12,6 +12,7 @@ def test_get_cards_one_saved_boards(client, one_board):
     # Assert
     assert response.status_code == 200
     assert len(response_body) == 1
+    print(response_body)
     assert response_body == [
         {
             "id": 1,
@@ -74,14 +75,15 @@ def test_create_board(client):
     assert new_board.owner == "Marlyn"
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
-def test_update_boardD(client, one_board):
+# @pytest.mark.skip(reason="No way to test this feature yet")
+def test_update_board(client, one_board):
     # Act
     response = client.put("/boards/1", json={
         "title": "Updated board Title",
         "owner": "Updated board owner"
     })
     response_body = response.get_json()
+    print(response_body)
 
     # Assert
     assert response.status_code == 200
@@ -98,7 +100,7 @@ def test_update_boardD(client, one_board):
     assert board.owner == "Updated board owner"
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_post_card_ids_to_board(client, one_board, three_cards):
     # Act
     response = client.post("/boards/1/cards", json={
@@ -119,7 +121,7 @@ def test_post_card_ids_to_board(client, one_board, three_cards):
     assert len(Board.query.get(1).cards) == 3
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_post_card_ids_to_board_already_with_boards(client, one_card_belongs_to_one_board, three_cards):
     # Act
     response = client.post("/boards/1/cards", json={
@@ -138,7 +140,7 @@ def test_post_card_ids_to_board_already_with_boards(client, one_card_belongs_to_
     assert len(Board.query.get(1).cards) == 2
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_cards_for_specific_board_no_board(client):
     # Act
     response = client.get("/boards/1/cards")
@@ -149,7 +151,7 @@ def test_get_cards_for_specific_board_no_board(client):
     assert response_body == {"message":"board 1 not found"}
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_cards_for_specific_board_no_cards(client, one_board):
     # Act
     response = client.get("/boards/1/cards")
@@ -167,7 +169,7 @@ def test_get_cards_for_specific_board_no_cards(client, one_board):
     }
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+# @pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_cards_for_specific_board(client, one_card_belongs_to_one_board):
     # Act
     response = client.get("/boards/1/cards")
