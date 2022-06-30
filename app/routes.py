@@ -114,6 +114,30 @@ def get_all_cards_of_board_by_id(id):
 #------------------CARD ROUTES-------------------------------
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
+#------post card to board with supplied board id-------
+@cards_bp.route("", methods = ["POST"])
+def create_card():
+    post_dict = request.get_json()
+    message = post_dict.get('message', None)
+    board_id = post_dict.get('board_id', None)
+    if not message or not board_id:
+        abort(make_response({
+            "message": "Invalid data: New card needs a message and a board id"
+            }, 400))
+    
+    board = Board.validate_and_get_by_id(board_id)
+
+    card = Card(message = message, likes_count = 0, board_id = board.id)
+
+    db.session.add(card)
+    db.session.commit()
+
+    return_dict = {
+        "message": f"Card with id {card.id} successfully created in {board.title}",
+        "card": card.as_dict()
+        }
+    return jsonify(return_dict), 201
+
 #------get card by id --------
 @cards_bp.route("/<id>", methods = ["GET"]) 
 def get_card_by_id(id):
