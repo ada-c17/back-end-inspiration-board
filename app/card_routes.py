@@ -35,10 +35,9 @@ def delete_card(id):
     # increase likes_count
 @cards_bp.route("/<id>", methods=["PATCH"])
 def update_likes_count(id):
-    card = Card.query.get(id)
+    card = validate_card(id)
 
     card.likes_count += 1
-
     db.session.commit()
 
     return jsonify(card.to_dict()), 200
