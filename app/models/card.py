@@ -13,5 +13,15 @@ class Card(db.Model):
         return dict(
             cardId = self.card_id,
             message = self.message,
-            likes_count = self.likes_count
+            likesCount = self.likes_count
         )
+
+    @classmethod
+    def from_json(cls, json_data):
+        return cls(
+            message = json_data["message"]
+        )
+    # if we want to update records
+    # def replace_details(self, data_dict):
+    #     self.message = data_dict["message"]
+

@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
+from .routes_helper import get_record_by_id, make_record_safely
+
 
 
 # example_bp = Blueprint('example_bp', __name__)
@@ -9,22 +11,17 @@ board_bp = Blueprint('board_bp', __name__, url_prefix="/boards/")
 #Get one board and associated cards
 @board_bp.route("<board_id>", methods=["GET"], strict_slashes=False)
 def get_one_board(board_id):
-    #validate board_id
-    board = Board.query.get(board_id)
+    board = get_record_by_id(Board,board_id)
     return board.to_json()
 
 # create board
-@board_bp.route("", methods=["POST"])
+@board_bp.route("", methods=["POST"], strict_slashes=False)
 def create_board():
     request_body = request.get_json()
-    try:
-        new_board = Board.from_json(request_body)
+    new_board = make_record_safely(Board, request_body)
 
-        db.session.add(new_board)
-        db.session.commit()
-
-    except:
-        abort(make_response("Invalid data", 400))
+    db.session.add(new_board)
+    db.session.commit()
 
     return make_response("Success", 201)
 
@@ -37,4 +34,3 @@ def get_boards():
     boards_response = [board.to_json() for board in boards]
     return jsonify(boards_response)
 
-# delete single board

@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.card import Card
+from app.models.board import Board
+from .routes_helper import get_record_by_id, make_record_safely
 
 # example_bp = Blueprint('example_bp', __name__)
 card_bp = Blueprint('card_bp', __name__, url_prefix="/boards/")
@@ -8,9 +10,10 @@ card_bp = Blueprint('card_bp', __name__, url_prefix="/boards/")
 # create new card to board by id
 @card_bp.route("<board_id>/cards", methods=["POST"], strict_slashes=False)
 def create_card(board_id):
-    #validate
+    get_record_by_id(Board,board_id)
+    
     request_body = request.get_json()
-    new_card = Card(message=request_body["message"], board_id=board_id)
+    new_card = make_record_safely(Card, request_body )
 
     db.session.add(new_card)
     db.session.commit()
@@ -20,8 +23,8 @@ def create_card(board_id):
 # delete single card
 @card_bp.route("<board_id>/cards/<card_id>", methods=["DELETE"], strict_slashes=False)
 def delete_card(board_id, card_id):
-    # add helper function to validate board_id
-    # add helper function to validate card_id
+    get_record_by_id(Board,board_id)
+    card = get_record_by_id(Card,card_id)
     
     card = Card.query.get(card_id)
 

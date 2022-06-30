@@ -21,3 +21,7 @@ class Board(db.Model):
             title = json_data["title"],
             owner = json_data["owner"]
         )
+# if we want to update records
+    # def replace_details(self, data_dict):
+    #     self.title = data_dict["title"]
+    #     self.owner = data_dict["owner"]
