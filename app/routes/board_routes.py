@@ -81,6 +81,6 @@ def create_new_card(board_id):
         db.session.add(new_card)
         db.session.commit()
         
-        return {new_card.to_json()}, 201
+        return {"card": new_card.to_json()}, 201
     else:
         return {"details": "Invalid data"}, 400
