@@ -14,6 +14,5 @@ class Card(db.Model, Error_Handler):
             board_id = self.board_id,
             card_id = self.card_id,
             message = self.message,
-           
         )
 

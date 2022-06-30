@@ -12,7 +12,6 @@ class Error_Handler():
         except:
             error_message(f'{cls.__name__.lower()} {id} is an invalid id', 400)     
 
-        
         valid = cls.query.get(id) 
         
         if not valid: 
