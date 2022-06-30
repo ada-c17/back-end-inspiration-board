@@ -6,7 +6,7 @@ from app.models.card import Card
 card_bp = Blueprint('card_bp', __name__, url_prefix='/cards')
 
 
-# Validation of cards helper function
+# Validation of Cards helper function
 def validate_card(card_id):
     
     try:
@@ -23,7 +23,7 @@ def validate_card(card_id):
     return card
 
 
-# DELETE a specific card
+# DELETE ONE specific Card
 @card_bp.route('/<card_id>', methods=['DELETE'])
 def delete_card(card_id):
     card = validate_card(card_id)

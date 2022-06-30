@@ -7,7 +7,7 @@ from .card_routes import Card
 board_bp = Blueprint('board_bp', __name__, url_prefix='/boards')
 
 
-#validation of board helper function
+#validation of Board helper function
 def validate_board(board_id):
     try:
         board_id=int(board_id)
@@ -20,7 +20,7 @@ def validate_board(board_id):
         abort(make_response({'details': f'Board {board_id} does not exist'}, 404))
 
 
-# GET all boards
+# GET ALL Boards
 @board_bp.route('', methods=['GET'])
 def get_all_boards():
     boards = Board.query.all()
@@ -32,14 +32,14 @@ def get_all_boards():
     return jsonify(wall), 200
 
 
-# GET one board by id
+# GET ONE Board by ID
 @board_bp.route ('/<board_id>', methods=['GET'])
 def get_one_board (board_id):
     board = validate_board(board_id)
     return ({'Board': board.to_dict()}), 200
 
 
-#POST a new Board
+#POST ONE new Board
 @board_bp.route('', methods=['POST'])
 def create_board():
     request_body = request.get_json()
@@ -52,7 +52,7 @@ def create_board():
     return make_response(f'New board: "{new_board.title}" succesfully created.  YAY!', 201)
 
 
-# POST a new Card for a specific Board
+# POST ONE new Card for ONE specific Board
 @board_bp.route('/<board_id>/cards', methods=['POST'])
 def post_cards_to_specific_board(board_id):
     board = validate_board(board_id)
@@ -73,7 +73,7 @@ def post_cards_to_specific_board(board_id):
     }), 201
 
 
-# GET get ALL cards from ONE Board
+# GET ALL Cards from ONE Board
 @board_bp.route('/<board_id>/cards', methods=['GET'])
 def get_all_cards_for_specific_board(board_id):
     board = validate_board(board_id)
@@ -100,7 +100,7 @@ def delete_board(board_id):
     return{'details': f'Board {board_id} was successfully deleted'}, 200
 
 
-# UPDATE attributes of Board
+# UPDATE attributes of ONE specific Board
 @board_bp.route ('/<board_id>', methods=['PUT'])
 def put_board_title(board_id):
     board = validate_board(board_id)
