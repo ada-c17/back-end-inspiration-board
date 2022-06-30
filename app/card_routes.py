@@ -65,3 +65,29 @@ def delete_card(card_id):
     db.session.delete(card)
     db.session.commit()
     return {'details': f'Card {card.card_id} successfully deleted'}
+
+@cards_bp.route("/<card_id>/like", methods=["PUT"])
+def update_card_likes(card_id):
+    try:
+        card_id = int(card_id)
+    except ValueError:
+        return jsonify({'msg': f"Invalid card id: '{card_id}'. ID must be an integer"}), 400
+
+    request_body = request.get_json()
+
+    if "likes_count" not in request_body:
+        return jsonify({'msg': f"Request must include new likes data"}), 400
+
+    chosen_car = Card.query.get(card_id)
+
+    if chosen_car is None:
+        return jsonify({'msg': f'Could not find card with id {card_id}'}), 404
+
+    chosen_car.likes_count = request_body["likes_count"]
+
+    db.session.commit()
+
+    return make_response(
+        jsonify({'msg': f"Successfully replaced car with id {card_id}"}),
+        200
+    )
