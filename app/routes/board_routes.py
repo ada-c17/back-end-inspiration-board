@@ -78,6 +78,7 @@ def create_new_card(board_id):
     request_body = request.get_json()
     if "message" in request_body:
         new_card = Card.create(request_body)
+        new_card.board = board
         db.session.add(new_card)
         db.session.commit()
         
