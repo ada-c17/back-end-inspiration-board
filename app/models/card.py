@@ -5,3 +5,9 @@ class Card(db.Model):
     message = db.Column(db.String, nullable = False)
     likes_count = db.Column(db.Integer, nullable = True)
     board_id = db.Column(db.Integer, db.ForeignKey('board.board_id'), nullable=True)
+    
+    def to_json(self):
+        return {
+            "id": self.card_id,
+            "message": self.message,
+            "likes": self.likes_count,}

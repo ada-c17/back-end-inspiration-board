@@ -8,13 +8,8 @@ class Board(db.Model):
 
 
 
-def to_json(self):
-   
-        board_dict= {
+    def to_json(self):
+        return {
             "id": self.board_id,
             "title": self.title,
-            "owner": self.owner,
-
-        }
-       
-        return board_dict
+            "owner": self.owner,}
