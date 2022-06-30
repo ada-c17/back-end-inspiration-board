@@ -56,49 +56,45 @@ def create_board():
 @board_bp.route('/<board_id>/cards', methods=['POST'])
 def post_cards_to_specific_board(board_id):
     board = validate_board(board_id)
-    # print(Card.query.all())
 
     request_body = request.get_json()
 
     new_card = Card(message=request_body['message'])
-    print(new_card)
 
     db.session.add(new_card)
-    db.session.commit()
-
-
-    card_list = Card.query.all()
-    print(card_list, "yes")
-    cards_for_board = []
-
-    # for card in cards:
-    #     if card.new
-    
-    return {'card': card_list.to_dict()}, 201
-
-    card_list = request_body["card_ids"]
-
-    for card in card_list:
-        board.cards.append(card)
+    board.cards.append(new_card)
     db.session.commit()
 
     return jsonify({
-        'id': board.board_id,
-        'card_ids': card_list
-    }), 200
+        'card id': new_card.card_id,
+        'message': new_card.message,
+        'board id': board.board_id,
+        'board title': board.title
+    }), 201
 
 
 # GET /boards/<board_id>/cards
 @board_bp.route('/<board_id>/cards', methods=['GET'])
 def get_all_cards_for_specific_board(board_id):
     board = validate_board(board_id)
-
     card_list = []
 
     for card in board.cards:
         card_list.append(card.to_dict())
 
     return jsonify({
-        'id': board.board_id,
-        'message': board.message
+        'board id': board.board_id,
+        'board title': board.title,
+        'cards': card_list
     }), 200
+
+
+# DELETE /boards/<board_id>
+@board_bp.route('/<board_id>', methods=['DELETE'])
+def delete_board(board_id):
+    board = validate_board(board_id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return{'details': f'Board {board.board_id} was successfully deleted'}, 200
