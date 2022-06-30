@@ -65,7 +65,7 @@ def add_card():
         return {"details": "Input message must be between 1 and 40 characters"}, 400
 
     new_card = Card(message = request_body["message"],
-                board_id = request_body["board_id"],
+                board_id = int(request_body["board_id"]),
                 likes_count = 0)
 
     db.session.add(new_card)
