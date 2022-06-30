@@ -80,10 +80,8 @@ def get_cards_by_board(board_id):
 #Deleting board by id using DELETE methods
 @boards_bp.route("/<board_id>", methods=["DELETE"])
 def delete_board(board_id):
-    board = Board.query.get(board_id)
-    if board is None:
-        return jsonify(""), 404
-    db.session.delete(board)
+    chosen_board = get_board_or_abort(board_id)
+    db.session.delete(chosen_board)
     db.session.commit()
     return jsonify(f"successfully deleted {board.title}"), 200
 
