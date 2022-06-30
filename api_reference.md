@@ -32,7 +32,7 @@
 {
     "message": string (success/error message),
     "board": {
-        "id": integer,
+        "board_id": integer,
         "title": string,
         "owner": string
     }
@@ -52,12 +52,12 @@
 {
     "boards": array [ 
         {
-            "id": integer,
+            "board_id": integer,
             "title": string,
             "owner": string,
             "cards": array [
                 {
-                    "id": integer,
+                    "card_id": integer,
                     "message": string,
                     "likes_count": integer
                 },
@@ -81,12 +81,12 @@
 ```
 {
     "board": {
-        "id": integer,
+        "board_id": integer,
         "title": string,
         "owner": string,
         "cards": array [
             {
-                "id": integer,
+                "card_id": integer,
                 "message": string,
                 "likes_count": integer
             },
@@ -113,12 +113,12 @@
 {
     "message": string (success/error message),
     "board": {
-        "id": integer,
+        "board_id": integer,
         "owner": string,
         "title": string
         "cards": array [
             {
-                "id": integer,
+                "card_id": integer,
                 "likes_count": integer,
                 "message": string
             },
@@ -158,7 +158,7 @@
 {
     "message": string (success/error message),
     "card": {
-        "id": integer,
+        "card_id": integer,
         "message": string,
         "likes_count": integer
     }
@@ -182,7 +182,7 @@
 {
     "message": string (success/error message),
     "card": {
-        "id": integer,
+        "card_id": integer,
         "likes_count": integer,
         "message": string
     }

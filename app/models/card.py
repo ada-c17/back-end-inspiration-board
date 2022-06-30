@@ -10,7 +10,7 @@ class Card(db.Model):
     
     def as_dict(self):
         return {
-            'id': self.id,
+            'card_id': self.id,
             'message': self.message,
             'likes_count': self.likes_count
         }
