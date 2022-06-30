@@ -59,7 +59,8 @@
                 {
                     "card_id": integer,
                     "message": string,
-                    "likes_count": integer
+                    "likes_count": integer,
+                    "board_id": integer
                 },
                 ...
             ]
@@ -88,7 +89,8 @@
             {
                 "card_id": integer,
                 "message": string,
-                "likes_count": integer
+                "likes_count": integer,
+                "board_id": integer
             },
             ...
         ]
@@ -120,7 +122,8 @@
             {
                 "card_id": integer,
                 "likes_count": integer,
-                "message": string
+                "message": string,
+                "board_id": integer
             },
             ...
         ]
@@ -160,7 +163,8 @@
     "card": {
         "card_id": integer,
         "message": string,
-        "likes_count": integer
+        "likes_count": integer,
+        "board_id": integer
     }
 }
 ```
@@ -184,7 +188,8 @@
     "card": {
         "card_id": integer,
         "likes_count": integer,
-        "message": string
+        "message": string,
+        "board_id": integer
     }
 }
 ```
