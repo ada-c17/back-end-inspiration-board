@@ -10,7 +10,7 @@
 - [*Nested Routes*](#nested-routes)
   - [Create New Card (1)](#create-new-card-1)
   - [Get All Cards of Board by Board ID](#get-all-cards-of-board-by-board-id)
-  - [Delete All Cards of Board bu Board ID](#delete-all-cards-of-board-bu-board-id)
+  - [Delete All Cards of Board by Board ID](#delete-all-cards-of-board-by-board-id)
 - [*Card Routes*](#card-routes)
   - [Create New Card (2)](#create-new-card-2)
   - [Update Card Details](#update-card-details)
@@ -197,7 +197,7 @@
 
 ---
 
-## Delete All Cards of Board bu Board ID
+## Delete All Cards of Board by Board ID
 
 **Endpoint:** DELETE '/boards/(id)/cards'
 
