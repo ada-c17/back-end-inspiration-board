@@ -3,10 +3,10 @@ from app import db
 from app.models.board import Board
 from app.models.card import Card
 
-# example_bp = Blueprint('example_bp', __name__)
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 
+#VALIDATING IDS FOR BOARDS AND CARDS
 def validate_board_id(board_id):
     try:
         board_id =  int(board_id)
@@ -18,16 +18,22 @@ def validate_board_id(board_id):
         return abort(make_response(jsonify({'message': f"board {board_id} not found"}), 404))
     return board
 
-#FROM DOINA'S BRANCH
-# def validate_board(board_id):
-#     board = Board.query.get(board_id)
+def get_card_or_abort(card_id):
+    try:
+        card_id = int(card_id)
+    except ValueError:
+        response = {'details': 'Invalid data'}
+        abort(make_response(jsonify(response),400))
 
-#     if board is None:
-#         abort(make_response(jsonify(f"Board {board_id} not found"), 404))
+    chosen_card = Card.query.get(card_id)
 
-#     return board
+    if chosen_card is None:
+        response = {'message':f'card {card_id} not found'}
+        abort(make_response(jsonify(response),404))
+    return chosen_card
 
 
+#CREATE ONE NEW BOARD
 @boards_bp.route('', methods=['POST'])
 def create_one_board():
     request_body = request.get_json()
@@ -45,6 +51,7 @@ def create_one_board():
         "owner": new_board.owner
     }}, 201
 
+#READ (GET) ONE BOARD
 @boards_bp.route('<board_id>', methods=["GET"])
 def get_one_board(board_id):
     one_board = validate_board_id(board_id)
@@ -55,6 +62,7 @@ def get_one_board(board_id):
         }
     return jsonify({"board": response}), 200
 
+#READ (GET) ALL BOARD
 @boards_bp.route('', methods=['GET'])
 def read_all_boards():
     boards = Board.query.all()
@@ -67,9 +75,9 @@ def read_all_boards():
             "owner": board.owner
         })
     
-    return jsonify(boards_response)
+    return jsonify(boards_response), 200
 
-
+#UPDATE ONE BOARD
 @boards_bp.route("/<board_id>", methods=["PUT"])
 def update_board(board_id):
     board = validate_board_id(board_id)
@@ -87,6 +95,7 @@ def update_board(board_id):
         }
     }), 200
 
+#CREATE ONE CARD AT BOARD ID
 @boards_bp.route('/<id>/cards', methods=['POST'])
 def create_one_card(id):
     request_body = request.get_json()
@@ -106,9 +115,77 @@ def create_one_card(id):
         "likes_count": new_card.likes_count
     }}, 201
 
+#UPDATE ONE CARD
+@cards_bp.route('/<card_id>', methods=['PUT'])
+def replace_one_card(card_id):
+    chosen_card = get_card_or_abort(card_id)
+    request_body = request.get_json()
 
+    try:
+        chosen_card.message = request_body['message']
+        #NO NEED FOR REQUEST BODY TO INCLIDE LIKES COUNT
+        # chosen_card.likes_count = request_body['likes_count']
+        
+    except KeyError:
+        return {
+            'message': 'card {card_id} not found'
+        } , 400
 
+    db.session.commit()
+
+    return { 'card': {
+        'id': chosen_card.card_id,
+        'message': chosen_card.message,
+        'likes_count': chosen_card.likes_count
+        }}, 200
+
+#Delete card
+@cards_bp.route('/<card_id>', methods = ['DELETE'])
+def delete_card(card_id):
+    chosen_card = get_card_or_abort(card_id)
+    db.session.delete(chosen_card)
+    db.session.commit()
+
+    return {
+        'details':f'card {chosen_card.card_id} "{chosen_card.message}" successfully deleted'
+    }, 200
+
+#READ ALL CARDS FOR ONE BOARD
+@boards_bp.route('/<board_id>/cards', methods=['GET'])
+def read_cards_of_one_board(board_id):
+
+    board = validate_board_id(board_id)
+
+    cards_response = []
+
+    for card in board.cards:
+            cards_response.append(
+                {
+                    "id": card.card_id,
+                    "board_id": board.board_id,
+                    "message": card.message,
+                    "likes_count": card.likes_count
+                }    
+        )
+            
+    return jsonify({
+            'id': board.board_id,
+            'title': board.title,
+            'owner': board.owner,
+            'cards': cards_response}), 200
+
+#UPDATE LIKE COUNT 
+@cards_bp.route('/<card_id>/like', methods=['PUT'])
+def update_one_card_like_count(card_id):
+    card = get_card_or_abort(card_id)
     
+    card.likes_count += 1
 
+    db.session.commit()
 
+    return { 'card': {
+        'id': card.card_id,
+        'message': card.message,
+        'likes_count': card.likes_count
+        }}, 200
 
