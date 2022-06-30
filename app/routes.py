@@ -99,9 +99,9 @@ def create_new_card():
         return {
     "details": "Invalid data"
 },400
-    new_card = Card(title=request_body["title"], owner=request_body["owner"]
+    new_card = Card(title=request_body["title"], owner=request_body["owner"], likes_count=0
                     )
-
+# I added likes_count=0 because we always want to start at 0 unsure how to add a default value for model
 
     db.session.add(new_card)
     db.session.commit()
@@ -120,7 +120,7 @@ def update_card(card_id):
 
     db.session.commit()
 
-    return make_response(jsonify(f"card #{card.card_id} successfully liked")),200
+    return {"details": f"card #{card.card_id} successfully liked"},200
 
 
 #Delete one card
@@ -131,5 +131,5 @@ def delete_card(card_id):
     db.session.delete(card)
     db.session.commit()
 
-    return {"details":f"card {card.card_id} \"{card.title}\" successfully deleted"}
+    return {"details": f"card {card.card_id} \"{card.title}\" successfully deleted"},204
 
