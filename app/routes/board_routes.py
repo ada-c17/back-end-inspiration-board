@@ -53,6 +53,7 @@ def read_all_cards(board_id):
     response_body = {
         "board_id": board.board_id,
         "owner": board.owner,
+        "title": board.title,
         "cards": cards_list
     }
 
