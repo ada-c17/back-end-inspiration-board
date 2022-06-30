@@ -32,7 +32,6 @@ def post_board():
 #------------GET ALL BOARDS---------------
 @boards_bp.route("", methods=["GET"]) 
 def get_all_boards():
-    
     board_db = Board.query.all()  
 
     boards_response = [] 
@@ -43,14 +42,7 @@ def get_all_boards():
 #-----------------------------------
 @boards_bp.route("/<id>", methods=["GET"]) 
 def get_board_by_id(id):
-    try:
-        id = int(id)
-    except:
-        abort(make_response({"message": f"{id} is not a valid id"}, 400))
-
-    board = Board.query.get(id)
-    if (board == None):
-        abort(make_response({"message":f"Board with id {id} not found"}, 404))
+    board = Board.validate_and_get_by_id(id)
 
     return_dict = {"board": board.as_dict()}
     return jsonify(return_dict), 200
@@ -58,14 +50,7 @@ def get_board_by_id(id):
 #------------Update board details---------
 @boards_bp.route("/<id>", methods=["PATCH"])
 def update_board_by_id(id):
-    try:
-        id = int(id)
-    except:
-        abort(make_response({"message": f"{id} is not a valid id"}, 400))
-    
-    board = Board.query.get(id)
-    if (board == None):
-        abort(make_response({"message": f"board {id} not found"}, 404))
+    board = Board.validate_and_get_by_id(id)
 
     update_dict = request.get_json()
 
@@ -84,14 +69,7 @@ def update_board_by_id(id):
 #------------remove board by id------------
 @boards_bp.route("/<id>", methods=["DELETE"])
 def remove_board_by_id(id):
-    try:
-        id = int(id)
-    except:
-        abort(make_response({"message": f"{id} is not a valid id"}, 400))
-    board = Board.query.get(id)
-    
-    if (board == None):
-        abort(make_response({"message": f"board {id} not found"}, 404))
+    board = Board.validate_and_get_by_id(id)
     
     db.session.delete(board)
     db.session.commit()
@@ -108,23 +86,15 @@ cards_bp = Blueprint("cards", __name__, url_prefix="/boards")
 def post_card(id):
     post_dict = request.get_json()
     message = post_dict.get('message', None)
-    
     if not message:
         abort(make_response({
             "message": "Invalid data: New card needs a message"
             }, 400))
     
-    likes_count = 0
-    try:
-        id = int(id)
-    except:
-        abort(make_response({"message": f"{id} is not a valid id"}, 400))
-    board = Board.query.get(id)
-    
-    if (board == None):
-        abort(make_response({"message":f"board {id} not found"}, 404))
+    board = Board.validate_and_get_by_id(id)
 
-    card = Card(message = message, likes_count = likes_count, board_id = board.id)
+    card = Card(message = message, likes_count = 0, board_id = board.id)
+
     db.session.add(card)
     db.session.commit()
 
@@ -137,31 +107,18 @@ def post_card(id):
 #------get card by id --------
 @cards_bp.route("/<board_id>/cards/<card_id>",methods = ["GET"]) 
 def get_card_by_id(card_id):
-    try:
-        id = int(card_id)
-    except:
-        abort(make_response({"message": f"{card_id} is not a valid id"}, 400))    
-    card = Card.query.get(id)
-    if (card == None):
-        abort(make_response({"message":f"card {id} not found"}, 404))
-    
+    card = Card.validate_and_get_by_id(card_id)
     return_dict = {"card": card.as_dict()}
     return jsonify(return_dict), 200
 
 #------------remove card by id------------
 @cards_bp.route("/<board_id>/cards/<card_id>", methods=["DELETE"])
 def remove_card_by_id(card_id):
-    try:
-        id = int(card_id)
-    except:
-        abort(make_response({"message": f"{card_id} is not a valid id"}, 400)) 
-    card = Card.query.get(id)
-
-    if (card == None):
-        abort(make_response({"message":f"card {id} not found"}, 404))
+    card = Card.validate_and_get_by_id(card_id)
     
     db.session.delete(card)
     db.session.commit()
+
     return jsonify({
         "message":f"Card {id} \"{card.message}\" successfully deleted"
         }, 200)
@@ -169,14 +126,7 @@ def remove_card_by_id(card_id):
 #------------update card by id---------
 @cards_bp.route("/<board_id>/cards/<card_id>", methods=["PATCH"])
 def update_card_by_id(card_id):
-    try:
-        id = int(card_id)
-    except:
-        abort(make_response({"message": f"{card_id} is not a valid id"}, 400))
-    card = Card.query.get(id)
-
-    if (card == None):
-        abort(make_response({"message":f"card {id} not found"}, 404))
+    card = Card.validate_and_get_by_id(card_id)
     update_dict = request.get_json()
     
     for k, v in update_dict.items():
@@ -190,4 +140,3 @@ def update_card_by_id(card_id):
         "card": card.as_dict()
         }
     return jsonify(return_dict), 200
-
