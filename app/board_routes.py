@@ -118,6 +118,7 @@ def get_card_or_abort(card_id):
     
     cards = Card.query.all()
     for card in cards: 
+        print(f'card_id: {card.card_id}')
         if card.card_id == card_id:
             return card
         else:

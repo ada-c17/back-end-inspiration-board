@@ -10,6 +10,7 @@ cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 # delete card by id
 @cards_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card_by_id(card_id):
+    print(f"CARD ID: {card_id}")
     chosen_card = get_card_or_abort(card_id)
     db.session.delete(chosen_card)
     db.session.commit()
