@@ -23,6 +23,15 @@ class Board(db.Model):
             board_dict["cards"] = card_list
         return board_dict
 
+
+    def to_small_dict(self):
+        board_dict =  {
+            "id": self.board_id,
+            "title": self.title,
+            "owner": self.owner
+            }
+        return board_dict
+
     # def to_dict(self):
     #     board_dict = {
     #     "id": self.board_id,

@@ -53,7 +53,7 @@ def get_all_boards():
     boards = Board.query.all()
     for board in boards:
         response.append(
-            board.to_dict()
+            board.to_small_dict()
         )
     return jsonify(response), 200
 
