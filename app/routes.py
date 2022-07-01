@@ -121,7 +121,7 @@ def create_card(board_id):
         board = get_record_by_id(board_id, Board)
 
         token = os.environ.get("SLACK_TOKEN")
-        payload = {"channel":"orange-purple", "text":f"New card added to Inspiration Board \'{board.title}\'!"}
+        payload = {"channel":"orange-purple", "text":f"New card \'{new_card.message}\' added to Inspiration Board \'{board.title}\'!"}
         header = {"Authorization":f"Bearer {token}"}
     
         requests.post("https://slack.com/api/chat.postMessage", params=payload, headers=header)
