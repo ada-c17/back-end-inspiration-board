@@ -28,10 +28,10 @@ def get_cards():
     card_query = request.args.get("sort") 
     if card_query == "desc": 
         cards = Card.query.order_by(Card.card_id.desc())
-    elif card_query == "asc": 
+    else:
         cards = Card.query.order_by(Card.card_id.asc())
-    else: 
-        Card.query.order_by(Card.id).all()
+    # else: 
+    #     Card.query.order_by(Card.id).all()
     # cards = Card.query.all()
     card_response = []
     for card in cards:
