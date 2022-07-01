@@ -59,7 +59,7 @@ def create_one_board():
         # abort(make_response(jsonify(response), 400))
     db.session.add(new_board)
     db.session.commit()
-    response = {"board": {"title": new_board.title, "owner": new_board.owner}}
+    response = {"board": {"id": new_board.board_id, "title": new_board.title, "owner": new_board.owner}}
     return jsonify(response), 201
 
 
