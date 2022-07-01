@@ -1,5 +1,6 @@
 For design purposes want a easy to read route list for front end development.
 Going to talk to instructor about normalizing success and error messages
+normalize return messages, move create a card, read cards in a board, delete board, test routes, heroku
 
 Routes:
     Boards:

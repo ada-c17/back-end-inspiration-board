@@ -99,7 +99,7 @@ def create_new_card():
         return {
     "details": "Invalid data"
 },400
-    new_card = Card(title=request_body["title"], owner=request_body["owner"], likes_count=0
+    new_card = Card(title=request_body["title"], owner=request_body["owner"]
                     )
 # I added likes_count=0 because we always want to start at 0 unsure how to add a default value for model
 
