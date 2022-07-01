@@ -18,7 +18,7 @@ def create_board():
     db.session.add(new_board)
     db.session.commit()
 
-    return jsonify({"board": new_board.to_json()}), 201
+    return jsonify({new_board.to_json()}), 201
 
 #GET all boards
 @boards_bp.route("", methods=["GET"])
@@ -33,7 +33,7 @@ def read_board():
 @boards_bp.route("/<board_id>", methods=["GET"])
 def get_one_board(board_id):
     board = validate_model_instance(Board, board_id, "board")
-    return jsonify({"board": board.to_json()}), 200
+    return jsonify(board.to_json()), 200
 
 #DELETE A BOARD-> optional
 @boards_bp.route("/<board_id>", methods=["DELETE"])
@@ -58,7 +58,7 @@ def add_card_to_board(board_id):
     db.session.commit()
     send_slack_new_card_message(new_card)
     #change return?
-    return jsonify({"card": new_card.to_json()}), 200
+    return jsonify(new_card.to_json()), 200
 
 #GET /boards/<board_id>/cards
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
@@ -71,4 +71,6 @@ def read_cards_of_board(board_id):
         "title": board.title,
         "owner": board.owner,
         "cards": board_cards}), 200
+
+
 

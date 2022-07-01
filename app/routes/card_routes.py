@@ -27,6 +27,6 @@ def update_one_card(card_id):
 
     db.session.commit()
 
-    return jsonify({'card':card.to_json()}), 200
+    return jsonify(card.to_json()), 200
 
     

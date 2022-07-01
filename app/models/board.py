@@ -9,9 +9,16 @@ class Board(db.Model):
     cards = db.relationship("Card", back_populates = "board", lazy = True)
     
     def to_json(self):
+
+        card_list = []
+        for card in self.cards:
+            card_object = card.to_json()
+            card_list.append(card_object)
+
             return {"boardId" : self.board_id,
                     "title" : self.title,
-                    "owner": self.owner,}
+                    "owner": self.owner,
+                    "cards": card_list}
 
     def link_card_to_board(self, request_body):
 
