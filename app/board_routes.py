@@ -83,7 +83,7 @@ def delete_board(board_id):
     chosen_board = get_board_or_abort(board_id)
     db.session.delete(chosen_board)
     db.session.commit()
-    return jsonify(f"successfully deleted {board.title}"), 200
+    return jsonify(f"successfully deleted {chosen_board.title}"), 200
 
 #*********************helper functions***********************
 
