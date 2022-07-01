@@ -62,6 +62,21 @@ def get_one_board(board_id):
 
     return make_response({"board":board.to_json()}, 200)
 
+@boards_bp.route("/<board_id>/cards", methods = ["GET"])
+def get_cards_by_board(board_id):
+    board = validate_board(board_id)
+    cards_response = []
+
+    for card in board.cards:
+        cards_response.append({
+            "board_id":board.board_id,
+            "id":card.card_id,
+            "message": card.message,
+            "likes_count": card.likes_count
+            })
+
+    return make_response({"cards":cards_response}, 201)
+
 
 # routes for card
 @cards_bp.route("", methods = ["POST"])
