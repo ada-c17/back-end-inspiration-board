@@ -83,3 +83,13 @@ def add_card():
     rsp = new_card.to_json()
     
     return make_response({"board":rsp}, 201)
+
+@cards_bp.route("", methods = ["GET"])
+def get_all_cards():
+    cards = Card.query.all()
+
+    cards_response = []
+    for card in cards:
+        cards_response.append(card.to_json())
+    
+    return jsonify(cards_response)
