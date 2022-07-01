@@ -55,7 +55,7 @@ def get_all_boards():
             # not returning card list at this time. May want to add in later.
         })
 
-        return jsonify(boards_response), 200
+    return jsonify(boards_response), 200
 # GET - Read; Select a specific board
 
 
