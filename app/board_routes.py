@@ -121,8 +121,7 @@ def get_card_or_abort(card_id):
         print(f'card_id: {card.card_id}')
         if card.card_id == card_id:
             return card
-        else:
-            abort(make_response({"message": f"The card id {card_id} is not found"}, 404))
+    abort(make_response({"message": f"The card id {card_id} is not found"}, 404))
 
 
 # validating for input of card
