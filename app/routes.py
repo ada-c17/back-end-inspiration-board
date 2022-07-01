@@ -93,3 +93,30 @@ def get_all_cards():
         cards_response.append(card.to_json())
     
     return jsonify(cards_response)
+
+
+# Helper function to validate card   
+
+def validate_card(card_id):
+    try:
+        card_id = int(card_id)
+    except:
+        abort(make_response({"message":f"Card ID {card_id} is invalid"}, 400))
+
+    card = Card.query.get(card_id)
+
+    if not card:
+        abort(make_response({"message":f"Card ID {card_id} not found"}, 404))
+
+    return card
+
+# Delete cards
+
+@cards_bp.route("/<card_id>", methods = ["DELETE"])
+def delete_one_card(card_id):
+    chosen_card = validate_card(card_id)
+
+    db.session.delete(chosen_card)
+    db.session.commit()
+
+    return jsonify({"message": f"Deleted card with id {card_id}"})
