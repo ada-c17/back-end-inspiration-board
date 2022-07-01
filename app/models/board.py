@@ -1,5 +1,5 @@
 from app import db
-#from app.models.card import Card
+
 
 class Board(db.Model):
     board_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -31,14 +31,3 @@ class Board(db.Model):
             "owner": self.owner
             }
         return board_dict
-
-    # def to_dict(self):
-    #     board_dict = {
-    #     "id": self.board_id,
-    #     "title": self.title,
-    #     "owner": self.owner,
-    #     }
-        
-    #     # if self.goal_id:
-    #     #     task_dict["goal_id"] = self.goal_id
-    #     return board_dict
