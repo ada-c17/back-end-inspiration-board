@@ -118,6 +118,14 @@ def create_card(board_id):
         db.session.add(new_card)
         db.session.commit()
 
+        board = get_record_by_id(board_id, Board)
+
+        token = os.environ.get("SLACK_TOKEN")
+        payload = {"channel":"orange-purple", "text":f"New card added to Inspiration Board \'{board.title}\'!"}
+        header = {"Authorization":f"Bearer {token}"}
+    
+        requests.post("https://slack.com/api/chat.postMessage", params=payload, headers=header)
+
         return make_response(jsonify({"card created!":new_card.message}), 201)
 
     except KeyError:
