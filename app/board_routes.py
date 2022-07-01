@@ -116,6 +116,7 @@ def get_card_or_abort(card_id):
     except ValueError:
         abort(make_response({"message": f"The card id {card_id} is invalid. The id must be integer."}, 400))
     
+    # to do: replace with Card.query.get(card_id)
     cards = Card.query.all()
     for card in cards: 
         print(f'card_id: {card.card_id}')
