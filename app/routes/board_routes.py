@@ -67,7 +67,7 @@ def get_cards_per_board(board_id):
 
     db.session.commit()
 
-    return jsonify(dict(cards=cards_info)), 200
+    return make_response(jsonify(cards_info)), 200
 
 
 # GET ALL boardS aka READ at endpoint /boards
