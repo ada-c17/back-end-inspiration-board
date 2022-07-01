@@ -37,7 +37,8 @@
     "board": {
         "board_id": integer,
         "title": string,
-        "owner": string
+        "owner": string,
+        "cards": array []
     }
 }
 ```  
