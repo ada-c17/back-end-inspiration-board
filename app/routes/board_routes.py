@@ -52,14 +52,7 @@ def read_all_cards(board_id):
     for card in board.cards:
         cards_list.append(card.to_json())
 
-    response_body = {
-        "board_id": board.board_id,
-        "owner": board.owner,
-        "title": board.title,
-        "cards": cards_list
-    }
-
-    return response_body,200
+    return jsonify(cards_list),200
 
 
 #CREATE a new card for the selected board 
