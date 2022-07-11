@@ -52,6 +52,9 @@ def read_all_cards(board_id):
     for card in board.cards:
         cards_list.append(card.to_json())
 
+    if request.args.get("sort"):
+        cards_list.sort(key=lambda x: x.get('likes_count'), reverse=True)
+
     return jsonify(cards_list),200
 
 
