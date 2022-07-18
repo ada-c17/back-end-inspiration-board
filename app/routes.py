@@ -78,23 +78,25 @@ def delete_board(board_id):
 
     return jsonify({"details": f"Board {board_id} \"{board.title}\" successfully deleted"}), 200
 
-@boards_bp.route("/<board_id>/cards", methods=["GET"]) 
+@boards_bp.route("/<board_id>", methods=["GET"]) 
 def read_cards_for_one_board(board_id): 
     '''
     GET method to /boards/<board_id>/cards endpoint
     Returns: JSON body with id, message, and like_count of all cards for the specific board
     '''
     board = validate_or_abort(board_id)
-
+    cards = Card.query.all()
     cards_response = []
-    for card in board.cards: 
-        cards_response.append(
-            { 
-            "id": card.card_id, 
-            "message": card.message, 
-            "like_count": card.likes_count
-            }
-        )
+    for card in cards:
+        if card.board_id == board.board_id: 
+            cards_response.append(
+                { 
+                "card_id": card.card_id, 
+                "message": card.message, 
+                "likes_count": card.likes_count,
+                "board_id": card.board_id
+                }
+            )
     return jsonify(cards_response)
 
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
