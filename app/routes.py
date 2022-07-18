@@ -44,10 +44,6 @@ def create_new_board():
     db.session.commit()
     return {"board":new_board.to_json()},201
 
-
-
-
-
 # Read all boards
 @boards_bp.route("", methods=["GET"])
 def get_boards():
@@ -80,7 +76,7 @@ def create_new_card(board_id):
     request_body = request.get_json()
     if "message" not in request_body:
         return {"details": "Invalid data message required."},400
-    new_card = Card(message=request_body["message"], board_id=board_id) ##########maybe board_id = board or task.goal_id=goal.goal_id
+    new_card = Card(message=request_body["message"], board_id=board_id) ##########maybe board_id = board or card.board_id=board.board_id
 
     db.session.add(new_card)
     db.session.commit()
