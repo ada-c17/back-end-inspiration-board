@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
 from app.models.card import Card
+from sqlalchemy import asc
 
 
 ##### TABLE OF CONTENTS #############################################
@@ -91,9 +92,9 @@ def delete_board(board_id):
 def get_all_cards():
     board_id = request.args.get("board_id")
     if board_id:
-        cards = Card.query.filter_by(board_id=board_id)
+        cards = Card.query.filter_by(board_id=board_id).order_by(asc(Card.card_id))
     else:
-        cards = Card.query.all()
+        cards = Card.query.order_by(asc(Card.card_id)).all()
     return jsonify([card.to_dict() for card in cards]), 200
 
 
