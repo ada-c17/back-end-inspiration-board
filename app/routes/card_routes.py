@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
-# CREATE aka POST new card at endpoint: /cards
-# @cards_bp.route("", methods=["POST"])
+# CREATE aka POST new card 
+# This is a function, not an endpoint, since it is called from board_routes
 def create_card(request_body):
     if "message" not in request_body:
         return make_response(jsonify(dict(details="Invalid data")), 400)
@@ -20,16 +20,6 @@ def create_card(request_body):
     db.session.commit()
     
     return added_card.to_dict()   
-
-# @cards_bp.route("/<id>", methods=['PUT'])
-# def update_card(id):
-#     card = validate_card(id)
-
-#     request_body = request.get_json()
-
-#     card.update(request_body)
-#     db.session.commit()
-#     return jsonify({"card": card.to_dict()}), 200
 
 # DELETE /cards/id
 @cards_bp.route("<id>", methods=['DELETE'])
@@ -42,7 +32,7 @@ def delete_one_card(id):
     return jsonify({'details': f'Card {id} "{card.message}" successfully deleted'}), 200
   
 #########   
-# PATCH a card at endpoint: cards/id  #Remember PATCH is just altering one or some attributes whereas PUT replaces a record. 
+# PATCH a card at endpoint: cards/id
 @cards_bp.route("/<id>", methods=["PATCH"])
 def update_one_card(id):
     card = validate_card(id)

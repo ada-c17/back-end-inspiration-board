@@ -57,7 +57,6 @@ def create_card_for_board(board_id):
     }
 
     return make_response(jsonify(updatedBoard)), 200
-    # return make_response(jsonify(f"id: {card.title} for Board: {card.board.title} successfully created"), 200)
 
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
 def get_cards_per_board(board_id):
@@ -88,31 +87,6 @@ def get_board_by_id(id):
     board = validate_board(id)
    
     return jsonify({"board": board.to_dict()}), 200
-
-
-
-# @boards_bp.route("/<id>", methods=['PUT'])
-# def update_board(id):
-#     board = validate_board(id)
-
-#     request_body = request.get_json()
-
-#     board.update(request_body)
-#     db.session.commit()
-#     return jsonify({"board": board.to_dict()}), 200
-# #########   
-# # PATCH a board at endpoint: boards/id  #Remember PATCH is just altering one or some attributes whereas PUT replaces a record. 
-# @boards_bp.route("/<id>", methods=["PATCH"])
-# def update_one_board(id):
-#     board = validate_board(id)
-#     request_body = request.get_json()
-#     board_keys = request_body.keys()
-
-#     if "title" in board_keys:
-#         board.title = request_body["title"]
-
-#     db.session.commit()
-#     return make_response(f"Board# {board.board_id} successfully updated"), 200
     
 # DELETE /boards/id
 @boards_bp.route("<id>", methods=['DELETE'])
