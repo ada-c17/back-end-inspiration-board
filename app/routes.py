@@ -128,3 +128,12 @@ def delete_one_card(card_id):
 
     response = {"msg": f"delete card with id: {card.card_id}"}
     return jsonify(response), 200
+
+@card_bp.route("/<board_id>", methods=["DELETE"])
+def delete_one_board(board_id):
+    board = validate_board(board_id)
+    db.session.delete(board)
+    db.session.commit()
+
+    response = {"msg": f"delete board with id: {board.board_id}"}
+    return jsonify(response), 200
