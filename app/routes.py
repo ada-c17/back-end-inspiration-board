@@ -86,7 +86,8 @@ def get_cards_from_one_board(board_id):
         response["cards"].append({
             "card_id": card.card_id,
             "board_id": chosen_board.board_id,
-            "message": card.message
+            "message": card.message,
+            "likes": card.likes_count
         })
     return jsonify(response), 200
 
