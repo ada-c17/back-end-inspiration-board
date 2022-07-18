@@ -103,6 +103,9 @@ def create_one_card(id):
         return {"message": "Please add a message to post a card"}, 400
 
     new_card = Card(message = request_body['message'],
+                    color=request_body['color'],
+                    PosX=100,
+                    PosY=0,
                     likes_count=0,
                     board_id = id)
     
@@ -111,7 +114,10 @@ def create_one_card(id):
     return {
         "card": {
         "id": new_card.card_id,
+        "PosX": new_card.PosX,
+        "PosY": new_card.PosY,
         "message": new_card.message,
+        "color": new_card.color,
         "likes_count": new_card.likes_count
     }}, 201
 
@@ -153,6 +159,9 @@ def read_cards_of_one_board(board_id):
                     "id": card.card_id,
                     "board_id": board.board_id,
                     "message": card.message,
+                    "PosX": card.PosX,
+                    "PosY": card.PosY,
+                    "color": card.color,
                     "likes_count": card.likes_count
                 }    
         )
@@ -175,6 +184,30 @@ def update_one_card_like_count(card_id):
     return { 'card': {
         'id': card.card_id,
         'message': card.message,
+        'PosX': card.PosX,
+        'PosY': card.PosY,
+        'color': card.color,
         'likes_count': card.likes_count
         }}, 200
+
+
+#UPDATE ONE CARD
+@cards_bp.route('/<card_id>', methods=['PUT'])
+def update_card(card_id):
+    card = get_card_or_abort(card_id)
+    request_body = request.get_json()
+
+    card.PosX= request_body["PosX"]
+    card.PosY= request_body["PosY"]
+
+    db.session.commit()
+    return {
+        "card": {
+        "id": card.card_id,
+        "message": card.message,
+        "PosX": card.PosX,
+        "PosY": card.PosY,
+        "color": card.color,
+        "likes_count": card.likes_count
+    }}, 200
 
