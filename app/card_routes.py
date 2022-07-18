@@ -50,9 +50,19 @@ def send_slack_notification():
 @card_bp.route("", methods=["GET"])
 def get_cards_for_specific_board(board_id):
     board = validate_and_return_item(Board, board_id)
-
+    params = request.args
+    if "sort" in params:
+        if params["sort"] == "asc_alpha":
+            lst_cards = Card.query.order_by(Card.message.asc())
+        elif params["sort"] == "asc_id":
+            lst_cards = Card.query.order_by(Card.card_id.asc())
+        elif params["sort"] == "asc_likes":
+            lst_cards = Card.query.order_by(Card.likes_count.asc())
+    else:
+        lst_cards = board.cards
+    
     cards = []
-    for card in board.cards:
+    for card in lst_cards:
         cards.append({
         "card_id":card.card_id,
         "message": card.message,
