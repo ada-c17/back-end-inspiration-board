@@ -26,7 +26,7 @@ def read_all_boards():
     GET method to /boards endpoint
     Returns: JSON body with id, title, and owner from all boards
     '''
-    # board_query = request.args.get("sort") # do we need this? - NJ
+    # board_query = request.args.get("sort")
     boards = Board.query.all()
     board_response = []
     for board in boards:

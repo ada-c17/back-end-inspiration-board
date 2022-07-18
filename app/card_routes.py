@@ -25,8 +25,14 @@ def get_cards():
     GET method to /cards endpoint
     Returns: JSON body with id, message, likes_count, and board_id from all cards
     '''
-    # board_query = request.args.get("sort") # do we need this? - NJ
-    cards = Card.query.all()
+    card_query = request.args.get("sort") 
+    if card_query == "desc": 
+        cards = Card.query.order_by(Card.card_id.desc())
+    else:
+        cards = Card.query.order_by(Card.card_id.asc())
+    # else: 
+    #     Card.query.order_by(Card.id).all()
+    # cards = Card.query.all()
     card_response = []
     for card in cards:
         card_response.append(
@@ -102,6 +108,6 @@ def update_card_likes(card_id):
     db.session.commit()
 
     return make_response(
-        jsonify({'msg': f"Successfully replaced car with id {card_id}"}),
+        jsonify({'msg': f"Successfully replaced card with id {card_id}"}),
         200
     )
