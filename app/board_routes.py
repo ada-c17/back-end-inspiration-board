@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board 
 from app.models.card import Card 
+from sqlalchemy import func
 
 
 def validate_or_abort(board_id):
@@ -91,7 +92,7 @@ def read_cards_for_one_board(board_id):
 
     card_query = request.args.get("sort") 
     if card_query == "alpha": 
-        cards = Card.query.order_by(Card.message.asc()).all()
+        cards = Card.query.order_by(func.lower(Card.message).asc()).all()
     elif card_query == "likes":
         cards = Card.query.order_by(Card.likes_count.desc()).all()
     else:
