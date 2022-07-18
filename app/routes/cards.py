@@ -1,10 +1,14 @@
 
 from app.models.card import Card
 from app import db
+
 from flask import Blueprint, jsonify, make_response, request, abort
 
 
+
 cards_bp = Blueprint('cards', __name__, url_prefix="/cards")
+
+
 
 def validate_card(card_id):
     try:

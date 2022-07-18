@@ -13,6 +13,7 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SLACK_TOKEN"]=os.environ.get("SLACK_TOKEN")
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
         "SQLALCHEMY_DATABASE_URI")

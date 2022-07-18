@@ -3,8 +3,18 @@ from flask import Blueprint, jsonify, request, abort, make_response
 from app.models.board import Board
 from app.models.card import Card
 from app import db
+from flask import current_app as app
+import requests
 
 boards_bp = Blueprint('boards_bp', __name__, url_prefix='/boards')
+
+# helper function to send a slack message
+def send_slack_message(message):
+    url = "https://slack.com/api/chat.postMessage?channel=beastly-raptors&text=" + message
+   
+    headers = {'Authorization': f'Bearer {app.config["SLACK_TOKEN"]}'} # using hidden token from .env
+    
+    r = requests.post(url, headers=headers)
 
 # helper function to validate if request body contains message when we post a card
 def check_request_body_for_card():
@@ -35,7 +45,7 @@ def create_cards(board_id):
     new_card = Card(message=request_body["message"], likes_count=0 )
     board.cards.append(new_card)
     db.session.commit()
-    
+    send_slack_message(f'Someone just created a new card "{new_card.message}"')
     response = new_card.to_json()
     return jsonify(response), 201
         
