@@ -1,4 +1,5 @@
 import pytest 
+from app.models.board import Board
 
 def test_get_all_boards_no_records(client):
     response = client.get("/boards")
@@ -27,8 +28,26 @@ def test_get_one_board(client, create_three_boards):
                             "owner": "User 2", 
                             "cards": []}
 
-def test_get_board_that_doesnt_exist(client, create_three_boards):
+def test_get_board_that_doesnt_exist(client):
     response = client.get("/boards/100")
+    response_body = response.get_json()
+
+    assert response.status_code == 404
+    assert response_body == {"message": "board 100 not found"}
+
+def test_delete_board(client, create_three_boards):
+    response = client.delete("/boards/1")
+    response_body = response.get_json()
+
+    boards = Board.query.all()
+
+    assert response.status_code == 200
+    assert response_body == {"details": "board id:1, title:Brand New Board, owner:User 1 successfully deleted"}
+    assert Board.query.get(1) == None
+    assert len(boards) == 2
+
+def test_delete_board_that_doesnt_exist(client):
+    response = client.delete("/boards/100")
     response_body = response.get_json()
 
     assert response.status_code == 404
