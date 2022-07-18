@@ -19,31 +19,31 @@ def validate_or_abort_card(card_id):
     return card
 
 
-@cards_bp.route('', methods=['GET'])
-def get_cards():
-    '''
-    GET method to /cards endpoint
-    Returns: JSON body with id, message, likes_count, and board_id from all cards
-    '''
-    card_query = request.args.get("sort") 
-    if card_query == "desc": 
-        cards = Card.query.order_by(Card.card_id.desc())
-    else:
-        cards = Card.query.order_by(Card.card_id.asc())
-    # else: 
-    #     Card.query.order_by(Card.id).all()
-    # cards = Card.query.all()
-    card_response = []
-    for card in cards:
-        card_response.append(
-            {
-                "card_id": card.card_id,
-                "message": card.message,
-                "likes_count": card.likes_count,
-                "board_id": card.board_id
-            }
-        )
-    return jsonify(card_response)
+# @cards_bp.route('', methods=['GET'])
+# def get_cards():
+#     '''
+#     GET method to /cards endpoint
+#     Returns: JSON body with id, message, likes_count, and board_id from all cards
+#     '''
+#     card_query = request.args.get("sort") 
+#     if card_query == "desc": 
+#         cards = Card.query.order_by(Card.card_id.desc())
+#     else:
+#         cards = Card.query.order_by(Card.card_id.asc())
+#     # else: 
+#     #     Card.query.order_by(Card.id).all()
+#     # cards = Card.query.all()
+#     card_response = []
+#     for card in cards:
+#         card_response.append(
+#             {
+#                 "card_id": card.card_id,
+#                 "message": card.message,
+#                 "likes_count": card.likes_count,
+#                 "board_id": card.board_id
+#             }
+#         )
+#     return jsonify(card_response)
     
 
 @cards_bp.route('', methods=['POST'])

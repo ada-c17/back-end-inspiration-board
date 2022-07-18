@@ -81,11 +81,22 @@ def delete_board(board_id):
 @boards_bp.route("/<board_id>", methods=["GET"]) 
 def read_cards_for_one_board(board_id): 
     '''
-    GET method to /boards/<board_id>/cards endpoint
-    Returns: JSON body with id, message, and like_count of all cards for the specific board
+    GET method to /boards/<board_id> endpoint, sorts by id, message, or likes
+    Input: a board with a specific id that shows all the cards for that board
+    Returns: JSON body with card_id, message, likes_count, and board_id of all
+    cards for the specific board
     '''
     board = validate_or_abort(board_id)
     cards = Card.query.all()
+
+    card_query = request.args.get("sort") 
+    if card_query == "alpha": 
+        cards = Card.query.order_by(Card.message.asc()).all()
+    elif card_query == "likes":
+        cards = Card.query.order_by(Card.likes_count.desc()).all()
+    else:
+        cards = Card.query.order_by(Card.card_id.asc()).all()
+
     cards_response = []
     for card in cards:
         if card.board_id == board.board_id: 
