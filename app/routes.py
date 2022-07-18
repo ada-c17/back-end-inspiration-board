@@ -31,7 +31,7 @@ def create_board():
 # Get board
 @boards_bp.route("", methods=["GET"])
 def get_all_boards():
-    boards = Board.query.all()
+    boards = Board.query.order_by(Board.board_id.desc()).all()
     boards_response = [board.to_dict() for board in boards]
 
     return jsonify(boards_response), 200
