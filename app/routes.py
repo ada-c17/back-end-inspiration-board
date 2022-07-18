@@ -34,7 +34,7 @@ def create_new_board():
     
     request_body = request.get_json()
     if "title" not in request_body or "owner" not in request_body:
-        return make_response({"details":f"Invalid data"}, 400)
+        return {"details":f"Invalid data"},400
 
     new_board = Board(title=request_body["title"],
                     owner=request_body["owner"],
@@ -42,7 +42,7 @@ def create_new_board():
 
     db.session.add(new_board)
     db.session.commit()
-    return jsonify({"board":new_board.to_json()}),201
+    return {"board":new_board.to_json()},201
 
 
 
@@ -58,18 +58,51 @@ def get_boards():
     for board in boards:
         board_response.append(board.to_json())
     
-    return make_response( jsonify(board_response),200)
+    return jsonify(board_response),200
+
+# Read all cards for a board
+@boards_bp.route("/<board_id>/cards", methods=["GET"])
+def get_cards(board_id):
+    board = validate_board(board_id)
+    cards = Card.query.filter_by(board=board)############## is there a more direct way
+    card_response = []
+    
+    for card in cards:
+        card_response.append(card.to_json())
+
+    return jsonify(card_response),200
+
+#Create one card
+@boards_bp.route("/<board_id>/cards", methods=["post"])
+def create_new_card(board_id):
+
+    board = validate_board(board_id)
+    request_body = request.get_json()
+    if "message" not in request_body:
+        return {"details": "Invalid data message required."},400
+    new_card = Card(message=request_body["message"], board_id=board_id)
+
+    db.session.add(new_card)
+    db.session.commit()
+
+    return {"card":{"id":new_card.card_id, "message":new_card.message}},201
 
 
-# #Delete one board
-# @boards_bp.route("/<board_id>", methods=["DELETE"])
-# def delete_board(board_id):
-#     board = validate_board(board_id)
 
-#     db.session.delete(board)
-#     db.session.commit()
+#Delete one board
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board(board_id):
+    board = validate_board(board_id)
 
-#     return make_response({"details":f'Board {board.board_id} \"{board.title}\" successfully deleted'}),200
+    cards = Card.query.filter_by(board=board)############## is there a more direct way
+    
+    for card in cards:
+        db.session.delete(card)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return {"details":f'Board {board.board_id} \"{board.title}\" successfully deleted'},200
 
 
     # ************************************Routes for Cards**************************************
@@ -86,27 +119,6 @@ def validate_card(card_id):
         abort(make_response({"message":f"card {card_id} not found"}, 404))
 
     return card
-    
-    
-    
-    
-    #Create one card
-@cards_bp.route("", methods=["post"])
-def create_new_card():
-
-    request_body = request.get_json()
-    if "title" not in request_body or "owner" not in request_body:
-        return {
-    "details": "Invalid data"
-},400
-    new_card = Card(title=request_body["title"], owner=request_body["owner"]
-                    )
-# I added likes_count=0 because we always want to start at 0 unsure how to add a default value for model
-
-    db.session.add(new_card)
-    db.session.commit()
-
-    return {"card":{"id":new_card.card_id, "title":new_card.title}},201
 
 
 
