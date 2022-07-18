@@ -1,6 +1,7 @@
 import pytest
 from app import create_app
 from app import db
+from flask.signals import request_finished
 from app.models.board import Board
 from app.models.card import Card
 
@@ -8,6 +9,10 @@ from app.models.card import Card
 def app():
     # create the app with a test config dictionary
     app = create_app({"TESTING": True})
+
+    @request_finished.connect_via(app)
+    def expire_session(sender, response, **extra):
+        db.session.remove()
 
     with app.app_context():
         db.create_all()
@@ -32,7 +37,7 @@ def create_three_boards(app):
     db.session.commit()
 
 @pytest.fixture
-def one_card_belongs_to_one_board(app, create_three_boards):
+def add_card_to_board(app, create_three_boards):
     board_1 = Board.query.get(1)
     board_1.cards.append(Card(message = "A new inspirational message"))
 
