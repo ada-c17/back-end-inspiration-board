@@ -16,9 +16,19 @@ cards_bp = Blueprint("card_bp", __name__, url_prefix="/cards")
 def create_board():
     request_body = request.get_json()
 
-    if not "title"  in request_body or not "owner" in request_body:
+    if not "title" in request_body and not "owner" in request_body or len(request_body["title"]) == 0 and len(request_body["owner"]) == 0:
         return jsonify({
             "details": "Must include title and owner"
+        }), 400
+    
+    if not "title" in request_body or len(request_body["title"]) == 0:
+        return jsonify({
+            "details": "Must include title"
+        }), 400
+
+    if not "owner" in request_body or len(request_body["owner"]) == 0:
+        return jsonify({
+            "details": "Must include owner"
         }), 400
 
     new_board = Board(title=request_body["title"], owner=request_body["owner"])
