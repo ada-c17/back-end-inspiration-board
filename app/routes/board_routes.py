@@ -132,3 +132,14 @@ def create_card_for_board(board_id):
         'like_count': new_card.like_count,
         'board_id': board_id
     }, 201
+
+
+@board_bp.route('/<board_id>', methods=['DELETE'])
+def delete_one_board(board_id):
+    board = validate_board(board_id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    rsp = {'msg': f'Board #{board.board_id} successfully deleted!'}
+    return jsonify(rsp), 200
