@@ -129,7 +129,7 @@ def update_card(card_id):
 
     db.session.commit()
 
-    return {"details": f"card #{card.card_id} successfully liked"},200
+    return {"message": f"card #{card.card_id} successfully liked {card.likes_count} times"},200
 
 
 #Delete one card
@@ -140,5 +140,16 @@ def delete_card(card_id):
     db.session.delete(card)
     db.session.commit()
 
-    return {"details": f"card {card.card_id} \"{card.title}\" successfully deleted"},204
+    return {"message": f"card {card.card_id} \"{card.message}\" successfully deleted"},204
 
+# Read all cards as a test
+@cards_bp.route("", methods=["GET"])
+def get_all_cards_test():
+
+    cards= Card.query.all()
+    card_response = []
+    
+    for card in cards:
+        card_response.append(card.to_json())
+    
+    return jsonify(card_response),200
