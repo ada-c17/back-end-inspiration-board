@@ -47,6 +47,16 @@ def create_board():
 
     return {"board": new_board.to_json()}, 201
 
+@boards_bp.route("", methods=["DELETE"])
+def delete_all_cards_and_boards():
+    try:
+        db.session.query(Card).delete()
+        db.session.query(Board).delete()
+        db.session.commit()
+    except:
+        db.session.rollback()
+    
+    return "Successfully delete all data", 200
 
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
 def post_card_id_to_board(board_id):
