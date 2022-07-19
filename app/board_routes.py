@@ -5,6 +5,11 @@ from app import db
 from sqlalchemy import asc, desc
 from app.models.card import Card
 
+import os
+from dotenv import load_dotenv
+import requests
+load_dotenv()
+
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 
 # Creat a board
@@ -66,6 +71,15 @@ def create_card_by_board(board_id):
     )
     db.session.add(new_card)
     db.session.commit()
+
+    slack_url = "https://slack.com/api/chat.postMessage"
+    params = {
+        "channel": "get-inspired",
+        "text": f"A new card was created! \n'{new_card.message}'"
+        }
+    headers = {"Authorization":f"Bearer {os.environ.get('SLACK_BOT_TOKEN')}"}
+
+    requests.post(slack_url, params=params, headers=headers)
     return jsonify(new_card.card_response_dict()), 201
 
 
