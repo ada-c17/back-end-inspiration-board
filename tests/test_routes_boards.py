@@ -27,7 +27,8 @@ def test_get_boards_one_saved_board(client, one_board):
             "board_id": 1,
             "title": "camelCase Inspiration",
             "owner": "Poppy",
-            "cards": []
+            "cards": [],
+            "color": "39166F"
         }
     ]
 
@@ -38,6 +39,7 @@ def test_create_board(client):
     response = client.post("/boards", json={
         "title": "Another very inspirational board",
         "owner": "Lindsey",
+        "color": "39166F"
     })
     response_body = response.get_json()
 
@@ -49,7 +51,8 @@ def test_create_board(client):
             "board_id": 1,
             "title": "Another very inspirational board",
             "owner": "Lindsey",
-            "cards": []
+            "cards": [],
+            "color": "39166F"
         }
     }
     new_board = Board.query.get(1)
@@ -80,7 +83,8 @@ def test_get_cards_for_specific_board(client, one_card_belongs_to_one_board):
                 "likes_count": 0,
                 "board_id": 1
             }
-        ]
+        ],
+        "color": "39166F"
     }
 
 # Test POST Cards from Board
