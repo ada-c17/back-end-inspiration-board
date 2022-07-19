@@ -60,12 +60,12 @@ def get_one_card(card_id):
 @cards_bp.route('/<card_id>', methods=['PUT'])
 def update_one_card(card_id):
     card = validate_card(card_id)
-    if not request.is_json:
-        return {'msg': 'Missing json request body'}, 400
-    request_body = request.get_json()
+    # if not request.is_json:
+    #     return {'msg': 'Missing json request body'}, 400
+    # request_body = request.get_json()
     try:
         # card.message = request_body['message']
-        card.like_count = request_body['like_count'] + 1
+        card.like_count += 1
     except KeyError:
         return {
             'msg': 'Update failed. like_count is required!'
