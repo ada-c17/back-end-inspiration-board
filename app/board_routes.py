@@ -26,7 +26,8 @@ def get_cards_by_board(board_id):
     return {"board_id": board_id,
             "title": board.title,
             "cards": card_list, 
-            'owner': board.owner}, 200
+            'owner': board.owner,
+            "color": board.color}, 200
 
 
 @boards_bp.route("", methods=["POST"])
