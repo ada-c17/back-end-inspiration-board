@@ -29,11 +29,11 @@ def test_get_one_board(client, create_three_boards):
                             "cards": []}
 
 def test_get_board_that_doesnt_exist(client):
-    response = client.get("/boards/100")
+    response = client.get("/boards/1")
     response_body = response.get_json()
 
     assert response.status_code == 404
-    assert response_body == {"message": "board 100 not found"}
+    assert response_body == {"message": "board 1 not found"}
 
 def test_delete_board(client, create_three_boards):
     response = client.delete("/boards/1")
@@ -47,13 +47,12 @@ def test_delete_board(client, create_three_boards):
     assert len(boards) == 2
 
 def test_delete_board_that_doesnt_exist(client):
-    response = client.delete("/boards/100")
+    response = client.delete("/boards/1")
     response_body = response.get_json()
 
     assert response.status_code == 404
-    assert response_body == {"message": "board 100 not found"}
+    assert response_body == {"message": "board 1 not found"}
 
-# Test for Making a new board 
 def test_create_board(client):
     response = client.post("/boards", json = {"owner": "New User", "title": "My New Inspiration Board"})
     response_body = response.get_json()
@@ -70,8 +69,6 @@ def test_create_board(client):
     assert len(boards) == 1
     assert new_board.title == "My New Inspiration Board"
     assert new_board.owner == "New User"
-
-# Test that 400 error is raised if invalid data is passed (so missing owner or title)
 
 def test_create_board_must_contain_owner(client):
     response = client.post("/boards", json = {"title": "My New Inspiration Board"})
@@ -90,11 +87,42 @@ def test_create_board_must_contain_title(client):
     assert Board.query.all() == []
 
 # Maybe test for creating a new card associated w/ a board
-def test_create_card_on_board(client):
-    pass
+def test_create_card_on_board(client, create_one_board):
+    response = client.post("/boards/1/cards", json = {"message": "Keep trying"})
+    response_body = response.get_json()
 
-def test_create_card_on_board_must_contain_message(client):
-    pass
+    assert response.status_code == 201
+    assert response_body == {
+            "id": 1,
+            "message": "Keep trying",
+            "likes_count": 0,
+        }
+    assert len(Board.query.get(1).cards) == 1
 
-def test_create_card_on_board_already_has_other_card(client, create_three_boards, add_card_to_board):
-    pass
+
+def test_create_card_on_board_that_doesnt_exist(client):
+    response = client.post("/boards/1/cards", json = {"message": "Keep trying"})
+    response_body = response.get_json()
+
+    assert response.status_code == 404
+    assert response_body == {"message": f"board 1 not found"}
+
+def test_create_card_on_board_must_contain_message(client, create_one_board):
+    response = client.post("/boards/1/cards", json = {})
+    response_body = response.get_json()
+
+    assert response.status_code == 400
+    assert response_body == {"details":"Invalid data"}
+    assert Board.query.get(1).cards == []
+
+def test_create_card_on_board_already_has_other_card(client, add_card_to_board):
+    response = client.post("/boards/1/cards", json = {"message": "Keep trying"})
+    response_body = response.get_json()
+
+    assert response.status_code == 201
+    assert response_body == {
+            "id": 2,
+            "message": "Keep trying",
+            "likes_count": 0,
+        }
+    assert len(Board.query.get(1).cards) == 2
