@@ -86,6 +86,19 @@ def get_one_board(board_id):
     return jsonify(rsp), 200
 
 
+# ***** DELETE /boards *****
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board(board_id):
+    board = validate_board(board_id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return {
+        "details": f"Board {board_id} successfully deleted"
+    }, 200
+
+
 # ****************************
 # CARD ROUTES
 # ****************************
