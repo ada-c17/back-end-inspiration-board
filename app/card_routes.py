@@ -5,7 +5,7 @@ from app.models.card import Card
 
 cards_bp = Blueprint('cards_bp', __name__, url_prefix='/cards')
 
-def validate_or_abort_card(card_id):
+def validate_id_or_abort(card_id):
     # returns 400 error if invalid card_id (alpha/non-int) 
     try:
         card_id = int(card_id)
@@ -18,6 +18,9 @@ def validate_or_abort_card(card_id):
         abort(make_response({"error": f"card {card_id} not found"}, 404))
     return card
 
+
+# This was our original GET route which is not currently needed. Current GET route for
+# showing cards associated with a board is URL/boards/board_id
 
 # @cards_bp.route('', methods=['GET'])
 # def get_cards():
@@ -44,7 +47,6 @@ def validate_or_abort_card(card_id):
 #             }
 #         )
 #     return jsonify(card_response)
-    
 
 @cards_bp.route('', methods=['POST'])
 def create_card():
@@ -73,41 +75,44 @@ def create_card():
         "board_id": new_card.board_id
     }, 201
 
+@cards_bp.route("/<card_id>/like", methods=["PUT"])
+def update_card_likes(card_id):
+    '''
+    PUT method to cards/<card_id>/like endpoint
+    Input: likes_count, which is required
+    Returns: success message with specific card id
+    '''
+    card = validate_id_or_abort(card_id)
+    request_body = request.get_json()
+
+    if "likes_count" not in request_body:
+        return jsonify({'msg': f"Request must include likes_count data"}), 400
+
+    card.likes_count = request_body["likes_count"]
+    
+    # try:
+    #     card.likes_count = request_body["likes_count"]
+    # except KeyError:
+    #     abort(make_response({'msg': f"Request must include likes_count data"}), 400)
+    
+
+    db.session.commit()
+
+    return make_response(
+        jsonify({'msg': f"Successfully updated likes of card with id {card_id}"}),
+        200
+    )
+
 @cards_bp.route("/<card_id>", methods=['DELETE'])
 def delete_card(card_id):
     '''
     DELETE method to cards/<card_id> endpoint
     Input: sending card with a specific id will delete that card
-    Returns: success message with specific card id
+    Returns: success message with id of deleted card
     '''
-    card= validate_or_abort_card(card_id)
+    card= validate_id_or_abort(card_id)
 
     db.session.delete(card)
     db.session.commit()
+
     return {'details': f'Card {card.card_id} successfully deleted'}
-
-@cards_bp.route("/<card_id>/like", methods=["PUT"])
-def update_card_likes(card_id):
-    try:
-        card_id = int(card_id)
-    except ValueError:
-        return jsonify({'msg': f"Invalid card id: '{card_id}'. ID must be an integer"}), 400
-
-    request_body = request.get_json()
-
-    if "likes_count" not in request_body:
-        return jsonify({'msg': f"Request must include new likes data"}), 400
-
-    chosen_card = Card.query.get(card_id)
-
-    if chosen_card is None:
-        return jsonify({'msg': f'Could not find card with id {card_id}'}), 404
-
-    chosen_card.likes_count = request_body["likes_count"]
-
-    db.session.commit()
-
-    return make_response(
-        jsonify({'msg': f"Successfully replaced card with id {card_id}"}),
-        200
-    )

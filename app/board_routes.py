@@ -5,7 +5,7 @@ from app.models.card import Card
 from sqlalchemy import func
 
 
-def validate_or_abort(board_id):
+def validate_id_or_abort(board_id):
     # returns 400 error if invalid board_id (alpha/non-int) 
     try:
         board_id = int(board_id)
@@ -27,7 +27,6 @@ def read_all_boards():
     GET method to /boards endpoint
     Returns: JSON body with id, title, and owner from all boards
     '''
-    # board_query = request.args.get("sort")
     boards = Board.query.all()
     board_response = []
     for board in boards:
@@ -54,7 +53,7 @@ def create_board():
             owner=request_body['owner']
             )
     except:
-        abort(make_response({'details': f'Invalid data'}, 400))
+        abort(make_response({'details': f'Board title and owner are required'}, 400))
         
     db.session.add(new_board)
     db.session.commit()
@@ -72,7 +71,7 @@ def delete_board(board_id):
     Input: sending a board with a specific id will delete that board
     Returns: success message with specific board id and board title 
     '''
-    board = validate_or_abort(board_id)
+    board = validate_id_or_abort(board_id)
 
     db.session.delete(board)
     db.session.commit()
@@ -87,7 +86,7 @@ def read_cards_for_one_board(board_id):
     Returns: JSON body with card_id, message, likes_count, and board_id of all
     cards for the specific board
     '''
-    board = validate_or_abort(board_id)
+    board = validate_id_or_abort(board_id)
     cards = Card.query.all()
 
     card_query = request.args.get("sort") 
@@ -115,16 +114,16 @@ def read_cards_for_one_board(board_id):
 def create_cards_for_one_board(board_id): 
     '''
     POST method to /boards/<board_id>/cards endpoint
-    Input: message, like_count, and board title which are all required
+    Input: message, likes_count, and board title which are all required
     Returns: JSON response body with all input including id and successfully created message
     '''
-    board = validate_or_abort(board_id)
+    board = validate_id_or_abort(board_id)
 
     request_body = request.get_json()
     new_card = Card(
         message=request_body["message"], 
-        like_count=request_body["like_count"], 
-        board=board.title 
+        likes_count=request_body["likes_count"], 
+        board_id=board.id
     )
 
     db.session.add(new_card)
