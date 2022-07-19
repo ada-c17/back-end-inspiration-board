@@ -54,25 +54,27 @@ def send_slack_notification():
 def get_cards_for_specific_board(board_id):
     board = validate_and_return_item(Board, board_id)
     params = request.args
-    if "sort" in params:
+
+    if "sort" in params and params["sort"] == "asc_alpha" or params["sort"] == "asc_id" or params["sort"] == "asc_likes":
         if params["sort"] == "asc_alpha":
-            cards = Card.query.order_by(Card.message.asc())
+            sort_by = Card.message.asc()
         elif params["sort"] == "asc_id":
-            cards = Card.query.order_by(Card.card_id.asc())
+            sort_by = Card.card_id.asc()
         elif params["sort"] == "asc_likes":
-            cards = Card.query.order_by(Card.likes_count.asc())
+            sort_by = Card.likes_count.asc()
+        cards = db.session.query(Card).filter_by(
+            board_id=board.board_id).order_by(sort_by).all()
     else:
         cards = board.cards
 
     response = []
     for card in cards:
-        if card.board_id == board.board_id:
-            response.append({
-                "card_id": card.card_id,
-                "message": card.message,
-                "likes_count": card.likes_count,
-                "board_id": board_id
-            })
+        response.append({
+            "card_id": card.card_id,
+            "message": card.message,
+            "likes_count": card.likes_count,
+            "board_id": board_id
+        })
     return jsonify({
         "board_id": board.board_id,
         "cards": response
