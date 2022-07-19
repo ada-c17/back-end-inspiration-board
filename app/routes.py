@@ -2,6 +2,8 @@ from email import message
 from flask import Blueprint, request, jsonify, make_response, abort
 from app.models.board import Board
 from app.models.card import Card
+import requests
+import os
 from app import db
 
 # example_bp = Blueprint('example_bp', __name__)
@@ -34,6 +36,17 @@ def create_board():
     new_board = Board(title=request_body["title"], owner=request_body["owner"])
     db.session.add(new_board)
     db.session.commit()
+
+    # Send notification in Slack
+    requests.post('https://slack.com/api/chat.postMessage',
+        params={
+            'channel':'end-of-the-alphabet', 
+            'text': "Someone just created a new card!",
+        }, headers={
+            'authorization': f'Bearer {os.environ.get("ENVIRONMENT_VARAIBLE_SLACK_TOKEN")}'
+        }
+    )
+
 
     return make_response({"board":new_board.to_json()}, 201)
 
@@ -120,3 +133,4 @@ def delete_one_card(card_id):
     db.session.commit()
 
     return jsonify({"message": f"Deleted card with id {card_id}"})
+
