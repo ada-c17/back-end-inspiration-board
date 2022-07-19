@@ -69,6 +69,14 @@ def get_all_boards():
 def create_one_board():
     request_body = request.get_json()
     try:
+        if len(request_body["title"])<1 or len(request_body["owner"])<1:
+            abort(make_response(jsonify({"msg": "board must have a title and owner"}), 400))
+        for elem in request_body["title"]:
+            if not elem.isalnum():
+                abort(make_response(jsonify({"msg": "board title must contain numbers or letters"}), 400))
+        for elem in request_body["owner"]:
+            if not elem.isalnum():
+                abort(make_response(jsonify({"msg": "board owner must contain numbers or letters"}), 400))
         new_board = Board(
             title=request_body["title"], owner=request_body["owner"])
     except KeyError:
