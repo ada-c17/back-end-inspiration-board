@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify, make_response
 from flask import abort
 from app import db
 from os import abort
+import os
+import requests
 
 from app.models.board import Board
 from app.models.card import Card
@@ -124,6 +126,11 @@ def create_card_for_board(board_id):
 
     db.session.add(new_card)
     db.session.commit()
+
+    SLACK_URL = 'https://slack.com/api/chat.postMessage'
+    msg_to_post = {"text": f"Someone just created the card {new_card.message}", "channel" : "C03M57Y7JDC"}
+    auth = os.environ.get('SLACK_BOT_TOKEN')
+    requests.post(SLACK_URL, json=msg_to_post, headers={'Authorization': f'Bearer {auth}'})
 
     return {
         'msg': f'Succesfully created new card for {board.title}',
