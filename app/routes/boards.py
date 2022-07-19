@@ -81,3 +81,16 @@ def post_new_board():
     rsp = {'message': f'New board created with id: {new_board.board_id}'}
     return rsp, 201
 
+@boards_bp.route('/<board_id>', methods=['DELETE'])
+def delete_board(board_id):
+    board = validate_board_id(board_id)
+    cards = board.cards
+
+    for card in cards:
+        db.session.delete(card)
+        
+    db.session.delete(board)
+    db.session.commit()
+
+    return { "msg": f"Board {board_id} is successfully deleted." }, 200
+
