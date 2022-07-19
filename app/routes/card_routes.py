@@ -8,63 +8,34 @@ from app.models.card import Card
 
 cards_bp = Blueprint('cards', __name__, url_prefix='/cards')
 
-# Is this really necessary?  Cards also made through: board_bp.route("/<board_id>/card", methods=["POST"])
+
+# @cards_bp.route('', methods=['GET'])
+# def get_all_cards():
+#     cards = Card.query.all()
+#     cards_response = []
+#     for card in cards:
+#         cards_response.append({
+#             'message': card.message,
+#             'card_id': card.card_id,
+#             'like_count': card.like_count
+#         })
+#     return jsonify(cards_response), 200
 
 
-@cards_bp.route('', methods=['POST'])
-def create_one_card():
-    if not request.is_json:
-        return {'msg': 'Missing json request body'}, 400
-    request_body = request.get_json()
-    try:
-        message = request_body['message']
-    except KeyError:
-        return {'msg': 'failed to create new card due to missing attributes'}, 400
-
-    new_card = Card(message=message)
-    # like_count=like_count)
-    db.session.add(new_card)
-    db.session.commit()
-    response = {
-        'msg': 'Succesfully created new card',
-        'message': new_card.message,
-        'card_id': new_card.card_id,
-        'like_count': new_card.like_count
-    }
-    return jsonify(response), 201
-
-
-@cards_bp.route('', methods=['GET'])
-def get_all_cards():
-    cards = Card.query.all()
-    cards_response = []
-    for card in cards:
-        cards_response.append({
-            'message': card.message,
-            'card_id': card.card_id,
-            'like_count': card.like_count
-        })
-    return jsonify(cards_response), 200
-
-
-@cards_bp.route('/<card_id>', methods=['GET'])
-def get_one_card(card_id):
-    card = validate_card(card_id)
-    return jsonify({
-        'message': card.message,
-        'card_id': card.card_id,
-        'like_count': card.like_count
-    }), 200
+# @cards_bp.route('/<card_id>', methods=['GET'])
+# def get_one_card(card_id):
+#     card = validate_card(card_id)
+#     return jsonify({
+#         'message': card.message,
+#         'card_id': card.card_id,
+#         'like_count': card.like_count
+#     }), 200
 
 
 @cards_bp.route('/<card_id>', methods=['PUT'])
 def update_one_card(card_id):
     card = validate_card(card_id)
-    # if not request.is_json:
-    #     return {'msg': 'Missing json request body'}, 400
-    # request_body = request.get_json()
     try:
-        # card.message = request_body['message']
         card.like_count += 1
     except KeyError:
         return {
