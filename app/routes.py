@@ -2,6 +2,11 @@ from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
 from app.models.card import Card
+import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 ##### TABLE OF CONTENTS #############################################
@@ -120,6 +125,17 @@ def post_card():
 
     db.session.add(new_card)
     db.session.commit()
+
+    # send slack message
+    try:
+        message = "Card added with message: " + new_card.message
+        message_info = {"channel": "eggplant-parmesan-sandwiches", "text": message}
+        api_key = "Bearer " + os.environ.get("SLACK_API_KEY", "")
+        headers = {"Authorization": api_key}
+
+        r = requests.post("https://slack.com/api/chat.postMessage", params=message_info, headers=headers)
+    except:
+        return jsonify({"error": "slack message could not be sent"}), 500
 
     return make_response(new_card.to_dict(), 201)
 
