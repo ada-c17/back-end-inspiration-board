@@ -76,9 +76,10 @@ def create_new_card(board_id):
     request_body = request.get_json()
     if "message" not in request_body:
         return {"details": "Invalid data message required."},400
-    new_card = Card(message=request_body["message"], board_id=board_id) ##########maybe board_id = board or card.board_id=board.board_id
+    new_card = Card(message=request_body["message"], board=board) ##########maybe board_id = board or card.board_id=board.board_id
 
     db.session.add(new_card)
+
     db.session.commit()
 
     return {"card":{"id":new_card.card_id, "message":new_card.message}},201
