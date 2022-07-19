@@ -66,12 +66,13 @@ def get_cards_for_specific_board(board_id):
 
     response = []
     for card in cards:
-        response.append({
-            "card_id": card.card_id,
-            "message": card.message,
-            "likes_count": card.likes_count,
-            "board_id": board_id
-        })
+        if card.board_id == board.board_id:
+            response.append({
+                "card_id": card.card_id,
+                "message": card.message,
+                "likes_count": card.likes_count,
+                "board_id": board_id
+            })
     return jsonify({
         "board_id": board.board_id,
         "cards": response
