@@ -3,11 +3,28 @@ from app import db
 from app.models.card import Card
 from app.models.board import Board
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+PATH = "https://slack.com/api/chat.postMessage"
+API_KEY = os.environ.get("SLACK_TOKEN")
 
 # example_bp = Blueprint('example_bp', __name__)
 board_bp = Blueprint("board_bp", __name__, url_prefix="/boards")
 card_bp = Blueprint("card_bp", __name__, url_prefix="/cards")
 
+def create_slack_api_request(chosen_card):
+    params = {
+        "text": f"Someone just wrote a new message {chosen_card.message}",
+        "channel": "board-notification"
+        }
+    hdrs = {
+        "Authorization": f"Bearer {API_KEY}"
+    }
+    r = requests.post(PATH, data = params, headers = hdrs)
+    return r
 
 def validate_board(board_id):
     try:
@@ -105,6 +122,7 @@ def create_one_card(board_id):
     except KeyError:
         return {"msg": "Invalid input"}, 400
     db.session.add(new_card)
+    create_slack_api_request(new_card)
     db.session.commit()
     response = {"card": {"message": new_card.message, "id": new_card.card_id}}
     return jsonify(response), 201
