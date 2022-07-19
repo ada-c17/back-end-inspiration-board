@@ -20,12 +20,11 @@ def create_board():
             {
                 "details": "Please provide title!"
             }), 400
-    elif len(str((request_body["title"]))) or len(str((request_body["owner"]))) > 40:
+    elif len(str((request_body["title"]))) > 40 or len(str((request_body["owner"]))) > 40:
         return jsonify(
             {
                 "details": "Please enter a message that is less than 40 characters!"
             }), 400
-
     else:
         new_board = Board(
             title=request_body["title"], owner=request_body["owner"])
