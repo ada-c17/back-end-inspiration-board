@@ -98,12 +98,12 @@ def update_card_likes(card_id):
     if "likes_count" not in request_body:
         return jsonify({'msg': f"Request must include new likes data"}), 400
 
-    chosen_car = Card.query.get(card_id)
+    chosen_card = Card.query.get(card_id)
 
-    if chosen_car is None:
+    if chosen_card is None:
         return jsonify({'msg': f'Could not find card with id {card_id}'}), 404
 
-    chosen_car.likes_count = request_body["likes_count"]
+    chosen_card.likes_count = request_body["likes_count"]
 
     db.session.commit()
 
