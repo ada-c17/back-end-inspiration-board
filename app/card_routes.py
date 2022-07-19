@@ -13,12 +13,9 @@ cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 @cards_bp.route("/<card_id>/like", methods=["PUT"])
 def update_card(card_id):
     card = validate_record(Card, card_id)
-    request_body = request.get_json()
-    #{likes_count: 5}
-    #addition logic done in front end
 
     try:
-        card.update_likes(request_body)
+        card.update_likes()
     except KeyError:
         return abort(make_response(jsonify({"details":"Invalid data"}), 400))
 
