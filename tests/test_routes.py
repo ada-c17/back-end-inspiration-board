@@ -1,6 +1,5 @@
 from app.models.board import Board 
 from app.models.card import Card 
-import pytest 
 
 def test_get_boards_no_saved_boards(client): 
     # Act 
@@ -27,8 +26,7 @@ def test_get_boards_one_saved_board(client, one_board):
             "owner": "Julie"
         }
     ]
-    
-# @pytest.mark.skip(reason="Not passing - check into later")
+
 def test_get_board(client, one_board, three_cards): 
     # Act
     response = client.get("/boards/1")
@@ -36,6 +34,7 @@ def test_get_board(client, one_board, three_cards):
 
     # Assert
     assert response.status_code == 200
+    assert len(response_body) == 3
     assert response_body[0] == {
             "board_id": 1, 
             "card_id": 1, 
@@ -43,7 +42,6 @@ def test_get_board(client, one_board, three_cards):
             "message": "Ink"
         }
     
-
 # Create a board
 def test_create_board(client): 
     # Act
@@ -78,7 +76,6 @@ def test_delete_board(client, one_board):
         "details": 'Board 1 "Many Cats" successfully deleted'
     }
     assert Board.query.get(1) == None 
-
 
 # Board not found
 def test_board_not_found(client): 
@@ -125,7 +122,6 @@ def test_create_cards_to_specific_board(client, one_board):
     assert new_card.likes_count == 0 
 
 # Read cards associated with a board
-# @pytest.mark.skip(reason="Not passing - doesn't like the board_id")
 def test_get_cards_one__board(client, one_board,three_cards): 
     # Act
     response = client.get("/boards/1")
@@ -143,7 +139,6 @@ def test_get_cards_one__board(client, one_board,three_cards):
     
 
 #Increase the number of likes on a card
-# @pytest.mark.skip(reason="Not passing - doesn't like the board_id")
 def test_update_likes_on_card(client, one_board, three_cards): 
     # Act
     response = client.put("/cards/1/like", json={
@@ -159,7 +154,6 @@ def test_update_likes_on_card(client, one_board, three_cards):
     }
 
 # Delete a card
-# @pytest.mark.skip(reason="Not passing - doesn't like the board_id")
 def test_delete_card(client, one_board, three_cards):
     # Act 
     response = client.delete("/cards/1")
