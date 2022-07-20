@@ -5,7 +5,9 @@ class Card(db.Model):
     message = db.Column(db.String, nullable = False)
     likes_count = db.Column(db.Integer, nullable = True, default=0)
     board_id = db.Column(db.Integer, db.ForeignKey('board.board_id'), nullable=True)
-    
+    board = db.relationship("Board", back_populates="cards")
+
+
     def to_json(self):
         return {
             "id": self.card_id,
