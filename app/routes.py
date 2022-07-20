@@ -6,8 +6,6 @@ from app.models.board import Board
 from app.models.card import Card
 from sqlalchemy import exc
 
-# # example_bp = Blueprint('example_bp', __name__)
-
 # # Helper Functions
 
 def error_message(message, status_code):
