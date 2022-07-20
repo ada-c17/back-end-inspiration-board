@@ -36,16 +36,7 @@ def create_board():
     new_board = Board(title=request_body["title"], owner=request_body["owner"])
     db.session.add(new_board)
     db.session.commit()
-
-    # Send notification in Slack
-    requests.post('https://slack.com/api/chat.postMessage',
-        params={
-            'channel':'end-of-the-alphabet', 
-            'text': "Someone just created a new card!",
-        }, headers={
-            'authorization': f'Bearer {os.environ.get("ENVIRONMENT_VARAIBLE_SLACK_TOKEN")}'
-        }
-    )
+    
 
 
     return make_response({"board":new_board.to_json()}, 201)
@@ -104,6 +95,16 @@ def add_card():
     new_card = Card(message = request_body["message"],
                 board_id = int(request_body["board_id"]),
                 likes_count = 0)
+    
+    # Send notification in Slack
+    requests.post('https://slack.com/api/chat.postMessage',
+        params={
+            'channel':'end-of-the-alphabet', 
+            'text': "Someone just created a new card!",
+        }, headers={
+            'authorization': f'Bearer {os.environ.get("ENVIRONMENT_VARAIBLE_SLACK_TOKEN")}'
+        }
+    )
 
     db.session.add(new_card)
     db.session.commit()
