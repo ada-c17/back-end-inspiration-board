@@ -105,23 +105,6 @@ def delete_board(board_id):
     return{'details': f'Board {board_id} was successfully deleted'}, 200
 
 
-# UPDATE attributes of ONE specific Board
-@board_bp.route ('/<board_id>', methods=['PUT'])
-def put_board_title(board_id):
-    board = validate_board(board_id)
-
-    request_body = request.get_json()
-    
-    try: 
-        board.title = request_body['title']
-        board.owner = request_body['owner']
-    
-    except KeyError:
-        return jsonify({'details': 'Please enter both Title and Owner'}), 400
-    
-    db.session.commit()
-
-    return ({'Board': board.to_dict()}), 200
 
 
 
