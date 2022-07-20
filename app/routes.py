@@ -71,12 +71,10 @@ def create_one_board():
     try:
         if len(request_body["title"])<1 or len(request_body["owner"])<1:
             abort(make_response(jsonify({"msg": "board must have a title and owner"}), 400))
-        for elem in request_body["title"]:
-            if all(elem == " "):
-                abort(make_response(jsonify({"msg": "board title must contain numbers or letters"}), 400))
-        for elem in request_body["owner"]:
-            if all(elem == " "):
-                abort(make_response(jsonify({"msg": "board owner must contain numbers or letters"}), 400))
+        if request_body["title"].isspace():
+            abort(make_response(jsonify({"msg": "board title must contain numbers or letters"}), 400))
+        if request_body["owner"].isspace():
+            abort(make_response(jsonify({"msg": "board owner must contain numbers or letters"}), 400))
         new_board = Board(
             title=request_body["title"], owner=request_body["owner"])
     except KeyError:
