@@ -25,9 +25,9 @@ def validate_card_body(card_body):
             abort(
                 make_response({"msg": f"Invalid data: Missing {element}"},400)
             )
-        elif len(card_body["message"]) > 40:
+        elif len(card_body["message"]) > 140:
             abort(
-                make_response({"msg": f"Invalid data: Message longer than 40 characters"},400)
+                make_response({"msg": f"Invalid data: Message longer than 140 characters"},400)
             )
     return card_body
 
