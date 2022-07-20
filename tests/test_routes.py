@@ -28,7 +28,7 @@ def test_get_boards_one_saved_board(client, one_board):
         }
     ]
     
-@pytest.mark.skip(reason="Not passing - check into later")
+# @pytest.mark.skip(reason="Not passing - check into later")
 def test_get_board(client, one_board, three_cards): 
     # Act
     response = client.get("/boards/1")
@@ -36,13 +36,13 @@ def test_get_board(client, one_board, three_cards):
 
     # Assert
     assert response.status_code == 200
-    assert response_body[0] == [
-        {
+    assert response_body[0] == {
             "board_id": 1, 
             "card_id": 1, 
+            "likes_count": 0, 
             "message": "Ink"
         }
-    ]
+    
 
 # Create a board
 def test_create_board(client): 
@@ -125,8 +125,8 @@ def test_create_cards_to_specific_board(client, one_board):
     assert new_card.likes_count == 0 
 
 # Read cards associated with a board
-@pytest.mark.skip(reason="Not passing - doesn't like the board_id")
-def test_get_cards_one__board(client, three_cards): 
+# @pytest.mark.skip(reason="Not passing - doesn't like the board_id")
+def test_get_cards_one__board(client, one_board,three_cards): 
     # Act
     response = client.get("/boards/1")
     response_body = response.get_json()
@@ -134,17 +134,17 @@ def test_get_cards_one__board(client, three_cards):
     # Assert
     assert response.status_code == 200
     assert len(response_body) == 3
-    assert response_body[0] == [
-        { 
+    assert response_body[0] == { 
             "board_id": 1, 
             "card_id": 1, 
+            "likes_count": 0, 
             "message": "Ink"
         }
-    ]
+    
 
 #Increase the number of likes on a card
-@pytest.mark.skip(reason="Not passing - doesn't like the board_id")
-def test_update_likes_on_card(client, three_cards): 
+# @pytest.mark.skip(reason="Not passing - doesn't like the board_id")
+def test_update_likes_on_card(client, one_board, three_cards): 
     # Act
     response = client.put("/cards/1/like", json={
         "likes_count": 5
@@ -159,8 +159,8 @@ def test_update_likes_on_card(client, three_cards):
     }
 
 # Delete a card
-@pytest.mark.skip(reason="Not passing - doesn't like the board_id")
-def test_delete_card(client, three_cards):
+# @pytest.mark.skip(reason="Not passing - doesn't like the board_id")
+def test_delete_card(client, one_board, three_cards):
     # Act 
     response = client.delete("/cards/1")
     response_body = response.get_json()
@@ -170,5 +170,5 @@ def test_delete_card(client, three_cards):
     assert response_body == {
         "details": 'Card 1 successfully deleted'
     }
-    assert Board.query.get(1) == None 
+    assert Card.query.get(1) == None 
 

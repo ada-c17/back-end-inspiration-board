@@ -36,8 +36,8 @@ def one_board(app):
 @pytest.fixture
 def three_cards(app):
     db.session.add_all([
-        Card(message="Ink", board_id=1),
-        Card(message="Isaac", board_id=1),
-        Card(message="Annabelle", board_id=1)
+        Card(message="Ink", board_id=1, likes_count=0),
+        Card(message="Isaac", board_id=1,likes_count=0),
+        Card(message="Annabelle", board_id=1,likes_count=0)
     ])
     db.session.commit()
