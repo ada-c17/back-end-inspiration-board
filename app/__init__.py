@@ -10,8 +10,9 @@ migrate = Migrate()
 load_dotenv()
 
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
+    app.config['CORS_HEADERS'] = 'Content-Type'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
@@ -32,5 +33,5 @@ def create_app():
 
 
     CORS(app)
-    app.config['CORS_HEADERS'] = 'Content-Type'
+
     return app
