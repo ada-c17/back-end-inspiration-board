@@ -138,7 +138,7 @@ def get_cards(board_id):
 @cards_bp.route("/<card_id>/increase_likes_count", methods=["PATCH"])
 def card_increase_likes_count(card_id):
     card = get_record_by_id(card_id, Card)
-    card.likes_count = card.likes_count + 1
+    card.likes_count += 1
 
     db.session.commit()
     
@@ -148,7 +148,7 @@ def card_increase_likes_count(card_id):
 @cards_bp.route("/<card_id>/decrease_likes_count", methods=["PATCH"])
 def card_decrease_likes_count(card_id):
     card = get_record_by_id(card_id, Card)
-    card.likes_count = card.likes_count - 1
+    card.likes_count -= 1
 
     db.session.commit()
     
