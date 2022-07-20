@@ -68,7 +68,7 @@ def get_cards_per_board(board_id):
 
     if sort_param:
         if sort_param == 'msg_asc':
-            board.cards = board.Card.query.order_by(asc(board.Card.message))
+            cards = Card.query.order_by(asc(Card.message))
         # elif sort_param == 'msg_desc':
         #     cards = Card.query.order_by(desc(Card.message))
         # elif sort_param == "likes_asc":
@@ -80,7 +80,7 @@ def get_cards_per_board(board_id):
         # elif sort_param == "id_desc":
         #     cards = Card.query.order_by(desc(Card.id))
 
-    cards_info = [card.to_dict() for card in board.cards]
+    cards_info = [card.to_dict() for card in cards]
 
     db.session.commit()
 
