@@ -72,15 +72,15 @@ def get_cards_per_board(board_id):
         if sort_param == 'msg_asc':
             board.cards = Card.query.order_by(asc(Card.message))
         elif sort_param == 'msg_desc':
-          board.cards = Card.query.order_by(desc(Card.message))
+            board.cards = Card.query.order_by(desc(Card.message))
         elif sort_param == "likes_asc":
-          board.cards = Card.query.order_by(asc(Card.likes_count))
+            board.cards = Card.query.order_by(asc(Card.likes_count))
         elif sort_param == "likes_desc":
-          board.cards = Card.query.order_by(desc(Card.likes_count))
+            board.cards = Card.query.order_by(desc(Card.likes_count))
         elif sort_param == "id_asc":
-          board.cards = Card.query.order_by(asc(Card.id))
+            board.cards = Card.query.order_by(asc(Card.id))
         elif sort_param == "id_desc":
-          board.cards = Card.query.order_by(desc(Card.id))
+            board.cards = Card.query.order_by(desc(Card.id))
 
     board.cards = board.cards.all()
 
