@@ -33,11 +33,11 @@ def one_board(app):
 
 @pytest.fixture
 def one_board_w_three_cards(app):
-    new_board = Board(title = 'One Board', owner = 'one_board fixture')
+    new_board = Board(title = 'One Board', owner = 'one_board_w_three_cards fixture')
     db.session.add(new_board)
     db.session.commit()
     
     for i in range(1,4):
-        new_card = Card(message = f'Card {i}', board_id = new_board.id)
+        new_card = Card(message = f'Card {i}', board_id = new_board.id, likes_count = 0)
         db.session.add(new_card)
     db.session.commit()
