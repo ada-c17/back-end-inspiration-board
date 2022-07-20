@@ -81,3 +81,38 @@ def test_get_board_by_id_invalid_id(client, one_board):
     assert 'message' in response_body
     assert response_body['message'] == "one is not a valid id"
 
+def test_update_board_title_and_owner(client, one_board):
+    updates = { "title": "A new name", "owner": "pytest" }
+    response = client.patch('/boards/1', json=updates)
+    response_body = response.get_json()
+
+    assert response.status_code == 200
+    assert 'board' in response_body
+    assert response_body['board']['title'] == "A new name"
+    assert response_body['board']['owner'] == "pytest"
+
+def test_update_board_title_only(client, one_board):
+    updates = { "title": "A new name" }
+    response = client.patch('/boards/1', json=updates)
+    response_body = response.get_json()
+
+    assert response.status_code == 200
+    assert 'board' in response_body
+    assert response_body['board']['title'] == "A new name"
+
+def test_delete_board_by_id(client, one_board, one_board_w_three_cards):
+    before_deleting_get = client.get('/boards')
+    before_deleting_boards = before_deleting_get.get_json()['boards']
+
+    assert len(before_deleting_boards) == 2
+
+    response = client.delete('/boards/1')
+    response_body = response.get_json()
+
+    assert response.status_code == 200
+    assert 'message' in response_body
+
+    after_deleting_get = client.get('/boards')
+    after_deleting_boards = after_deleting_get.get_json()['boards']
+
+    assert len(after_deleting_boards) == 1

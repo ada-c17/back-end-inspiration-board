@@ -42,7 +42,7 @@ def test_delete_card(client, one_board_w_three_cards):
 
     assert response.status_code == 200
     assert response_body == {
-        'message' : 'Card 1 "Card 1" successfully deleted'
+        'message' : "Card 1 'Card 1' successfully deleted"
     }
 
 def test_edit_only_likes_card(client, one_board_w_three_cards):
@@ -110,4 +110,17 @@ def test_create_card_with_invalid_data(client, one_board):
     assert response.status_code == 400
     assert response_body == {
         'message' : 'four is not a valid id'
+    }
+
+def test_get_card_by_id(client, one_board_w_three_cards):
+    response = client.get('/cards/2')
+    response_body = response.get_json()
+
+    assert response.status_code == 200
+    assert 'card' in response_body
+    assert response_body['card'] == {
+        'card_id' : 2,
+        'message' : 'Card 2',
+        'likes_count' : 0,
+        'board_id' : 1
     }
