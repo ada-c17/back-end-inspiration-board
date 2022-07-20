@@ -62,7 +62,8 @@ def get_cards_for_specific_board(board_id):
             sort_by = Card.card_id.asc()
         elif params["sort"] == "asc_likes":
             sort_by = Card.likes_count.asc()
-        cards = db.session.query(Card).filter_by(board_id=board.board_id).order_by(sort_by).all()
+        cards = db.session.query(Card).filter_by(
+            board_id=board.board_id).order_by(sort_by).all()
     else:
         cards = board.cards
 
