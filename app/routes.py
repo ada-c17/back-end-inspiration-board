@@ -31,9 +31,6 @@ def get_record_by_id(id, cls):
 
 # # Boards Routes
 
-#? Do we want to add a board & card validation function in here? 
-#? Or can we assume the frontend passes only valid data?
-
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 
 # # POST /boards
@@ -71,7 +68,7 @@ def get_single_board(board_id):
     board = get_record_by_id(board_id, Board)
     return jsonify({"board":board.to_dict()})
 
-# # PUT /boards/<board_id> ??? Do we want ???
+# # PUT /boards/<board_id>
 @boards_bp.route("/<board_id>", methods=["PUT"])
 def replace_board_by_id(board_id):
     request_body = request.get_json()
@@ -86,8 +83,6 @@ def replace_board_by_id(board_id):
     db.session.commit()
 
     return jsonify({"board": board.to_dict()})    
-
-# # ??? Do we want PATCH routes for title or owner ??? not right now!
 
 # # DELETE /boards/<board_id>
 @boards_bp.route("/<board_id>", methods=["DELETE"])
@@ -106,7 +101,6 @@ cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 
 # # POST /cards/<board_id>
 @cards_bp.route("/<board_id>", methods=["POST"])
-# note maximum character size in model from db, catch errors from db?
 def create_card(board_id):
     try:
         request_body = request.get_json()
@@ -142,8 +136,6 @@ def get_cards(board_id):
 
     return jsonify(cards_list)
 
-# # PUT /cards/<card_id>/ ??? Do we want ???
-
 # # PATCH /cards/<card_id>/increase_likes_count
 @cards_bp.route("/<card_id>/increase_likes_count", methods=["PATCH"])
 def card_increase_likes_count(card_id):
@@ -163,7 +155,6 @@ def card_decrease_likes_count(card_id):
     db.session.commit()
     
     return jsonify({'details': f'Card {card_id} \'{card.message}\' successfully unliked'})
-
 
 # # DELETE /cards/<card_id>
 @cards_bp.route("/<card_id>", methods=["DELETE"])

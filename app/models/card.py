@@ -7,8 +7,6 @@ class Card(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey("board.id"), nullable=False)
     board = db.relationship("Board", back_populates="cards")
 
-    #do we want to include a method or two here to convert a Card to a dictionary or something? How will the frontend use card data?
-
     def to_dict(self):
         return {
             "id": self.id,

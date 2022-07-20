@@ -6,7 +6,6 @@ class Board(db.Model):
     owner = db.Column(db.String, nullable=False)
     cards = db.relationship("Card", back_populates="board")
 
-    #? do we want to include a method or two here to convert a Board to a dictionary or something? How will the frontend use board data?
     def to_dict(self):
         return {
             "id": self.id,
