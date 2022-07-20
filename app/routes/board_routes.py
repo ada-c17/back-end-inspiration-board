@@ -63,24 +63,7 @@ def create_card_for_board(board_id):
 def get_cards_per_board(board_id):
 
     board = validate_board(board_id)
-
-    sort_param = request.args.get("sort")
-
-    if sort_param:
-        if sort_param == 'msg_asc':
-            cards = Card.query.order_by(asc(Card.message))
-        # elif sort_param == 'msg_desc':
-        #     cards = Card.query.order_by(desc(Card.message))
-        # elif sort_param == "likes_asc":
-        #     cards = Card.query.order_by(asc(Card.likes_count))
-        # elif sort_param == "likes_desc":
-        #     cards = Card.query.order_by(desc(Card.likes_count))
-        # elif sort_param == "id_asc":
-        #     cards = Card.query.order_by(asc(Card.id))
-        # elif sort_param == "id_desc":
-        #     cards = Card.query.order_by(desc(Card.id))
-
-    cards_info = [card.to_dict() for card in cards]
+    cards_info = [card.to_dict() for card in board.cards]
 
     db.session.commit()
 
