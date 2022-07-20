@@ -110,25 +110,3 @@ def read_cards_for_one_board(board_id):
             )
     return jsonify(cards_response)
 
-@boards_bp.route("/<board_id>/cards", methods=["POST"])
-def create_cards_for_one_board(board_id): 
-    '''
-    POST method to /boards/<board_id>/cards endpoint
-    Input: message, likes_count, and board title which are all required
-    Returns: JSON response body with all input including id and successfully created message
-    '''
-    board = validate_id_or_abort(board_id)
-
-    request_body = request.get_json()
-    new_card = Card(
-        message=request_body["message"], 
-        likes_count=request_body["likes_count"], 
-        board_id=board.id
-    )
-
-    db.session.add(new_card)
-    db.session.commit()
-
-    return make_response(jsonify(f"Card {new_card.message} in {board.title} successfully created"), 201)
-
-

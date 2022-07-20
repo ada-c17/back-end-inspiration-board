@@ -90,12 +90,6 @@ def update_card_likes(card_id):
 
     card.likes_count = request_body["likes_count"]
     
-    # try:
-    #     card.likes_count = request_body["likes_count"]
-    # except KeyError:
-    #     abort(make_response({'msg': f"Request must include likes_count data"}), 400)
-    
-
     db.session.commit()
 
     return make_response(
