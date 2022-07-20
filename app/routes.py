@@ -3,9 +3,12 @@ from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from .models.board import Board
 from .models.card import Card
+import requests, os
+from dotenv import load_dotenv
 
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 cards_bp = Blueprint("card_bp", __name__, url_prefix="/cards")
+load_dotenv()
 
 # ****************************
 # BOARD ROUTES
@@ -103,6 +106,20 @@ def delete_board(board_id):
 # CARD ROUTES
 # ****************************
 
+# ***** MESSAGE SLACK - helper function, sends slack message when card is created *****
+SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
+def send_slack_message(card):
+    PATH = 'https://slack.com/api/chat.postMessage'
+    query_params = {
+        "channel":"team-farenheit",
+        "text":f"New card created for {card.board_id}. Card message: {card.message}"
+    }
+    header = {"Authorization" : f"Bearer {SLACK_TOKEN}"}
+
+    response = requests.post(PATH, params=query_params, headers=header)
+    return response
+
+
 # ***** POST /boards/<board_id>/cards *****
 @boards_bp.route('/<board_id>/cards', methods=["POST"])
 def create_one_card(board_id):
@@ -122,6 +139,9 @@ def create_one_card(board_id):
 
     db.session.add(new_card)
     db.session.commit()
+
+    #send message to slack channel
+    send_slack_message(new_card)
 
     return {
         "card_id": new_card.card_id, 
