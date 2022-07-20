@@ -144,10 +144,26 @@ def get_cards(board_id):
 
 # # PUT /cards/<card_id>/ ??? Do we want ???
 
-# # PATCH /cards/<card_id>/likes_count
-# @cards_bp.route("/<card_id>/likes_count", methods=["PATCH"])
+# # PATCH /cards/<card_id>/increase_likes_count
+@cards_bp.route("/<card_id>/increase_likes_count", methods=["PATCH"])
+def card_increase_likes_count(card_id):
+    card = get_record_by_id(card_id, Card)
+    card.likes_count = card.likes_count + 1
 
-# # ??? Do we want PATCH route for message ???
+    db.session.commit()
+    
+    return jsonify({'details': f'Card {card_id} \'{card.message}\' successfully liked'})
+
+# # PATCH /cards/<card_id>/decrease_likes_count
+@cards_bp.route("/<card_id>/decrease_likes_count", methods=["PATCH"])
+def card_decrease_likes_count(card_id):
+    card = get_record_by_id(card_id, Card)
+    card.likes_count = card.likes_count - 1
+
+    db.session.commit()
+    
+    return jsonify({'details': f'Card {card_id} \'{card.message}\' successfully unliked'})
+
 
 # # DELETE /cards/<card_id>
 @cards_bp.route("/<card_id>", methods=["DELETE"])
