@@ -1,15 +1,16 @@
 from flask import abort, make_response
 
 
-def validate(id, type):
+def validate_class_instance(instance_id, cls):
     try:
-        id = int(id)
+        instance_id = int(instance_id)
     except:
-        return abort(make_response({"message": f"{type} {id} is invalid"}, 400))
+        return abort(make_response({"message": f'{cls.__name__} {instance_id} is invalid'}, 400))
 
-    instance = type.query.get(id)
+    instance = cls.query.get(instance_id)
 
     if not instance:
-        abort(make_response({"message": f"{type} {id} not found"}, 404))
+        abort(make_response(
+            {"message": f'{cls.__name__} {instance_id} not found'}, 404))
 
     return instance

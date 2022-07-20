@@ -11,7 +11,9 @@ class Board(db.Model):
         return {
             "board_id": self.board_id,
             "title": self.title,
-            "owner": self.owner
+            "owner": self.owner,
+            # "cards": self.cards
+            # do we want to return an empty list of cards?
         }
 
     @classmethod

@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.board import Board
 from app.models.card import Card
-from app.routes.helper import validate
+from app.routes.helper import validate_class_instance
 
 # example_bp = Blueprint('example_bp', __name__)
 board_bp = Blueprint('board_bp', __name__, url_prefix="/boards")
@@ -39,7 +39,7 @@ def get_all_boards():
 # GET ONE BOARDs - "/boards/1" - GET
 @board_bp.route("/<id>", methods=["GET"])
 def get_one_board(id):
-    board = validate(id, Board)
+    board = validate_class_instance(id, Board)
 
     return jsonify({"board": board.to_json()}), 200
 
@@ -48,7 +48,7 @@ def get_one_board(id):
 # UPDATE BAORD - "/boards/1" - PUT
 @board_bp.route("/<id>", methods=["PUT"])
 def update_board(id):
-    board = validate(id, Board)
+    board = validate_class_instance(id, Board)
     request_body = request.get_json()
     board.update(request_body)
 
@@ -61,7 +61,7 @@ def update_board(id):
 # UPDATE BAORD - "/boards/1" - DELETE
 @board_bp.route("/<id>", methods=["DELETE"])
 def delete_board(id):
-    board = validate(id, Board)
+    board = validate_class_instance(id, Board)
 
     db.session.delete(board)
     db.session.commit()
@@ -85,7 +85,7 @@ def create_card(board_id):
 # GET ALL cards for 1 board:
 @board_bp.route("/<board_id>/cards", methods=["GET"])
 def get_all_cards(board_id):
-    board = validate(board_id, Board)
+    board = validate_class_instance(board_id, Board)
     cards = Card.query.filter_by(board=board)
 
     return jsonify([{"message": card.message, "like_count": card.like_count, "card_id": card.card_id, "board_id": card.board_id} for card in cards]), 200

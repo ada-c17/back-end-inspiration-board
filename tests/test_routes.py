@@ -1,4 +1,3 @@
-from urllib import response
 from app.models.board import Board
 from app.models.card import Card
 import pytest
@@ -41,7 +40,7 @@ def test_get_board_not_found(client):
     # Assert
     assert response.status_code == 404
     assert response_body == {
-        "message": "<class 'app.models.board.Board'> 1 not found"}
+        "message": "Board 1 not found"}
 
 
 def test_create_board(client):
@@ -108,7 +107,7 @@ def test_update_board_not_found(client):
     # Assert
     assert response.status_code == 404
     assert response_body == {
-        "message": "<class 'app.models.board.Board'> 1 not found"}
+        "message": "Board 1 not found"}
 
 
 def test_delete_board(client, one_board):
@@ -132,7 +131,7 @@ def test_delete_board_not_found(client):
     # Assert
     assert response.status_code == 404
     assert response_body == {
-        "message": "<class 'app.models.board.Board'> 1 not found"}
+        "message": "Board 1 not found"}
     assert Board.query.all() == []
 
 
@@ -172,7 +171,7 @@ def test_get_card_for_non_existent_board(client):
     # Assert
     assert response.status_code == 404
     assert response_body == {
-        "message": "<class 'app.models.board.Board'> 1 not found"}
+        "message": "Board 1 not found"}
 
 
 def test_create_card_for_board_with_cards(client, one_card_belongs_to_one_board):
@@ -243,7 +242,7 @@ def test_update_card_from_board_card_not_found(client):
     # Assert
     assert response.status_code == 404
     assert response_body == {
-        "message": "<class 'app.models.card.Card'> 1 not found"}
+        "message": "Card 1 not found"}
 
 
 def test_delete_card_from_board(client, all_cards):
@@ -268,5 +267,5 @@ def test_delete_card_from_board_card_not_found(client):
     # Assert
     assert response.status_code == 404
     assert response_body == {
-        "message": "<class 'app.models.card.Card'> 1 not found"}
+        "message": "Card 1 not found"}
     assert Card.query.all() == []
