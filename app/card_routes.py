@@ -10,10 +10,11 @@ card_bp = Blueprint('card_bp', __name__, url_prefix="/boards/")
 # create new card to board by id
 @card_bp.route("<board_id>/cards", methods=["POST"], strict_slashes=False)
 def create_card(board_id):
-    get_record_by_id(Board,board_id)
+    board = get_record_by_id(Board,board_id)
     
     request_body = request.get_json()
     new_card = make_record_safely(Card, request_body )
+    new_card.board = board
 
     db.session.add(new_card)
     db.session.commit()
