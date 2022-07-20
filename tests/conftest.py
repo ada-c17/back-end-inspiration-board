@@ -37,7 +37,7 @@ def one_board_w_three_cards(app):
     db.session.add(new_board)
     db.session.commit()
     
-    for i in range(3):
+    for i in range(1,4):
         new_card = Card(message = f'Card {i}', board_id = new_board.id)
         db.session.add(new_card)
     db.session.commit()
