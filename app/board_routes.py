@@ -67,38 +67,25 @@ def validate_board(board_id):
     return board
 
 
-@board_bp.route("/<board_id>", methods=["GET"])
-def read_one_board_with_all_cards(board_id):
+# @board_bp.route("/<board_id>", methods=["GET"])
+# def read_one_board_with_all_cards(board_id):
 
-    board = validate_board(board_id)
-    cards = []
-    for card in board.cards:
-        cards.append({
-            "card_id": card.card_id,
-            "message": card.message,
-            "likes_count": card.likes_count,
-            "board_id": board_id
-        }
-        )
-    return {
-        "board_id": board.board_id,
-        "title": board.title,
-        "owner": board.owner,
-        "cards": cards
-    }
-
-# @board_bp.route("/<board_id>", methods=["PATCH"])
-# def update_board(board_id):
 #     board = validate_board(board_id)
-
-#     request_body = request.get_json()
-
-#     board.title = request_body["title"]
-#     board.owner = request_body["owner"]
-
-#     db.session.commit()
-
-#     return make_response(jsonify(f"Board #{board.board_id} successfully updated"))
+#     cards = []
+#     for card in board.cards:
+#         cards.append({
+#             "card_id": card.card_id,
+#             "message": card.message,
+#             "likes_count": card.likes_count,
+#             "board_id": board_id
+#         }
+#         )
+#     return {
+#         "board_id": board.board_id,
+#         "title": board.title,
+#         "owner": board.owner,
+#         "cards": cards
+#     }
 
 
 @board_bp.route("/<board_id>", methods=["DELETE"])

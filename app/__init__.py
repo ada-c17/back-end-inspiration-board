@@ -21,17 +21,14 @@ def create_app():
 
     from app.models.board import Board
     from app.models.card import Card
-  
 
     db.init_app(app)
     migrate.init_app(app, db)
 
-    
     from .card_routes import card_bp
     app.register_blueprint(card_bp)
 
     from .board_routes import board_bp
     app.register_blueprint(board_bp)
 
-   
     return app
