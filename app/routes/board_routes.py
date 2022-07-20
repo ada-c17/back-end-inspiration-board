@@ -68,21 +68,21 @@ def get_cards_per_board(board_id):
 
     board.cards = board.cards.query
 
-    # if sort_param:
-    #     if sort_param == 'msg_asc':
-    #         board.cards = Card.query.order_by(asc(Card.message))
-    #     elif sort_param == 'msg_desc':
-    #         board.cards = Card.query.order_by(desc(Card.message))
-    #     elif sort_param == "likes_asc":
-    #         board.cards = Card.query.order_by(asc(Card.likes_count))
-    #     elif sort_param == "likes_desc":
-    #         board.cards = Card.query.order_by(desc(Card.likes_count))
-    #     elif sort_param == "id_asc":
-    #         board.cards = Card.query.order_by(asc(Card.id))
-    #     elif sort_param == "id_desc":
-    #         board.cards = Card.query.order_by(desc(Card.id))
+    if sort_param:
+        if sort_param == 'msg_asc':
+            board.cards = Card.query.order_by(asc(Card.message))
+        elif sort_param == 'msg_desc':
+            board.cards = Card.query.order_by(desc(Card.message))
+        elif sort_param == "likes_asc":
+            board.cards = Card.query.order_by(asc(Card.likes_count))
+        elif sort_param == "likes_desc":
+            board.cards = Card.query.order_by(desc(Card.likes_count))
+        elif sort_param == "id_asc":
+            board.cards = Card.query.order_by(asc(Card.id))
+        elif sort_param == "id_desc":
+            board.cards = Card.query.order_by(desc(Card.id))
 
-    board.cards = board.cards.all()
+    # board.cards = board.cards.all()
 
     cards_info = [card.to_dict() for card in board.cards]
 
