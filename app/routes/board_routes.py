@@ -66,7 +66,7 @@ def get_cards_per_board(board_id):
 
     sort_param = request.args.get("sort")
 
-    board.cards = board.cards.query
+    # board.cards = board.cards.query
 
     if sort_param:
         if sort_param == 'msg_asc':
