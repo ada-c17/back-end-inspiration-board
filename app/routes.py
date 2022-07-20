@@ -4,24 +4,24 @@ from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 import requests
 
-# example_bp = Blueprint('example_bp', __name__)
+
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
 
 
-    # ************************************Routes for Boards*************************************
+# ************************************Routes for Boards*************************************
 def validate_board(board_id):
     try:
         board_id = int(board_id)
     except:
-        abort(make_response({"message":f"board {board_id} invalid"}, 400))
+        abort(make_response({"detail":f"board {board_id} invalid"}, 400))
 
     board = Board.query.get(board_id)
 
     if not board:
-        abort(make_response({"message":f"board {board_id} not found"}, 404))
+        abort(make_response({"detail":f"board {board_id} not found"}, 404))
 
     return board
 
@@ -44,6 +44,9 @@ def create_new_board():
     db.session.commit()
     return {"board":new_board.to_json()},201
 
+
+
+
 # Read all boards
 @boards_bp.route("", methods=["GET"])
 def get_boards():
@@ -56,33 +59,8 @@ def get_boards():
     
     return jsonify(board_response),200
 
-# Read all cards for a board
-@boards_bp.route("/<board_id>/cards", methods=["GET"])
-def get_cards(board_id):
-    board = validate_board(board_id)
-    cards = Card.query.filter_by(board=board)############## is there a more direct way
-    card_response = []
-    
-    for card in cards:
-        card_response.append(card.to_json())
 
-    return jsonify(card_response),200
 
-#Create one card
-@boards_bp.route("/<board_id>/cards", methods=["post"])
-def create_new_card(board_id):
-
-    board = validate_board(board_id)
-    request_body = request.get_json()
-    if "message" not in request_body:
-        return {"details": "Invalid data message required."},400
-    new_card = Card(message=request_body["message"], board=board) ##########maybe board_id = board or card.board_id=board.board_id
-
-    db.session.add(new_card)
-
-    db.session.commit()
-
-    return {"card":{"id":new_card.card_id, "message":new_card.message}},201
 
 
 
@@ -91,8 +69,7 @@ def create_new_card(board_id):
 def delete_board(board_id):
     board = validate_board(board_id)
 
-    cards = Card.query.filter_by(board=board)############## is there a more direct way
-    
+    cards = Card.query.filter_by(board=board)
     for card in cards:
         db.session.delete(card)
 
@@ -102,7 +79,43 @@ def delete_board(board_id):
     return {"details":f'Board {board.board_id} \"{board.title}\" successfully deleted'},200
 
 
-    # ************************************Routes for Cards**************************************
+# ********************************************************************Nested Routes ***************************************************************************
+
+# Read all cards for a board
+@boards_bp.route("/<board_id>/cards", methods=["GET"])
+def get_cards(board_id):
+    board = validate_board(board_id)
+    cards = Card.query.filter_by(board=board)
+    card_response = []
+    
+    for card in cards:
+        card_response.append(card.to_json())
+
+    return jsonify(card_response),200
+
+
+
+
+
+
+#Create one card
+@boards_bp.route("/<board_id>/cards", methods=["post"])
+def create_new_card(board_id):
+
+    board = validate_board(board_id)
+    request_body = request.get_json()
+    if "message" not in request_body:
+        return {"details": "Invalid data message required."},400
+    new_card = Card(message=request_body["message"], board=board) 
+
+    db.session.add(new_card)
+    db.session.commit()
+
+    return {"card":{"id":new_card.card_id, "message":new_card.message}},201
+
+
+
+# *****************************************************Routes for Cards********************************************************************************************
 
 def validate_card(card_id):
     try:
@@ -120,7 +133,7 @@ def validate_card(card_id):
 
 
 
-#Update one card//?????????????????with heart url/cards/#
+#Update one card
 @cards_bp.route("/<card_id>", methods=["PUT"])
 def update_card(card_id):
     card = validate_card(card_id)
@@ -129,7 +142,7 @@ def update_card(card_id):
 
     db.session.commit()
 
-    return {"message": f"card #{card.card_id} successfully liked {card.likes_count} times"},200
+    return {"detail": f"card #{card.card_id} successfully liked {card.likes_count} times"},200
 
 
 #Delete one card
@@ -140,7 +153,9 @@ def delete_card(card_id):
     db.session.delete(card)
     db.session.commit()
 
-    return {"message": f"card {card.card_id} \"{card.message}\" successfully deleted"},204
+    return {"detail": f"card {card.card_id} \"{card.message}\" successfully deleted"},204
+
+
 
 # Read all cards as a test
 @cards_bp.route("", methods=["GET"])
