@@ -18,7 +18,7 @@ def create_board():
     db.session.add(new_board)
     db.session.commit()
 
-    return jsonify({new_board.to_json()}), 201
+    return jsonify(new_board.to_json()), 201
 
 #GET all boards
 @boards_bp.route("", methods=["GET"])
