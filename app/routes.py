@@ -3,13 +3,29 @@ from app.models.card import Card
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 import requests
+from dotenv import load_dotenv
+import os
 
 
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
+load_dotenv()
 
+
+def slack_post(name):
+    '''
+    slack_post
+    takes name to print in slack
+    returns none
+    '''
+    auth_info = os.environ.get("SLACKBOT_TOKEN")
+    url_location = "https://slack.com/api/chat.postMessage"
+    data_dict = {"channel": "C03QDPT5ABX", 
+                "text": f"Card .{name}. created"}
+    slack_response = requests.post(url_location, headers={"Authorization": auth_info}, data=data_dict)
+    print(slack_response.json())
 
 # ************************************Routes for Boards*************************************
 def validate_board(board_id):
@@ -107,6 +123,8 @@ def create_new_card(board_id):
     if "message" not in request_body:
         return {"details": "Invalid data message required."},400
     new_card = Card(message=request_body["message"], board=board) 
+
+    slack_post(request_body["message"])
 
     db.session.add(new_card)
     db.session.commit()
