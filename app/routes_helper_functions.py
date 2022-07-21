@@ -1,4 +1,3 @@
-
 from flask import jsonify, abort, make_response
 from .models.board import Board
 from .models.card import Card

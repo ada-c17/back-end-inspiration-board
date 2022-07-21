@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify
 from .models.board import Board
 from .models.card import Card
 from .routes_helper_functions import *
@@ -39,14 +39,14 @@ def get_one_board(board_id):
 def post_one_card_to_board(board_id):
     request_body = request.get_json()
 
-    board = validate_model(Board, board_id)
+    validate_model(Board, board_id)
 
     try:
         input_message = request_body["message"]
         if len(input_message) <= 40:
             new_card = Card(message=input_message, board_id=board_id)
         else:
-            error_message("message is greater than 40 characters", 400)
+            error_message("message is longer than 40 characters", 400)
     except KeyError as err:
         error_message(f"missing required {err}", 400)
 
@@ -64,13 +64,3 @@ def get_cards_of_board(board_id):
     result["cards"] = cards_dict
 
     return jsonify(result), 200
-
-@board_bp.route("/<board_id>/cards/<card_id>", methods=("DELETE",))
-def delete_one_card_of_board(board_id, card_id):
-    board = validate_model(Board, board_id)
-    card = validate_model(Card, card_id)
-
-    db.session.delete(card)
-    db.session.commit()
-
-    return make_response(jsonify(dict(details=f'Card #{card.card_id} "{card.message}" successfully deleted'))), 200
