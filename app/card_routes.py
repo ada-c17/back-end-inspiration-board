@@ -14,6 +14,7 @@ def create_card(board_id):
     
     request_body = request.get_json()
     new_card = make_record_safely(Card, request_body )
+    new_card.board = board
 
     db.session.add(new_card)
     db.session.commit()
