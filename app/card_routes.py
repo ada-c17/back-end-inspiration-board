@@ -5,7 +5,7 @@ from app.models.board import Board
 from .routes_helper import get_record_by_id, make_record_safely
 
 # example_bp = Blueprint('example_bp', __name__)
-card_bp = Blueprint('card_bp', __name__, url_prefix="/boards")
+card_bp = Blueprint('card_bp', __name__, url_prefix="/boards/")
 
 # create new card to board by id
 @card_bp.route("<board_id>/cards", methods=["POST"], strict_slashes=False)
