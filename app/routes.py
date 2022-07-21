@@ -80,6 +80,15 @@ def delete_card_by_id(board_id, card_id):
 
     return make_response(dict(details=f'Card {card.card_id} "{card.message}" successfully deleted'), 200)
 
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board_by_id(board_id):
+    board = Board.validate(board_id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return make_response(dict(details=f'Board {board.board_id} "{board.title}" successfully deleted'), 200)
+
 @boards_bp.route("/<board_id>/cards/<card_id>", methods = ["PATCH"])
 def add_likes_to_card(board_id, card_id):
     board = Board.validate(board_id)
