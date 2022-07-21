@@ -1,6 +1,4 @@
 from flask import jsonify, abort, make_response
-from app.models.board import Board
-from app.models.card import Card
 
 def error_message(message, status_code):
     abort(make_response(jsonify(dict(details=message)), status_code))
