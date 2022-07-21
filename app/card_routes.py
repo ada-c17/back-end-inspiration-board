@@ -5,16 +5,15 @@ from app.models.board import Board
 from .routes_helper import get_record_by_id, make_record_safely
 
 # example_bp = Blueprint('example_bp', __name__)
-card_bp = Blueprint('card_bp', __name__, url_prefix="/boards/")
+card_bp = Blueprint('card_bp', __name__, url_prefix="/boards")
 
 # create new card to board by id
 @card_bp.route("<board_id>/cards", methods=["POST"], strict_slashes=False)
 def create_card(board_id):
-    board = get_record_by_id(Board,board_id)
+    get_record_by_id(Board,board_id)
     
     request_body = request.get_json()
     new_card = make_record_safely(Card, request_body )
-    new_card.board = board
 
     db.session.add(new_card)
     db.session.commit()
@@ -27,7 +26,7 @@ def delete_card(board_id, card_id):
     get_record_by_id(Board,board_id)
     card = get_record_by_id(Card,card_id)
     
-    card = Card.query.get(card_id)
+    # card = Card.query.get(card_id)
 
     db.session.delete(card)
     db.session.commit()
@@ -37,7 +36,9 @@ def delete_card(board_id, card_id):
 @card_bp.route("<board_id>/cards/<card_id>/like", methods=["PATCH"], strict_slashes=False)
 def add_like(card_id):
     # validate stuff
-    card = Card.query.get(card_id)
+    # card = Card.query.get(card_id)
+    card = get_record_by_id(Card,card_id)
+
     card.likes_count += 1
 
     db.session.commit()
