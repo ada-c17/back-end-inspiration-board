@@ -14,3 +14,4 @@ def notify_card_created(card_message):
     }
 
     requests.post('https://slack.com/api/chat.postMessage', data = data, headers = headers)
+    print(TOKEN)
