@@ -35,7 +35,7 @@ def delete_card(board_id, card_id):
 
 # add one like
 @card_bp.route("<board_id>/cards/<card_id>/like", methods=["PATCH"], strict_slashes=False)
-def add_like(card_id):
+def add_like(board_id, card_id):
     # validate stuff
     # card = Card.query.get(card_id)
     card = get_record_by_id(Card,card_id)
