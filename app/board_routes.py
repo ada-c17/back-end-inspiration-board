@@ -29,12 +29,6 @@ def get_boards():
 
     return jsonify(result_list), 200
 
-@board_bp.route("/<board_id>", methods=("GET",))
-def get_one_board(board_id):
-    board = validate_model(Board, board_id)
-
-    return jsonify(board.to_dict()), 200
-
 @board_bp.route("/<board_id>/cards", methods=("POST",))
 def post_one_card_to_board(board_id):
     request_body = request.get_json()
