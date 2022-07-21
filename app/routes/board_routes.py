@@ -57,7 +57,7 @@ def read_all_cards(board_id):
     elif request.args.get("sort") == 'id':
         cards_list.sort(key=lambda x: x.get('card_id'))
     elif request.args.get("sort") == 'letter':
-        cards_list.sort(key=lambda x: x.get('message'))
+        cards_list.sort(key=lambda x: x.get('message').upper())
 
     return jsonify(cards_list),200
 
