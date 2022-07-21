@@ -1,9 +1,6 @@
-from crypt import methods
-import json
-from sre_constants import CATEGORY_WORD
-from attr import validate
-from flask import Blueprint, request, jsonify, make_response, abort
+from flask import Blueprint, request, make_response, abort
 from app import db
+from app.external import slack
 from app.models.card import Card
 
 card_bp = Blueprint("card", __name__, url_prefix="/cards")
@@ -36,6 +33,8 @@ def create_card():
 
     db.session.add(new_card)
     db.session.commit()
+
+    slack.notify_card_created(new_card.message)
 
     return make_response({"card": new_card.to_dict()}, 201)
 
