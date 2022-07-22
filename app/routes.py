@@ -19,7 +19,7 @@ def post_board():
             "message":"Invalid data: New board must have a title and an owner"
             }, 400))
     
-    board = Board(title=title, owner=owner)
+    board = Board(title=title, owner=owner, theme="grey")
     db.session.add(board)
     db.session.commit()
 

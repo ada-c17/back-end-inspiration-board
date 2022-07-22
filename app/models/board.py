@@ -5,6 +5,7 @@ class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String)
     owner = db.Column(db.String)
+    theme = db.Column(db.String)
     cards = db.relationship("Card", back_populates="board", lazy = True)
 
     def as_dict(self):
@@ -12,6 +13,7 @@ class Board(db.Model):
             'board_id': self.id,
             'title': self.title,
             'owner': self.owner,
+            'theme': self.theme,
             'cards': [card.as_dict() for card in self.cards]
         }
     
