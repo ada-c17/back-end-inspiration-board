@@ -23,9 +23,7 @@ def app():
 def client(app):
     return app.test_client()
 
-# This fixture gets called in every test that
-# references "one_board"
-# This fixture creates a board and saves it in the database
+
 @pytest.fixture
 def one_board(app):
     new_board = Board(
@@ -33,10 +31,7 @@ def one_board(app):
     db.session.add(new_board)
     db.session.commit()
 
-# This fixture gets called in every test that
-# references "three_boards"
-# This fixture creates three tasks and saves
-# them in the database
+
 @pytest.fixture
 def three_boards(app):
     db.session.add_all([
@@ -45,19 +40,26 @@ def three_boards(app):
         Board(
             title="A grumpy board", creator="Gelly"),
         Board(
-            title="Another board", creator="Danielle")
+            title="Another lovely board", creator="Danielle")
     ])
     db.session.commit()
 
 @pytest.fixture
-def one_card(app):
-    new_card = Card(message="You in5pire me :')")
+def one_card(app, one_board):
+    board = Board.query.first()
+    new_card = Card(message="You in5pire me :')", board_id=board.board_id)
     db.session.add(new_card)
-    db.session.commit()
+    db.session.commit() 
+
+
 
 @pytest.fixture
-def one_card_belongs_to_one_board(app, one_card, one_board):
+def three_cards(app, one_board):
     board = Board.query.first()
-    card = Card.query.first()
-    board.cards.append(card)
+
+    db.session.add_all([
+        Card(message="Wow!", board_id=board.board_id),
+        Card(message="You are amazing!", board_id=board.board_id),
+        Card(message="I love you!!!", board_id=board.board_id)
+    ])
     db.session.commit()

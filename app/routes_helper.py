@@ -21,9 +21,3 @@ def make_record_safely(cls, data_dict):
     except KeyError as err:
         error_message(f"Missing key: {err}", 400)
 
-# if we want to update records
-# def update_record_safely(cls, data_dict):
-#     try:
-#         cls.replace_details(data_dict)
-#     except KeyError as err:
-#         error_message(f"Missing key: {err}", 400)

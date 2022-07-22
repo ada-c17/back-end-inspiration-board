@@ -21,7 +21,3 @@ class Card(db.Model):
         return cls(
             message = json_data["message"]
         )
-    # if we want to update records
-    # def replace_details(self, data_dict):
-    #     self.message = data_dict["message"]
-
