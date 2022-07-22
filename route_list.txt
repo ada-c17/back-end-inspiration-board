@@ -1,0 +1,54 @@
+For design purposes want a easy to read route list for front end development.
+Going to talk to instructor about normalizing success and error messages
+normalize return messages, move create a card, read cards in a board, delete board, test routes, heroku
+
+Routes:
+    Boards:
+
+        POST /boards  creates a new board
+            Requires: json{ title: owner: }
+
+            Returns: json{ id: title: owner: }, 201
+
+            Errors: If missing info return json{ details: "Invalid data"}, 400
+            
+            Notes: Use returned info when posting new board to verify
+
+        GET /boards returns a list of all boards
+            Requires: none <3
+
+            Returns: [{id: title: owner: }, ...], 200
+
+        GET /boards/# returns all cards of a board
+            Requires: none
+
+            Returns: [{id: message: likes:}, ...], 200
+
+            Errors: if board# doesn't exist {message: "board {board#} not found}, 404
+                    if board# isn't an integer {message: "board {board#} invalid}, 400
+
+        POST /boards/#/cards  creates a card for board #
+            Requires: {id: message: }
+
+            Returns: {card:{id: message: likes:}}, 200
+
+            Errors: missing info return json{ details: "Invalid data"}, 400
+                    if board# doesn't exist {message: "board {board#} not found}, 404
+                    if board# isn't an integer {message: "board {board#} invalid}, 400
+
+            Notes: Use returned info when creating new card to verify
+
+    Cards:
+
+        UPDATE /cards/# adds a like
+            Requires: none
+
+            Returns: {details: "card #{card#} successfully liked"}, 200
+            
+            Errors: if card# doesn't exist {message: "card {card#} not found}, 404
+                    if card# isn't an integer {message: "card {card#} invalid}, 400
+
+        DELETE /cards/# removes a card forever!
+            Requires: none
+
+            Returns: {details: "card {card#} \{title}\ successfully deleted}, 204
