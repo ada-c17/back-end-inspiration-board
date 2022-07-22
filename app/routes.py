@@ -13,13 +13,14 @@ def post_board():
     post_dict = request.get_json()
     title = post_dict.get('title', None)
     owner = post_dict.get('owner', None)
+    theme = post_dict.get('theme', "grey")
     
     if not title or not owner:
         abort(make_response({
             "message":"Invalid data: New board must have a title and an owner"
             }, 400))
     
-    board = Board(title=title, owner=owner, theme="grey")
+    board = Board(title=title, owner=owner, theme=theme)
     db.session.add(board)
     db.session.commit()
 
