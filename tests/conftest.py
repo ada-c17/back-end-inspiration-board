@@ -26,14 +26,14 @@ def client(app):
 
 @pytest.fixture
 def one_board(app):
-    new_board = Board(title = 'One Board', owner = 'one_board fixture')
+    new_board = Board(title = 'One Board', owner = 'one_board fixture', theme = 'grey')
 
     db.session.add(new_board)
     db.session.commit()
 
 @pytest.fixture
 def one_board_w_three_cards(app):
-    new_board = Board(title = 'One Board', owner = 'one_board_w_three_cards fixture')
+    new_board = Board(title = 'One Board', owner = 'one_board_w_three_cards fixture', theme = 'grey')
     db.session.add(new_board)
     db.session.commit()
     

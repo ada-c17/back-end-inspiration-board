@@ -12,6 +12,23 @@ def test_create_board(client):
         'board_id': 1,
         'title': 'Inspiration Board',
         'owner': 'pytest',
+        'theme': 'grey',
+        'cards': []
+    }
+
+def test_create_board_w_theme(client):
+    board_params = {'title': 'Inspiration Board', 'owner': 'pytest', 'theme': 'green'}
+
+    response = client.post('/boards', json=board_params)
+    response_body = response.get_json()
+
+    assert response.status_code == 201
+    assert 'board' in response_body
+    assert response_body['board'] == {
+        'board_id': 1,
+        'title': 'Inspiration Board',
+        'owner': 'pytest',
+        'theme': 'green',
         'cards': []
     }
 
@@ -47,6 +64,7 @@ def test_get_boards_one_board(client, one_board):
         'board_id': 1,
         'title': 'One Board',
         'owner': 'one_board fixture',
+        'theme': 'grey',
         'cards': []
     }
 
@@ -60,6 +78,7 @@ def test_get_board_by_id(client, one_board):
         'board_id': 1,
         'title': 'One Board',
         'owner': 'one_board fixture',
+        'theme': 'grey',
         'cards': []
     }
 
@@ -99,6 +118,15 @@ def test_update_board_title_only(client, one_board):
     assert response.status_code == 200
     assert 'board' in response_body
     assert response_body['board']['title'] == "A new name"
+
+def test_update_board_theme_only(client, one_board):
+    updates = { "theme": "heliotrope" }
+    response = client.patch('/boards/1', json=updates)
+    response_body = response.get_json()
+
+    assert response.status_code == 200
+    assert 'board' in response_body
+    assert response_body['board']['theme'] == "heliotrope"
 
 def test_delete_board_by_id(client, one_board, one_board_w_three_cards):
     before_deleting_get = client.get('/boards')
