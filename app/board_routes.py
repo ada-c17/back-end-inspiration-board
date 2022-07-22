@@ -18,16 +18,19 @@ def post_one_board():
     db.session.add(new_board)
     db.session.commit()
 
-    return jsonify(new_board.to_dict()), 201
+    board = {}
+    board["board"] = new_board.to_dict()
+
+    return jsonify(board), 201
 
 @board_bp.route("", methods=("GET",))
 def get_boards():
 
     boards = Board.query.all()
 
-    result_list = [board.to_dict() for board in boards]
+    result = [board.to_dict() for board in boards]
 
-    return jsonify(result_list), 200
+    return jsonify(result), 200
 
 @board_bp.route("/<board_id>/cards", methods=("POST",))
 def post_one_card_to_board(board_id):
@@ -47,7 +50,10 @@ def post_one_card_to_board(board_id):
     db.session.add(new_card)
     db.session.commit()
 
-    return jsonify(new_card.to_dict()), 201
+    result = {}
+    result["cards"] = new_card.to_dict()
+
+    return jsonify(result), 201
 
 @board_bp.route("/<board_id>/cards", methods=("GET",))
 def get_cards_of_board(board_id):
