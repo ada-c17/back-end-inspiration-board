@@ -55,7 +55,7 @@ def update_board_by_id(id):
     update_dict = request.get_json()
 
     for k, v in update_dict.items():
-        if k in {'title', 'owner'}:
+        if k in {'title', 'owner', 'theme'}:
             setattr(board, k, v)
     
     db.session.commit()
