@@ -26,9 +26,10 @@
 
 **Request body:** JSON object 
 
-`{ "title": string, "owner": string }`
+`{ "title": string, "owner": string, "theme": string }`
 
-| *Both title and owner are required to not be empty for successful creation.*
+| *Both 'title' and 'owner' are required to exist and not be empty for* 
+| *successful creation, but 'theme' is optional and defaults to "grey".*
 
 **Response body:** JSON object
 ```
@@ -38,6 +39,7 @@
         "board_id": integer,
         "title": string,
         "owner": string,
+        "theme": string,
         "cards": array []
     }
 }
@@ -59,6 +61,7 @@
             "board_id": integer,
             "title": string,
             "owner": string,
+            "theme": string,
             "cards": array [
                 {
                     "card_id": integer,
@@ -89,6 +92,7 @@
         "board_id": integer,
         "title": string,
         "owner": string,
+        "theme": string,
         "cards": array [
             {
                 "card_id": integer,
@@ -110,9 +114,9 @@
 
 **Request body:** JSON object 
 
-`{ "title": string, "owner": string }`
+`{ "title": string, "owner": string, "theme": string }`
 
-| *JSON can contain one of 'title' or 'owner' keys, or both.*
+| *JSON can contain one of 'title' or 'owner' or 'theme' keys, or any combination.*
 
 **Response body:** JSON object
 ```
@@ -121,7 +125,8 @@
     "board": {
         "board_id": integer,
         "owner": string,
-        "title": string
+        "title": string,
+        "theme": string,
         "cards": array [
             {
                 "card_id": integer,
