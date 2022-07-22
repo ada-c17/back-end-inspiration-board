@@ -87,6 +87,8 @@ def replace_board_by_id(board_id):
 def delete_board_by_id(board_id):
     board = get_record_by_id(board_id, Board)
     board_dict = board.to_dict()
+    for card in board.cards:
+        delete_card_by_id(card.card_id)
 
     db.session.delete(board)
     db.session.commit()
