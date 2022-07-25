@@ -51,7 +51,7 @@ def test_get_boards_three_saved_boards(client, three_boards):
         {
             "boardId": 3,
             "cards" : [],
-            "title" : "Another board", 
+            "title" : "Another lovely board", 
             "creator" : "Danielle"
         }
     ]
