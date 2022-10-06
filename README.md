@@ -1,5 +1,6 @@
 # Inspiration Board: Back-end Layer
 
+## Front-end deployment: https://migrationmess-front-end.herokuapp.com/
 ## Back-end deployment: https://insp-board-migrationmess.herokuapp.com/boards
 
 This scaffold includes the following:
